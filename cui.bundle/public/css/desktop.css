@@ -1,0 +1,17 @@
+
+html { background-color: #333; }
+@media only screen and (min-width: 600px){
+  .ui-page {
+    width: 600px !important;
+    margin: 0 auto !important;
+    position: relative !important;
+    border-right: 5px #666 outset !important;
+    border-left: 5px #666 outset !important;
+  }
+  .ui-footer {
+    width: 570px !important;
+    margin: 0 auto !important;
+    border-right: 5px #666 outset !important;
+    border-left: 5px #666 outset !important;
+  }
+}
