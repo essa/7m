@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+  <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <link rel="stylesheet" href="css/jquery.mobile-1.3.1.min.css"></link>
+        <link rel="stylesheet" href="css/desktop.css"></link>
+        <title>Hello World</title>
+  </head>
+  <body>
+    aaaa
+    <div id='page' data-role='page'></div>
+
+    <!-- <script src="http://192.168.1.2:8080/target/target-script-min.js"></script> -->
+    <script type="text/javascript" src="cordova.js"></script>
+    <script src="js/libs/jquery-2.0.0.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      // jQuery Mobile の設定を行うためのイベントハンドラを登録する。
+      // jQuery Mobile を読み込む前に登録しないと呼び出されない。
+      $(document).bind("mobileinit", function() {
+        $.mobile.ajaxEnabled = false;
+        $.mobile.linkBindingEnabled = false;
+        $.mobile.hashListeningEnabled = false;
+        $.mobile.pushStateEnabled = false;
+      });
+    </script>
+    <script type="text/javascript" charset="utf-8" src="js/VolumeSlider.js"></script>
+    <script src="js/libs/jquery.mobile-1.3.1.js" type="text/javascript"></script>
+    <script src="js/libs/json2.js" type="text/javascript"></script>
+    <script src="js/libs/underscore.js" type="text/javascript"></script>
+    <script src="js/libs/backbone.js" type="text/javascript"></script>
+    <script type="text/javascript" src="js/index.js"></script> 
+    <script src="js/StreamAudio.js" type="text/javascript"></script>
+    <script src="js/app.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      console.log('index.html start');
+      
+      $(document).ready(function() {
+        console.log('document.ready');
+        App.initForPhonegap();
+        console.log('document.ready end');
+      });
+      console.log('index.html end');
+    </script>
+  </body>
+</html>

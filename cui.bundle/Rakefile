@@ -1,0 +1,71 @@
+
+# this Rakefile is not for macruby but for ruby-2.0.0
+task :default => [:spec, :jasmine, :integration_test]
+
+desc "install required gems" 
+task :install_gems do
+  # I want to use bundler but it didn't work with macruby
+  gems =%w(control_tower hashie rack-test sinatra-xsendfile sqlite3)
+  sh %[ sudo macgem install --no-ri -no-rdoc #{gems.join ' '}]
+  sh %[ sudo macgem install sinatra --no-ri -no-rdoc --version='1.0.0' ]
+end
+
+desc "run ruby spec"
+task :spec do
+  sh "macruby -rubygems -Ispec spec/utils_spec.rb"
+  sh "macruby -rubygems -Ispec spec/itunes_spec.rb"
+  sh "macruby -rubygems -Ispec spec/radio_program_spec.rb"
+  sh "macruby -rubygems -Ispec spec/server_with_mock_itunes_spec.rb"
+  sh "macruby -rubygems -Ispec spec/server_with_real_itunes_spec.rb"
+end
+
+desc "run server"
+task :server do
+  url = ENV["URL"]
+  if url
+    Thread.start do
+      sh "sleep 5 && open #{url}"
+    end
+  end
+  sh "macruby cui_main.rb"
+end
+
+desc "run integration test"
+task :integration_test do
+  sh "ruby spec/integration_spec.rb"
+end
+
+namespace :ios do
+  desc "copy javascript libraries to ios directory"
+  task :jslibs => "../ios/www/js/libs"
+  directory "../ios/www/js/libs" do
+    mkdir "../ios/www/js/libs"
+    cp Dir["public/js/libs/*"], "../ios/www/js/libs"
+  end
+
+  directory "../ios/www/css/images"
+  desc "copy css files to ios directory" 
+  task :css => "../ios/www/css/images" do
+    cp Dir["public/css/images/*"], "../ios/www/css/images"
+    cp Dir["public/css/*.css"], "../ios/www/css"
+  end
+
+  desc "setup config for app"
+  task :app do
+    cp "../ios/SevenMinutes/config.xml.index", "../ios/SevenMinutes/config.xml"
+  end
+
+  desc "setup config for spec"
+  task :spec do
+    cp "../ios/SevenMinutes/config.xml.spec", "../ios/SevenMinutes/config.xml"
+  end
+
+end
+
+desc 'run jasmine with phantomjs'
+task :jasmine do
+  sh 'grunt coffee'
+  sh 'phantomjs bin/run-jasmine.js http://localhost:16017/spec.html'
+end
+
+

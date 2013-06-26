@@ -1,0 +1,15 @@
+
+loglevel: DEBUG
+port: 16017
+programs:
+  - name: main
+    refresh_interval: 3600
+    frames:
+      - name: 7mtest
+        source: 7mtest
+        max_track: 3
+        # duration: 420
+        max_duration_per_track: 20
+    
+
+
