@@ -3,6 +3,7 @@ require 'rubygems'
 require 'control_tower_ext'
 require 'yaml'
 
+require 'version'
 require 'config'
 require 'itunes'
 require 'radio_program'
@@ -22,7 +23,7 @@ module SevenMinutes
       logger.logdevice.write(msg)
     end
     logger.level = Logger::INFO
-    logger.info "SevenMinutes start"
+    logger.info "SevenMinutes #{SevenMinutes::VERSION} start"
 
     conf = Config::load(
       config_file: config_file,

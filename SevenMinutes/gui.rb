@@ -10,6 +10,7 @@ require 'control_tower_ext'
 require 'yaml'
 require 'logger'
 
+require 'version'
 require 'config'
 require 'itunes'
 require 'radio_program'
@@ -47,7 +48,7 @@ module SevenMinutes
 
     def self.start_as_gui(logger)
       logger.level = Logger::INFO
-      logger.info "SevenMinutes start"
+      logger.info "SevenMinutes #{SevenMinutes::VERSION} start"
 
       conf = Config::load(
         config_file: '7m.yml',
