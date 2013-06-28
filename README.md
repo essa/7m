@@ -1,36 +1,52 @@
 
 # 7m (SevenMinutes)
 
-SevenMinutes is an Audio Media Server for Mac. It makes a Net Radio Station from your iTunes contents.
+SevenMinutes is an open source Audio Media Server for Mac. It makes a Net Radio Station from your iTunes contents.
 
 It can 
 
-- distributes iTunes audio contents for web browsers (players as WebApp) / a dedicated iOS App / mp3 player apps(using m3u / pls playlist)
-- play your playlists and mix a "Radio Program" for you from them
-- play partially your long tracks and mix a Radio Program from them
+- distributes iTunes audio contents to web browsers (players as WebApp) / a dedicated iOS App / mp3 player apps(using m3u / pls playlist)
+- plays your playlists and mix a "Radio Program" for you from them
 - sync bookmark and played date real-time to iTunes after playing
+- plays partially your long tracks 
 - export playlists / "Radio Program" as a combined mp3 file for Dropbox mobile apps to listen off line
 - reduce trafic by converting audio tracks to specified bit rate for slow 3G connection
 
 A "Radio Program" in SevenMinutes
 
-- uses iTunes playlists / smart playlists as a source of audio tracks
+- uses iTunes playlists / smart playlists as source of audio tracks
 - picks up audio tracks from sources in specified duration or number of tracks
-- mixes them and make a new combined playlist
-- refresh tracks on demand anytime, you can listen new distrubted podcasts real-time
+- mixes them and create a new combined playlist in real time
+- refresh tracks on demand anytime, so you can listen new distrubted podcasts
 - cuts a long track to specified duration, limets track duration from one source
 
 So you can listen to your "Radio Program"s consists of talk (podcasts) and music anytime, anywhere on virtually every device you have.
 
-And you can pause anytime and continue on other device.
+## Why "SevenMinutes" ?
+
+I subscribe many podcasts for lerning English and gathering news in tech domain. But most of them are too long for me to listen all because listening English contents requires much concentration for a non-native speaker.
+
+I can listen for only "Seven Minutes" at most with enough concentration.
+
+I need to refresh myself listening my favarite songs some duration after listening podcasts.
+
+So I tried a prototype version of this project and found it was real "Radio Station".
+
+I don't agree to call so called "Net Radio" stations a radio. Because they are only playlists of musics without any talk. I loved AM-radio programs with both talk and music.
+
+Favorite talks between favorite songs, or favorite songs between favorite talks are very interesting contents if automatically refreshed.
+
+I am a heavy user of iTunes smart playlist. But it was not smart enough realizing my real 'Radio Program'.
+
+Now I am enjoying my personal "Radio" consists of "Seven Minutes" talks and favorite music with SevenMinutes.
 
 ## Modules
 
 SevenMinutes is consists of 
 
 - a web server with iTunes interface that distributes audio contents by http streaming
-- simple GUI frontend for Mac
-- a Web App to listen contents on PC/Mac browser
+- simple GUI front end for Mac
+- a Web App to play contents on PC/Mac browser
 - a real-time converter from iTunes playlists to m3u playlist for many mp3 players
 - a dedicated iOS App
 
@@ -40,7 +56,7 @@ It can be invoked in GUI mode or CUI mode.
 
 SevenMinutes is distributed for end users as a Mac App with every module except iOS app.
 
-In this mode, you can invoke it just clicking icon.
+In this mode, you can invoke it as a Mac desktop app just by clicking icon.
 
 Only requirement in this mode is sox.
 
@@ -48,11 +64,17 @@ Only requirement in this mode is sox.
 
 SevenMinutes is distributed for power users and developers as a github repository.
 
-You can checkout it and invoke it with MacRuby in terminal.
+You can checkout it and invoke it with MacRuby in a terminal window.
 
 ## Setup
 
 ### Requirement
+
+#### Platform
+
+Mac OS/X Mountain Lion or higher.
+
+SevenMinutes is written in MacRuby, so it will not run in other os.
 
 #### sox and ffmpeg
 
@@ -72,7 +94,7 @@ If you use SevenMinutes in GUI mode, sox is only requirement to run it.
 
 If you use SevenMinutes in CUI mode, you have to install products below.
 
-#### MacRuby 0.12 and later
+#### MacRuby 0.12 and later (CUI mode only)
 
 Install it from http://macruby.org/ or 
 
@@ -82,7 +104,7 @@ And you should install required gems by
 
   $ rake install_gems
 
-#### node.js, npm and grunt
+#### node.js, npm and grunt (CUI mode only)
 
 The web app is written in coffeescript.
 You have to compile it by Grunt.
@@ -95,7 +117,7 @@ After install node.js and npm,
 
 This will generate app.js to cui.bundle/public (for web app) and to ios/www/js (for iOS app).
 
-#### phantomjs
+#### phantomjs (for test mode only)
 
 running js specs in CUI mode requires phantomjs
 
@@ -152,6 +174,9 @@ Players are written in Coffeescript with backbone.js, jQuery mobile, phonegap.
 
 Most of sources are common in web app and native app for iOS (and comming Android app).
 
+The player in iOS uses a phonegap plugin for streaming audio (AVPlayer).
+
+
 ## Related Projects
 
 ### Music players tested with SevenMinutes
@@ -169,7 +194,50 @@ You can connect to SevenMinutes across 3G using
 UPnP PortMapper
 http://upnp-portmapper.sourceforge.net/
 
+## Status
+
+Alpha. But I myself am enjoying my personal "Radio" using this everyday.
+
+Server runs whole day without trouble, but iOS app need restarting between "Program"s sometime.
+
+It modifies 'bookmark', 'playedDate', 'playedCount', 'bookmarkable' attributes of iTunes track. So if you uses these attributes for you smart playlists or something, don't run this in your Mac now.
+
+## ToDo
+
+- documents
+- more specs
+- improve visual design
+- enable rating 
+- cross fade
+- notification about interaction with server in players
+- better audio session handling in iOS app
+- Android App
+- Simple authentication with Basic Auth
+- UPnP Integration
+- editing 7m.yml in GUI
+- plugin System for Radio Program
+
 ## Credits
+
+### Source imported in this repository
+
+- VolumeSlider phonegap plugin (https://github.com/phonegap/phonegap-plugins/tree/master/iPhone/VolumeSlider) -- ios/SevenMinutes/VolumeSlider.*
+- jQuery -- cui.bundle/public/jslib/jquery-*
+- jQueryMobile -- cui.bundle/public/jslib/jquery-mobile
+- jPlayer -- cui.bundle/public/jslib/jplayer*
+- backbone.js -- cui.bundle/public/jslib/backbone.js
+- underscore.js -- cui.bundle/public/jslib/underscore.js
+
+### Sources modified from other projects.
+
+StreamAudio plugin was modified from phonegap Media plugin
+
+- ios/SevenMinutes/Plugins/StreamAudio.h
+- ios/SevenMinutes/Plugins/StreamAudio.m
+
+WebServer was modified from control_tower (https://github.com/MacRuby/ControlTower)
+
+- cui.bundle/control_tower_ext.rb
 
 ### Sample mp3 files for tests are public domain music and donwloaded from
 
@@ -186,17 +254,9 @@ Pretty Office Icon Set Part 8 | Custom Icon Design
 http://www.customicondesign.com/free-icons/pretty-office-icon-set/pretty-office-icon-set-part-8/
 http://www.iconarchive.com/show/pretty-office-8-icons-by-custom-icon-design.html
 
-## ToDo
+## Author and License
 
-- more specs
-- improve visual design
-- Android App
-- Simple authentication with Basic Auth
-- UPnP Integration
-- editing 7m.yml in GUI
-- plugin System for Radio Program
+Written by Taku NAKAJIMA.
 
-## License
-
-Ruby's
+Released under Ruby's License.
 
