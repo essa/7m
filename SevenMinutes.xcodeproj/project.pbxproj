@@ -1,0 +1,383 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B71290201728CE0800616705 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B712901F1728CE0800616705 /* Cocoa.framework */; };
+		B71290221728CE0800616705 /* MacRuby.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B71290211728CE0800616705 /* MacRuby.framework */; };
+		B712902B1728CE0800616705 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B71290291728CE0800616705 /* InfoPlist.strings */; };
+		B712902D1728CE0800616705 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B712902C1728CE0800616705 /* main.m */; };
+		B71290321728CE0800616705 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = B71290301728CE0800616705 /* MainMenu.xib */; };
+		B71290351728CE0800616705 /* rb_main.rb in Resources */ = {isa = PBXBuildFile; fileRef = B71290341728CE0800616705 /* rb_main.rb */; };
+		B71290371728CE0800616705 /* AppDelegate.rb in Resources */ = {isa = PBXBuildFile; fileRef = B71290361728CE0800616705 /* AppDelegate.rb */; };
+		B71290411728D19500616705 /* cui.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B71290401728D19500616705 /* cui.bundle */; };
+		B7B03D7A175C7AB100B4A1F2 /* gui.rb in Resources */ = {isa = PBXBuildFile; fileRef = B7B03D79175C7AB100B4A1F2 /* gui.rb */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B71290241728CE0800616705 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B71290141728CE0800616705 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B712901B1728CE0800616705;
+			remoteInfo = SevenMinutes;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		B712901C1728CE0800616705 /* SevenMinutes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SevenMinutes.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B712901F1728CE0800616705 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		B71290211728CE0800616705 /* MacRuby.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MacRuby.framework; path = Library/Frameworks/MacRuby.framework; sourceTree = DEVELOPER_DIR; };
+		B71290281728CE0800616705 /* SevenMinutes-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SevenMinutes-Info.plist"; sourceTree = "<group>"; };
+		B712902A1728CE0800616705 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B712902C1728CE0800616705 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		B712902E1728CE0800616705 /* SevenMinutes-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SevenMinutes-Prefix.pch"; sourceTree = "<group>"; };
+		B71290311728CE0800616705 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		B71290341728CE0800616705 /* rb_main.rb */ = {isa = PBXFileReference; lastKnownFileType = text.script.ruby; path = rb_main.rb; sourceTree = "<group>"; };
+		B71290361728CE0800616705 /* AppDelegate.rb */ = {isa = PBXFileReference; lastKnownFileType = text.script.ruby; path = AppDelegate.rb; sourceTree = "<group>"; };
+		B71290401728D19500616705 /* cui.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = cui.bundle; sourceTree = "<group>"; };
+		B7B03D79175C7AB100B4A1F2 /* gui.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = gui.rb; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B71290191728CE0800616705 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B71290201728CE0800616705 /* Cocoa.framework in Frameworks */,
+				B71290221728CE0800616705 /* MacRuby.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		B71290131728CE0800616705 = {
+			isa = PBXGroup;
+			children = (
+				B71290401728D19500616705 /* cui.bundle */,
+				B71290261728CE0800616705 /* GUI */,
+				B712901E1728CE0800616705 /* Frameworks */,
+				B712901D1728CE0800616705 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B712901D1728CE0800616705 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B712901C1728CE0800616705 /* SevenMinutes.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B712901E1728CE0800616705 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B712901F1728CE0800616705 /* Cocoa.framework */,
+				B71290211728CE0800616705 /* MacRuby.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B71290261728CE0800616705 /* GUI */ = {
+			isa = PBXGroup;
+			children = (
+				B7B03D79175C7AB100B4A1F2 /* gui.rb */,
+				B71290361728CE0800616705 /* AppDelegate.rb */,
+				B712902F1728CE0800616705 /* Resources */,
+				B71290331728CE0800616705 /* Other Sources */,
+				B71290271728CE0800616705 /* Supporting Files */,
+			);
+			name = GUI;
+			path = SevenMinutes;
+			sourceTree = "<group>";
+		};
+		B71290271728CE0800616705 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				B71290281728CE0800616705 /* SevenMinutes-Info.plist */,
+				B71290291728CE0800616705 /* InfoPlist.strings */,
+				B712902C1728CE0800616705 /* main.m */,
+				B712902E1728CE0800616705 /* SevenMinutes-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		B712902F1728CE0800616705 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B71290301728CE0800616705 /* MainMenu.xib */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		B71290331728CE0800616705 /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				B71290341728CE0800616705 /* rb_main.rb */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		B71290231728CE0800616705 /* Deployment */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "--compile --embed  --gem control_tower --gem sinatra --gem sinatra-xsendfile --gem rack --gem sqlite3 --gem hashie";
+			buildConfigurationList = B712903D1728CE0800616705 /* Build configuration list for PBXLegacyTarget "Deployment" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/local/bin/macruby_deploy;
+			buildWorkingDirectory = "";
+			dependencies = (
+				B71290251728CE0800616705 /* PBXTargetDependency */,
+			);
+			name = Deployment;
+			passBuildSettingsInEnvironment = 1;
+			productName = Deployment;
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXNativeTarget section */
+		B712901B1728CE0800616705 /* SevenMinutes */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B712903A1728CE0800616705 /* Build configuration list for PBXNativeTarget "SevenMinutes" */;
+			buildPhases = (
+				B71290181728CE0800616705 /* Sources */,
+				B71290191728CE0800616705 /* Frameworks */,
+				B712901A1728CE0800616705 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SevenMinutes;
+			productName = SevenMinutes;
+			productReference = B712901C1728CE0800616705 /* SevenMinutes.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B71290141728CE0800616705 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = "Nakajima Taku";
+			};
+			buildConfigurationList = B71290171728CE0800616705 /* Build configuration list for PBXProject "SevenMinutes" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = B71290131728CE0800616705;
+			productRefGroup = B712901D1728CE0800616705 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B712901B1728CE0800616705 /* SevenMinutes */,
+				B71290231728CE0800616705 /* Deployment */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B712901A1728CE0800616705 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B712902B1728CE0800616705 /* InfoPlist.strings in Resources */,
+				B71290321728CE0800616705 /* MainMenu.xib in Resources */,
+				B71290351728CE0800616705 /* rb_main.rb in Resources */,
+				B71290371728CE0800616705 /* AppDelegate.rb in Resources */,
+				B71290411728D19500616705 /* cui.bundle in Resources */,
+				B7B03D7A175C7AB100B4A1F2 /* gui.rb in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B71290181728CE0800616705 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B712902D1728CE0800616705 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B71290251728CE0800616705 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B712901B1728CE0800616705 /* SevenMinutes */;
+			targetProxy = B71290241728CE0800616705 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		B71290291728CE0800616705 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B712902A1728CE0800616705 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		B71290301728CE0800616705 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B71290311728CE0800616705 /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		B71290381728CE0800616705 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		B71290391728CE0800616705 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		B712903B1728CE0800616705 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = x86_64;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Library/Frameworks\"",
+				);
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = /Library/Frameworks;
+				GCC_ENABLE_OBJC_GC = required;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SevenMinutes/SevenMinutes-Prefix.pch";
+				INFOPLIST_FILE = "SevenMinutes/SevenMinutes-Info.plist";
+				PRODUCT_NAME = SevenMinutes;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		B712903C1728CE0800616705 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = x86_64;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Library/Frameworks\"",
+				);
+				GCC_ENABLE_OBJC_GC = required;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SevenMinutes/SevenMinutes-Prefix.pch";
+				INFOPLIST_FILE = "SevenMinutes/SevenMinutes-Info.plist";
+				PRODUCT_NAME = SevenMinutes;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		B712903E1728CE0800616705 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		B712903F1728CE0800616705 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B71290171728CE0800616705 /* Build configuration list for PBXProject "SevenMinutes" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B71290381728CE0800616705 /* Debug */,
+				B71290391728CE0800616705 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B712903A1728CE0800616705 /* Build configuration list for PBXNativeTarget "SevenMinutes" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B712903B1728CE0800616705 /* Debug */,
+				B712903C1728CE0800616705 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B712903D1728CE0800616705 /* Build configuration list for PBXLegacyTarget "Deployment" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B712903E1728CE0800616705 /* Debug */,
+				B712903F1728CE0800616705 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B71290141728CE0800616705 /* Project object */;
+}
