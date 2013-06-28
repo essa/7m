@@ -54,9 +54,11 @@ It can be invoked in GUI mode or CUI mode.
 
 ### GUI mode
 
-SevenMinutes is distributed for end users as a Mac App with every module except iOS app.
+SevenMinutes is distributed for end users as a Mac App with every module except iOS app. Get it from 
 
-In this mode, you can invoke it as a Mac desktop app just by clicking icon.
+http://www.uncate.org/7m/
+
+In this mode, you can invoke it as a Mac desktop app just by clicking icon. See usage -> (under construction)
 
 Only requirement in this mode is sox.
 
