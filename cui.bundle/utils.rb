@@ -348,7 +348,7 @@ module SevenMinutes
         m3u8 = [
           '#EXTM3U',
         ]
-        @list.refresh_if_needed!
+        @list.refresh_if_needed!(Config::current[:m3u]) 
 
         @list.tracks.each do |t|
           next if t.played

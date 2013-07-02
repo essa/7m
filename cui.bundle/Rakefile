@@ -69,7 +69,7 @@ task :jasmine do
 end
 
 desc 'create dmz archive of GUI fullset version'
-task :dmz do
+task :dmg do
   load 'version.rb'
   ver = SevenMinutes::VERSION
   src = "~/Library/Developer/Xcode/DerivedData/SevenMinutes-*/Build/Products/Debug"
