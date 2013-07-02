@@ -176,6 +176,55 @@ describe Utils::Sox do
   end
 end
 
+describe SevenMinutes::Utils::Refresher do
+  Refresher = SevenMinutes::Utils::Refresher
+  before do
+    @pl = Object.new 
+    @pl.instance_eval do
+      class << self 
+        attr_reader :tracks
+        def get_new_tracks
+          [
+            { persistentID: '0001', duration: 60.0 },
+            { persistentID: '0002', duration: 60.0 },
+            { persistentID: '0003', duration: 60.0 },
+          ].map do |t|
+            MockTrack.new t
+          end
+        end
+      end
+      @tracks = []
+    end
+    @pl.extend Refresher
+  end
+
+  it 'should refresh when @tracks is empty' do
+    @pl.refresh_if_needed!
+    @pl.tracks.size.must_equal 3
+  end
+  it 'should record refreshed_at and timestamp' do
+    now = Time.now
+    @pl.refresh_if_needed!(now: now)
+    @pl.refreshed_at.must_equal now
+    @pl.timestamp.must_equal now.to_i
+  end
+
+  it 'should not refresh when fresh' do
+    now = Time.now
+    @pl.refresh_if_needed!(now: now)
+    @pl.refresh_if_needed!(now: now + 1)
+    @pl.refreshed_at.must_equal now
+  end
+  it 'should refresh when it dose not have enogh tracks' do
+    now = Time.now
+    @pl.refresh_if_needed!(now: now)
+    @pl.refresh_if_needed!(now: now + 1, minimum_tracks: 2)
+    @pl.refreshed_at.must_equal now 
+    @pl.refresh_if_needed!(now: now + 1, minimum_tracks: 4)
+    @pl.refreshed_at.must_equal now + 1
+  end
+end
+
 describe SevenMinutes::Utils::Playable do
   Playable = SevenMinutes::Utils::Playable
   describe 'duration_left' do

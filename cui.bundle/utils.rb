@@ -204,6 +204,25 @@ module SevenMinutes
       end
     end
 
+    module Refresher
+      attr_reader :refreshed_at, :timestamp
+
+      # user class must define tracks and get_new_tracks
+      def refresh!(options)
+        @tracks =  self.get_new_tracks
+        @refreshed_at = options[:now] || Time.now
+        @timestamp = @refreshed_at.to_i
+      end
+
+      def refresh_if_needed!(options={})
+        minimum_tracks = options[:minimum_tracks] || 0
+        if self.tracks.size <= minimum_tracks
+          refresh!(options)
+        end
+      end
+
+    end
+
     class TrackList
       def initialize(list)
         @list = list
