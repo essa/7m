@@ -208,7 +208,7 @@ module SevenMinutes
       attr_reader :refreshed_at, :timestamp
 
       # user class must define tracks and get_new_tracks
-      def refresh!(options)
+      def refresh!(options={})
         @tracks.clear
         track_ids = {}
         self.get_new_tracks.each do |t|
@@ -230,7 +230,7 @@ module SevenMinutes
         minimum_duration = options[:minimum_duration] || 0
         active_tracks = self.tracks.select {|t| t.playable? and not t.played}
         duration = active_tracks.inject(0) { |d, t| d + t.duration_left }
-        if active_tracks.size <= minimum_tracks or duration <= minimum_duration
+        if options[:force] or active_tracks.size <= minimum_tracks or duration <= minimum_duration
           refresh!(options)
         end
       end

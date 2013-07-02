@@ -99,7 +99,7 @@ module SevenMinutes
       playlist = playlist_root(list).find(id)
       return 404 unless playlist
 
-      playlist.refresh_if_needed!(params[:refresh])
+      playlist.refresh_if_needed!(force: params[:refresh])
       content_type 'audio/mpegurl'
       Config::with_config(playlist.config) do
         tl = Utils::TrackList.new(playlist)
@@ -112,7 +112,7 @@ module SevenMinutes
       playlist = playlist_root(list).find(id)
       return 404 unless playlist
 
-      playlist.refresh_if_needed!(params[:refresh]) if playlist.kind_of?(Program)
+      playlist.refresh_if_needed!(force: params[:refresh]) 
       # playlist.refresh! if playlist.kind_of?(Program)
       content_type 'audio/x-mpegurl'
       Config::with_config(playlist.config) do
@@ -159,7 +159,7 @@ module SevenMinutes
       list, id = params[:captures]
       playlist = playlist_root(list).find(id)
       if playlist
-        playlist.refresh_if_needed!(params[:refresh]) 
+        playlist.refresh_if_needed!(force: params[:refresh]) 
         tl = Utils::TrackList.new(playlist)
         tl.to_json_array.to_json
       else

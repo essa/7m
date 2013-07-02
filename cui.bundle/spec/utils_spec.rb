@@ -215,6 +215,14 @@ describe SevenMinutes::Utils::Refresher do
     @pl.refresh_if_needed!(now: now + 1)
     @pl.refreshed_at.must_equal now
   end
+
+  it 'should refresh when forced' do
+    now = Time.now
+    @pl.refresh_if_needed!(now: now)
+    @pl.refresh_if_needed!(now: now + 1, force: true)
+    @pl.refreshed_at.must_equal now + 1
+  end
+
   it 'should refresh when it dose not have enough tracks' do
     now = Time.now
     @pl.refresh_if_needed!(now: now)
@@ -223,6 +231,7 @@ describe SevenMinutes::Utils::Refresher do
     @pl.refresh_if_needed!(now: now + 1, minimum_tracks: 4)
     @pl.refreshed_at.must_equal now + 1
   end
+
   it 'should refresh when it dose not have enough active tracks' do
     now = Time.now
     @pl.refresh_if_needed!(now: now)
@@ -230,6 +239,7 @@ describe SevenMinutes::Utils::Refresher do
     @pl.refresh_if_needed!(now: now + 1, minimum_tracks: 2)
     @pl.refreshed_at.must_equal now + 1
   end
+
   it 'should refresh when it dose not have enough duration' do
     now = Time.now
     @pl.refresh_if_needed!(now: now)
@@ -239,6 +249,7 @@ describe SevenMinutes::Utils::Refresher do
     @pl.refresh_if_needed!(now: now + 2, minimum_duration: 170)
     @pl.refreshed_at.must_equal now + 2
   end
+
   it 'should avoid duplicate id' do
     @pl.refresh_if_needed!
     @pl.tracks.map(&:persistentID).must_equal %w(0001 0002 0001_2)
