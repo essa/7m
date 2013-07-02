@@ -107,6 +107,7 @@ p t.name
     end
 
     class Playlist
+      include Utils::Refresher
       extend Forwardable
       attr_reader :track_cache
       def_delegators :@handle, :name, :size, :persistentID
@@ -144,33 +145,17 @@ p t.name
         }
       end
 
-      def refresh_if_needed!(force=false)
-        now = Time.now
-        if force or need_refresh?(now)
-          refresh!
-          record_refresh
-        end
-      end
-
-      def need_refresh?(now = Time.now)
-        return true unless @refreshed_at
-        @refreshed_at.to_i + refresh_interval <= now.to_i
-      end
-
-      def record_refresh(now = Time.now)
-        @refreshed_at = now
-      end
-
-      def refresh!
+      def get_new_tracks
         tracks_limit = ITunes::conf[:tracks_limit] || 100
         cnt = 0
-        @tracks = []
+        tracks = []
         @handle.tracks.map do |t|
           break if cnt > tracks_limit
           cnt += 1
           tt = Track.new(self, t)
-          @tracks << tt
+          tracks << tt
         end
+        tracks
       end
 
       def tracks

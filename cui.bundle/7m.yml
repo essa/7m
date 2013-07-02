@@ -3,7 +3,9 @@ loglevel: DEBUG
 port: 16017
 programs:
   - name: main
-    refresh_interval: 3600
+    m3u:
+      minimum_tracks: 3
+
     frames:
       - name: neverplayed
         source: neverplayed
