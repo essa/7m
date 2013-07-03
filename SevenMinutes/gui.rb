@@ -87,15 +87,26 @@ module SevenMinutes
         def initialize(tv)
           @tv = tv
           @logs = []
-          @max = 50
+          @max = 500
           @queue = Dispatch::Queue.main
         end
 
         def write(str)
           @queue.async do
+            attr_str = NSMutableAttributedString.alloc.initWithString(str+"\n")
+            @tv.insertText attr_str
+
             @logs << str
-            @logs.shift if @logs.size > @max
-            @tv.setString(@logs.join("\n"))
+            if @logs.size > @max
+              len = @tv.textStorage.string.each_line.first.size
+              @tv.textStorage.deleteCharactersInRange NSMakeRange(0, len)
+              @logs.shift 
+            end
+            
+            newScrollOrigin=NSMakePoint(0.0,10000.0)
+            @tv.scrollPoint(newScrollOrigin)
+
+            # @tv.setString(@logs.join("\n"))
             #@tv.insertText str
           end
         end
