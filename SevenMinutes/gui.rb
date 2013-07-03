@@ -91,9 +91,25 @@ module SevenMinutes
           @queue = Dispatch::Queue.main
         end
 
+        LENGTH_OF_DATETIME = 14
+
         def write(str)
           @queue.async do
+            color = case str
+                    when / :I /
+                      NSColor::blueColor
+                    when / :D /
+                      NSColor::blackColor
+                    else
+                      NSColor::redColor
+                    end
             attr_str = NSMutableAttributedString.alloc.initWithString(str+"\n")
+            attr_str.addAttribute(NSForegroundColorAttributeName,
+                value: NSColor.grayColor,
+                range: NSMakeRange(0, LENGTH_OF_DATETIME))
+            attr_str.addAttribute(NSForegroundColorAttributeName,
+                value: color,
+                range: NSMakeRange(LENGTH_OF_DATETIME, attr_str.length-LENGTH_OF_DATETIME))
             @tv.insertText attr_str
 
             @logs << str
