@@ -917,6 +917,30 @@
 					</object>
 					<int key="connectionID">573</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">restart_button</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="238912290"/>
+					</object>
+					<int key="connectionID">611</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">stop_button</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="924609783"/>
+					</object>
+					<int key="connectionID">612</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">start_button</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="924685699"/>
+					</object>
+					<int key="connectionID">613</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -1385,7 +1409,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">573</int>
+			<int key="maxID">613</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1453,10 +1477,16 @@
 							<string>config_path_label</string>
 							<string>config_text</string>
 							<string>logview</string>
+							<string>restart_button</string>
+							<string>start_button</string>
+							<string>stop_button</string>
 							<string>window</string>
 						</object>
 						<object class="NSArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -1470,6 +1500,9 @@
 							<string>config_path_label</string>
 							<string>config_text</string>
 							<string>logview</string>
+							<string>restart_button</string>
+							<string>start_button</string>
+							<string>stop_button</string>
 							<string>window</string>
 						</object>
 						<object class="NSArray" key="dict.values">
@@ -1484,6 +1517,18 @@
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">logview</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">restart_button</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">start_button</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">stop_button</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBToOneOutletInfo">
