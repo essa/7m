@@ -87,15 +87,42 @@ module SevenMinutes
         def initialize(tv)
           @tv = tv
           @logs = []
-          @max = 50
+          @max = 500
           @queue = Dispatch::Queue.main
         end
 
+        LENGTH_OF_DATETIME = 14
+
         def write(str)
           @queue.async do
+            color = case str
+                    when / :I /
+                      NSColor::blueColor
+                    when / :D /
+                      NSColor::blackColor
+                    else
+                      NSColor::redColor
+                    end
+            attr_str = NSMutableAttributedString.alloc.initWithString(str+"\n")
+            attr_str.addAttribute(NSForegroundColorAttributeName,
+                value: NSColor.grayColor,
+                range: NSMakeRange(0, LENGTH_OF_DATETIME))
+            attr_str.addAttribute(NSForegroundColorAttributeName,
+                value: color,
+                range: NSMakeRange(LENGTH_OF_DATETIME, attr_str.length-LENGTH_OF_DATETIME))
+            @tv.insertText attr_str
+
             @logs << str
-            @logs.shift if @logs.size > @max
-            @tv.setString(@logs.join("\n"))
+            if @logs.size > @max
+              len = @tv.textStorage.string.each_line.first.size
+              @tv.textStorage.deleteCharactersInRange NSMakeRange(0, len)
+              @logs.shift 
+            end
+            
+            newScrollOrigin=NSMakePoint(0.0,10000.0)
+            @tv.scrollPoint(newScrollOrigin)
+
+            # @tv.setString(@logs.join("\n"))
             #@tv.insertText str
           end
         end
