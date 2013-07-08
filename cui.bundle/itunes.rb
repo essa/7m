@@ -53,59 +53,6 @@ module SevenMinutes
       @@conf
     end
 
-    def self.library
-      @@itunes.sources[0].libraryPlaylists.first
-    end
-
-    def self.pause
-      @@itunes.pause
-    end
-
-    # It may be better to use objectWithID instead of objectWithName
-    # But objectWithID didn't work and I could not figure out why.
-    def self.name_to_location(name, persistentID)
-      t = @@itunes.sources[0].libraryPlaylists.first.fileTracks.objectWithName(name)
-      return nil unless t
-
-      if t.persistentID == persistentID 
-        t.location and t.location.path
-      else
-        # if ITunes::conf[:auto_fix_duplicate_name]
-        if true
-          while t.persistentID != persistentID 
-            t.name = t.name + '_'
-p t.name
-            t = @@itunes.sources[0].libraryPlaylists.first.fileTracks.objectWithName(name)
-          end
-          t.location.path
-        else
-          nil
-        end
-      end
-    end
-
-    def self.file_track(track)
-      name = track.name
-      persistentID = track.persistentID
-      t = @@itunes.sources[0].libraryPlaylists.first.fileTracks.objectWithName(name)
-
-      if t.persistentID == persistentID 
-        t
-      else
-        # if ITunes::conf[:auto_fix_duplicate_name]
-        if true
-          while t.persistentID != persistentID 
-            t.name = t.name + '_'
-p t.name
-            t = @@itunes.sources[0].libraryPlaylists.first.fileTracks.objectWithName(name)
-          end
-          t
-        else
-          nil
-        end
-      end
-    end
-
     class FileTrackIndex
       attr_reader :itunes
       def initialize(itunes)
@@ -201,7 +148,7 @@ p t.name
           break if cnt > tracks_limit
           cnt += 1
           tt = Track.new(self, t.persistentID)
-          tracks << tt
+          tracks << tt if tt.handle
         end
         tracks
       end
@@ -234,18 +181,27 @@ p t.name
         pl = Playlist.find(playlist_id)
         return nil unless pl
 
-        pl.tracks.find do |t|
+        ret = pl.tracks.find do |t|
           t.persistentID == track_id
+        end
+        if ret
+          if ret.validate_handle
+            ret
+          else
+            nil
+          end
+        else
+          nil
         end
       end
 
       def initialize(parent, pid)
         @parent = parent
+        @persistentID = pid
         @handle = ITunes::index[pid]
       end
 
       # Only ITunesFileTrack has location method
-      # But ITunesFileTrack can be got from only libraryPlaylist.fileTracks
       def location
         if @handle.kind_of? ITunesFileTrack
           if @handle.location
@@ -254,7 +210,20 @@ p t.name
             nil
           end
         else
-          ITunes::name_to_location(self.name, self.persistentID)
+          nil
+        end
+      end
+
+      def validate_handle
+        if @handle and @handle.persistentID == @persistentID
+          true
+        else
+          @handle = ITunes::index[@persistentID]
+          if @handle
+            true
+          else
+            false
+          end
         end
       end
 

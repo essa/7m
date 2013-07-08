@@ -77,6 +77,10 @@ module SevenMinutes
       def active?(now=Time.now)
         @track.playable? and not played_recently?(now)
       end
+
+      def validate_handle
+        @track.validate_handle
+      end
     end
 
     class Context

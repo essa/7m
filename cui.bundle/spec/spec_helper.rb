@@ -91,6 +91,10 @@ class MockTrack < Hashie::Mash
     self.to_hash.symbolize_keys_recursive.merge(id: self.persistentID)
   end
 
+  def validate_handle
+    true
+  end
+
   def active?(t=Time.now)
     return false if playedDate and playedDate >= t - 24*60*60
     return true if location and File::exists? location
