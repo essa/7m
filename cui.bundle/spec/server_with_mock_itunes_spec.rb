@@ -94,7 +94,6 @@ describe "Server Test with racktest with mock iTunes" do
         ]
       end
     end
-    SevenMinutes::ITunes::cache.clear
   end
 
   describe 'get "/"' do

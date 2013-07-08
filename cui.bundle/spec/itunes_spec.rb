@@ -49,7 +49,10 @@ describe "ITunes" do
     end
 
     describe "#tracks" do
-      it "should return tracks" do
+      it "should return tracks xxxx" do
+    l = Logger.new(STDOUT)
+    l.level = Logger::FATAL
+    SevenMinutes::ITunes::init_app(base_dir: ".", logger: l, auto_fix_duplicate_name: false)
         tracks = pl.tracks
         tracks.must_be_kind_of(Array)
       end
@@ -67,7 +70,6 @@ describe "ITunes" do
         t.must_be_kind_of(ITunes::Track)
       end
       it "should return nil for non existent playlist" do
-        ITunes::cache.clear
         t = ITunes::Track.find("abcd", Test::pl.tracks.first.persistentID)
         t.must_be_nil
       end
@@ -150,6 +152,25 @@ describe "ITunes" do
         expected = Test::pl.tracks.first
         t.location.must_equal Test::name_to_location(expected.name)
       end
+    end
+  end
+
+  describe ITunes::FileTrackIndex do
+    before do
+      itunes = SBApplication.applicationWithBundleIdentifier("com.apple.itunes")
+      @index = ITunes::FileTrackIndex.new(itunes)
+    end
+
+    it "should be initialized" do
+      @index.must_be_kind_of(ITunes::FileTrackIndex)
+    end
+
+    it "should load FileTracks" do
+      pid = Test::pl.tracks.first.persistentID
+      @index[pid].must_equal nil
+      @index.load_tracks
+      @index[pid].wont_equal nil
+      @index[pid].persistentID.must_equal pid
     end
   end
 end
