@@ -18,8 +18,7 @@ module SevenMinutes
   module ITunes
     @@itunes = nil
     @@logger = Logger.new(STDOUT)
-    @@cache = {}
-    @@conf = {}
+    @@index = nil
 
     def self.init_itunes(base_dir)
       return if @@itunes
@@ -27,6 +26,8 @@ module SevenMinutes
       # gen_bridge_metadata -c '-I.' ITunes.h > ITunes.bridgesupport
       load_bridge_support_file File::join(base_dir, 'ITunes.bridgesupport')
       @@itunes = SBApplication.applicationWithBundleIdentifier("com.apple.itunes")
+      @@index = FileTrackIndex.new(@@itunes)
+      @@index.load_tracks
     end
 
     def self.init_app(conf)
@@ -34,7 +35,6 @@ module SevenMinutes
       base_dir = conf[:base_dir]
       self.init_itunes(base_dir)
       @@logger = conf[:logger]
-      @@cache = {}
     end
 
     def self.app
@@ -45,71 +45,66 @@ module SevenMinutes
       @@logger
     end
 
-    def self.cache
-      @@cache
+    def self.index
+      @@index
     end
 
     def self.conf
       @@conf
     end
 
-    def self.library
-      @@itunes.sources[0].libraryPlaylists.first
-    end
+    class FileTrackIndex
+      attr_reader :itunes
+      def initialize(itunes)
+        @itunes = itunes
+        @index = {}
+        @mutex = Mutex.new
+      end
 
-    def self.pause
-      @@itunes.pause
-    end
-
-    # It may be better to use objectWithID instead of objectWithName
-    # But objectWithID didn't work and I could not figure out why.
-    def self.name_to_location(name, persistentID)
-      t = @@itunes.sources[0].libraryPlaylists.first.fileTracks.objectWithName(name)
-      return nil unless t
-
-      if t.persistentID == persistentID 
-        t.location and t.location.path
-      else
-        # if ITunes::conf[:auto_fix_duplicate_name]
-        if true
-          while t.persistentID != persistentID 
-            t.name = t.name + '_'
-p t.name
-            t = @@itunes.sources[0].libraryPlaylists.first.fileTracks.objectWithName(name)
-          end
-          t.location.path
-        else
-          nil
+      def load_tracks
+        @mutex.synchronize do
+          pl = get_pl
+          do_load_tracks(pl)
         end
       end
-    end
 
-    def self.file_track(track)
-      name = track.name
-      persistentID = track.persistentID
-      t = @@itunes.sources[0].libraryPlaylists.first.fileTracks.objectWithName(name)
-
-      if t.persistentID == persistentID 
-        t
-      else
-        # if ITunes::conf[:auto_fix_duplicate_name]
-        if true
-          while t.persistentID != persistentID 
-            t.name = t.name + '_'
-p t.name
-            t = @@itunes.sources[0].libraryPlaylists.first.fileTracks.objectWithName(name)
+      def [](pid)
+        @mutex.synchronize do
+          i = @index[pid]
+          return nil unless i
+          pl = get_pl
+          ret = pl.fileTracks[i]
+          if ret.persistentID != pid
+            do_load_tracks(pl)
+            i = @index[pid]
+            return nil unless i
+            ret = pl.fileTracks[i]
           end
-          t
-        else
-          nil
+          ret
         end
+      end
+
+      private
+
+      def get_pl
+        library = @itunes.sources.find { |s| s.kind == ITunesESrcLibrary }
+        library.libraryPlaylists.find { |l|  l.specialKind == ITunesESpKLibrary }
+      end
+
+      def do_load_tracks(pl)
+        ITunes::logger.info "start loading fileTracks"
+        ids =  pl.fileTracks.arrayByApplyingSelector(:persistentID)
+        @index = {}
+        ids.each.with_index do |t, i|
+          @index[t] = i
+        end
+        ITunes::logger.info "end loading fileTracks"
       end
     end
 
     class Playlist
       include Utils::Refresher
       extend Forwardable
-      attr_reader :track_cache
       def_delegators :@handle, :name, :size, :persistentID
 
       def self.all
@@ -152,8 +147,8 @@ p t.name
         @handle.tracks.map do |t|
           break if cnt > tracks_limit
           cnt += 1
-          tt = Track.new(self, t)
-          tracks << tt
+          tt = Track.new(self, t.persistentID)
+          tracks << tt if tt.handle
         end
         tracks
       end
@@ -186,28 +181,27 @@ p t.name
         pl = Playlist.find(playlist_id)
         return nil unless pl
 
-        handle = ITunes::cache[track_id]
-        if handle and handle.persistentID == track_id
-          ITunes::logger.debug "cache hit #{handle.persistentID} #{handle.name}"
-          return new(pl, handle).tap { |t| t.playlist = pl}
-        end
-
-        pl.tracks.find do |t|
+        ret = pl.tracks.find do |t|
           t.persistentID == track_id
+        end
+        if ret
+          if ret.validate_handle
+            ret
+          else
+            nil
+          end
+        else
+          nil
         end
       end
 
-      def initialize(parent, handle)
+      def initialize(parent, pid)
         @parent = parent
-        @handle = ITunes::file_track(handle)
-        if handle.persistentID
-          ITunes::cache.clear if ITunes::cache.size > 1000
-          ITunes::cache[handle.persistentID] = handle 
-        end
+        @persistentID = pid
+        @handle = ITunes::index[pid]
       end
 
       # Only ITunesFileTrack has location method
-      # But ITunesFileTrack can be got from only libraryPlaylist.fileTracks
       def location
         if @handle.kind_of? ITunesFileTrack
           if @handle.location
@@ -216,7 +210,20 @@ p t.name
             nil
           end
         else
-          ITunes::name_to_location(self.name, self.persistentID)
+          nil
+        end
+      end
+
+      def validate_handle
+        if @handle and @handle.persistentID == @persistentID
+          true
+        else
+          @handle = ITunes::index[@persistentID]
+          if @handle
+            true
+          else
+            false
+          end
         end
       end
 

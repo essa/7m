@@ -232,34 +232,6 @@ module SevenMinutes
       end
     end
 
-    # post '/playlists/:playlist_id/tracks/:track_id/play' do
-      # track = find_track_in_playlist(params)
-      # options = JSON.parse(request.body.read)
-      # track.play options
-      # { ok: true }.to_json
-    # end
-
-    # delete '/playlists/:playlist_id/tracks/:track_id' do
-      # track = find_track_in_playlist(params)
-      # return 404 unless track
-      # puts "delete not supported now"
-      # # track.delete
-      # { ok: true }.to_json
-    # end
-
-    # # for sourcemap debugging
-    # get '/cui.bundle/*' do
-      # x_send_file  params[:splat].join('/')
-    # end
-
-    # get '/public/*' do
-      # x_send_file  (%w(public) + params[:splat]).join('/')
-    # end
-
-    # get '/app.js' do
-      # x_send_file  'public/js/app.js'
-    # end
-
     def find_track_in_playlist(params)
       list, list_id, track_id = params[:captures]
       playlist = playlist_root(list).find(list_id)
@@ -267,7 +239,7 @@ module SevenMinutes
         # logger = playlist.config[:logger]
         # logger.debug "tracks #{playlist.name} #{playlist.tracks.map(&:name).inspect}" if logger
         playlist.tracks.find do |t|
-          track_id == t.persistentID
+          t.validate_handle and track_id == t.persistentID
         end
       else
         nil

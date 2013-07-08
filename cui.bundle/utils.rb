@@ -225,7 +225,8 @@ module SevenMinutes
         @timestamp = @refreshed_at.to_i
       end
 
-      def refresh_if_needed!(options={})
+      def refresh_if_needed!(options=nil)
+        options ||= {}
         minimum_tracks = options[:minimum_tracks] || 0
         minimum_duration = options[:minimum_duration] || 0
         active_tracks = self.tracks.select {|t| t.playable? and not t.played}
