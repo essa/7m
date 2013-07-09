@@ -100,7 +100,7 @@ class App.Models.PlayingTrack extends Backbone.Model
     return if @get('status') == App.Status.INIT
     @track.recordPlayed(completed: true)
     @set 'status', App.Status.SELECTED
-    @trigger 'playNextOf', @list, @track
+    @trigger 'playNextOf', @list, @track if @list
     @stallDetector?.stopTimer()
 
   playNextOf: (playlist, track)->

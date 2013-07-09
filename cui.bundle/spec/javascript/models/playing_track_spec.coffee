@@ -184,6 +184,17 @@ describe 'PlayingTrack', ->
       @playing.trigger 'notifyEnd'
       expect(@track.recordPlayed).toHaveBeenCalled()
 
+    describe 'one track play', ->
+      it 'should not fire playNextOf', ->
+        @playing.set('status', App.Status.PLAYING)
+        @playing.list = null
+        @playing.track = @track
+        spy = sinon.spy()
+        @playing.on 'playNextOf', spy
+        @playing.trigger 'notifyEnd'
+        expect(spy).not.toHaveBeenCalled()
+
+
   describe 'pauseRequest event', ->
     beforeEach ->
       @playing.track = @track
