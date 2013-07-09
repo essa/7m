@@ -40,7 +40,7 @@ namespace :ios do
   task :jslibs => "../ios/www/js/libs"
   directory "../ios/www/js/libs" do
     mkdir "../ios/www/js/libs"
-    cp Dir["public/js/libs/*"], "../ios/www/js/libs"
+    sh "cp -a public/js/libs/* ../ios/www/js/libs"
   end
 
   directory "../ios/www/css/images"
