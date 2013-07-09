@@ -6,6 +6,7 @@ class App.Views.TrackView extends Backbone.View
 
   initialize: (options)->
     super(options)
+    console.log options
     @app = options.app
     @type = options.type
     @hasPlayer = options.hasPlayer
@@ -15,6 +16,7 @@ class App.Views.TrackView extends Backbone.View
   template: _.template '''
     <div data-role="header"></div>
     <div data-role="content">
+      <div data-role="popup" id="track-play-panel" style='padding: 15px;' />
       <div style='text-align: center'>
         <div style='font-size: small'>
           <span class='artist'><%= artist %></span>
@@ -35,18 +37,19 @@ class App.Views.TrackView extends Backbone.View
     </div>
   ''' 
   events:
-    "click #button-pause" : "pause"
+    "click #button-play" : "play"
 
   render: ->
     console.log 'TrackView.render', @model.get('status')
     attrs = @model.toJSON()
+    console.log attrs
     attrs.type = @type
     attrs.playlist_id = @playlist_id
     attrs.bookmark = @hhmmss(attrs.bookmark || 0)
     attrs.pause_at = @hhmmss(attrs.pause_at || attrs.duration || 0)
     @$el.html @template(attrs)
     @renderHeader()
-    @renderFooter() if @hasPlayer
+    @renderFooter() 
 
     this
 
@@ -61,6 +64,7 @@ class App.Views.TrackView extends Backbone.View
     r.render()
 
   renderFooter: ->
+    console.log 'rederFooter'
     footerRenderer = new App.Views.FooterRenderer
       model:
         type: @type
@@ -88,4 +92,56 @@ class App.Views.TrackView extends Backbone.View
     @stopListening()
     @undelegateEvents() 
     @model.off 'change', @render
+
+class App.Views.TrackViewForEmbendedPlayer extends App.Views.TrackView
+  class Panel extends Backbone.View
+    events:
+      "click #play-track" : "play_track"
+
+    template: _.template '''
+      <a href="#" id='play-track' data-role="button" data-theme='b'>Play only this track</a>
+      <a href="<%= track_href %>" id='play-list' data-role="button" data-theme='b'>Play the playlist from this track</a>
+    '''
+    initialize: (options)->
+      super(options)
+      @app = options.app
+      @type = options.type
+      @playlist_id = options.playlist_id
+
+    render: ->
+      track_href = "#playing/#{@type}/#{@playlist_id}/#{@model.id}"
+      @$el.html @template
+        track_href: track_href 
+
+      @$el.trigger("create")
+      this
+
+    show: ->
+      @render()
+      console.log @el
+      @$el.popup "open",
+        transition: 'flip'
+
+    play_track: (e)->
+      e.preventDefault()
+      console.log 'trackView#play_track'
+      @app.trigger 'playRequest', null, @model
+      @$el.popup 'close'
+      @app.router.navigate('#playing', trigger: true)
+
+
+  play: (e)->
+    e.preventDefault()
+    console.log 'trackView#play'
+    $panel = $('#track-play-panel')
+    @panel = new Panel
+      el: $panel
+      model: @model
+      app: @app
+      type: @type
+      playlist_id: @playlist_id
+
+    @panel.show()
+
+
 

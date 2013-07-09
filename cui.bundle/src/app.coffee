@@ -212,13 +212,17 @@ window.App = App =
           success: ->
             track = pl.tracks.get(track_id)
             if track
-              view = new App.Views.TrackView
+              view_class = if App.config.hasFlash() or App.isPhonegap
+                App.Views.TrackViewForEmbendedPlayer
+              else
+                App.Views.TrackViewForExternalPlayer
+
+              view = new view_class
                 app: App
                 el: $("#page")
                 model: track
                 type: type
                 playlist_id: playlist_id
-                hasPlayer: App.config.hasFlash() or App.isPhonegap
               App.changeView view
             else
               App.router.navigate('playlists', trigger: true)

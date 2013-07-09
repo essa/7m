@@ -104,6 +104,10 @@ class App.Models.PlayingTrack extends Backbone.Model
     @stallDetector?.stopTimer()
 
   playNextOf: (playlist, track)->
+    unless @list
+      @set 'status', App.Status.INIT
+      return
+
     @set 'status', App.Status.SELECTED
     console.log 'playNextOf'
     status = @get('status')

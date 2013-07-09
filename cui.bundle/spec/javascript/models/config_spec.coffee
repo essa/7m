@@ -1,4 +1,3 @@
-console.log 'Config spec'
 
 describe 'Config', ->
     beforeEach ->
