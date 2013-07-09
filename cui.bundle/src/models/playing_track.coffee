@@ -73,6 +73,7 @@ class App.Models.PlayingTrack extends Backbone.Model
     @player.pause()
     @track.recordPaused(@pos)
     @stallDetector?.stopTimer()
+    @player.startSilent() if @app.isPhonegap
 
   onContinueRequest: ->
     console.log 'jontinueRequest'
@@ -113,6 +114,7 @@ class App.Models.PlayingTrack extends Backbone.Model
       unless status == App.Status.INIT
         me.trigger 'playRequest', list, nextTrack 
     , 1000
+    @player.startSilent() if @app.isPhonegap
 
   onTimeUpdate: (pos)->
     @pos = parseInt(pos)

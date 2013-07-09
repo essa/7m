@@ -296,7 +296,7 @@ class App.PlayerBase
       callback() if callback
   
   startSilent: ->
-    new App.Players.SilentAudioPlayer(@app)
+    new App.Players.SilentAudioPlayer(@app).play()
 
 class App.Players.PhonegapMediaPlayer extends App.PlayerBase
   startMedia: (media_url, bookmark, callback)->
@@ -401,24 +401,22 @@ class App.Players.SilentAudioPlayer
     @silentmp3 = new Media fname, @onSuccess, @onError
     # url = 'http://192.168.1.10:3000/sound/silent.mp3'
     # @silentmp3 = new plugins.StreamAudio url, @onSuccess, @onError
-    @silentmp3.play
-      numberOfLoops: 10
 
     console.log 'SilentAudio#constructor end'
 
-  @play: ->
+  play: ->
     console.log 'silient play'
-    @silentmp3.play()
+    @silentmp3.play
+      numberOfLoops: 10
   
-  @pause: ->
+  pause: ->
     console.log 'silient pause'
     @silentmp3.pause()
 
-  @onSuccess: ->
+  onSuccess: ->
     console.log 'silient success'
-    @play()
 
-  @onError: ->
+  onError: ->
     console.log 'silent error'
 
 
