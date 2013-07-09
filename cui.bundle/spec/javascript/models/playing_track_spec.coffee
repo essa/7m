@@ -168,28 +168,21 @@ describe 'PlayingTrack', ->
     beforeEach ->
       @playing.track = @track
 
+    it 'should fire playNextOf', ->
+      @playing.set('status', App.Status.PLAYING)
+      @playing.list = @playlist
+      @playing.track = @track
+      spy = sinon.spy()
+      @playing.on 'playNextOf', spy
+      @playing.trigger 'notifyEnd'
+      expect(spy).toHaveBeenCalled()
 
-    # it 'should fire playNextOf', ->
-      # @playing.list = @playlist
-      # @playing.track = @track
-      # spy = sinon.spy()
-      # @playing.on 'playNextOf', spy
-      # runs =>
-        # @playing.trigger 'notifyEnd'
-      # waitsFor =>
-        # spy.callCount > 0
-      # runs =>
-        # expect(spy).toHaveBeenCalled()
-
-    # it 'should record played', ->
-      # @playing.set 'status', App.Status.PLAYING
-      # player = @playing.player
-      # runs =>
-        # @playing.trigger 'notifyEnd'
-      # waitsFor =>
-        # @track.recordPlayed.calls.length > 0
-      # runs =>
-        # expect(@track.recordPlayed).toHaveBeenCalled()
+    it 'should record played', ->
+      @playing.set 'status', App.Status.PLAYING
+      @playing.list = @playlist
+      @playing.track = @track
+      @playing.trigger 'notifyEnd'
+      expect(@track.recordPlayed).toHaveBeenCalled()
 
   describe 'pauseRequest event', ->
     beforeEach ->
