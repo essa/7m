@@ -217,10 +217,9 @@ class App.Views.PlaylistViewForExternalPlayer extends App.Views.PlaylistView
           @model.refresh
             success: =>
               alert('record success')
-              window.location.reload()
         error: ->
           alert('error')
-          window.location.reload()
+          Env.reset()
 
   initialize: (options)->
     super(options)

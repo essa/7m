@@ -10,13 +10,13 @@ class App.Views.TrackView extends Backbone.View
     @app = options.app
     @type = options.type
     @hasPlayer = options.hasPlayer
-    @playlist_id = options.playlist_id
+    @playlist = options.playlist
     @model.on 'change', @render, @
 
   template: _.template '''
     <div data-role="header"></div>
     <div data-role="content">
-      <div data-role="popup" id="track-play-panel" style='padding: 15px;' />
+      <div id='popup-div' />
       <div style='text-align: center'>
         <div style='font-size: small'>
           <span class='artist'><%= artist %></span>
@@ -37,14 +37,16 @@ class App.Views.TrackView extends Backbone.View
     </div>
   ''' 
   events:
-    "click #button-play" : "play"
+    "tap #button-play" : "play"
+    "taphold #button-play" : "show_play_panel"
+    "popupafterclose #track-play-panel": "on_close_play_panel"
 
   render: ->
     console.log 'TrackView.render', @model.get('status')
     attrs = @model.toJSON()
     console.log attrs
     attrs.type = @type
-    attrs.playlist_id = @playlist_id
+    attrs.playlist_id = @playlist.id
     attrs.bookmark = @hhmmss(attrs.bookmark || 0)
     attrs.pause_at = @hhmmss(attrs.pause_at || attrs.duration || 0)
     @$el.html @template(attrs)
@@ -59,7 +61,7 @@ class App.Views.TrackView extends Backbone.View
       el: $header
       model:
         left_icon: 'arrow-l'
-        left_href: "#{@type}/#{@playlist_id}"
+        left_href: "#{@type}/#{@playlist.id}"
         title: @model.get('name')
     r.render()
 
@@ -68,7 +70,7 @@ class App.Views.TrackView extends Backbone.View
     footerRenderer = new App.Views.FooterRenderer
       model:
         type: @type
-        list_id: @playlist_id
+        list_id: @playlist.id
         track_id: @model.id
         playing: @app.hasTrackPlaying()
 
@@ -96,17 +98,23 @@ class App.Views.TrackView extends Backbone.View
 class App.Views.TrackViewForEmbendedPlayer extends App.Views.TrackView
   class Panel extends Backbone.View
     events:
-      "click #play-track" : "play_track"
+      "tap #button-play-track" : "play_track"
+      "tap #button-play-track-full" : "play_track_full"
 
     template: _.template '''
-      <a href="#" id='play-track' data-role="button" data-theme='b'>Play only this track</a>
-      <a href="<%= track_href %>" id='play-list' data-role="button" data-theme='b'>Play the playlist from this track</a>
+      <div>
+        <a href="#" id='button-play-track' data-role="button" data-theme='b'>Play only this track</a>
+      </div>
+      <hr />
+      <div>
+        <a href="#" id='button-play-track-full' data-role="button" data-theme='b'>Play this track full duration</a>
+      </div>
     '''
     initialize: (options)->
       super(options)
       @app = options.app
       @type = options.type
-      @playlist_id = options.playlist_id
+      @playlist = options.playlist
 
     render: ->
       track_href = "#playing/#{@type}/#{@playlist_id}/#{@model.id}"
@@ -119,20 +127,36 @@ class App.Views.TrackViewForEmbendedPlayer extends App.Views.TrackView
     show: ->
       @render()
       console.log @el
+      @$el.popup()
       @$el.popup "open",
         transition: 'flip'
 
-    play_track: (e)->
+    play_track: (e, options={})->
       e.preventDefault()
       console.log 'trackView#play_track'
-      @app.trigger 'playRequest', null, @model
+      @app.trigger 'playRequest', null, @model, options
       @$el.popup 'close'
       @app.router.navigate('#playing', trigger: true)
 
+    play_track_full: (e)->
+      @play_track(e, full: true)
+      @$el.popup 'close'
+
+    close: ->
+      console.log 'TrackView::Panel#close'
+      @stopListening()
+      @undelegateEvents() 
 
   play: (e)->
     e.preventDefault()
-    console.log 'trackView#play'
+    return if @panel
+    @app.trigger 'playRequest', @playlist, @model
+    @app.router.navigate('#playing', trigger: true)
+
+  show_play_panel: (e)->
+    e.preventDefault()
+    console.log 'trackView#show_play_panel'
+    $('#popup-div').html '<div data-role="popup" id="track-play-panel" style="padding: 15px;" />'
     $panel = $('#track-play-panel')
     @panel = new Panel
       el: $panel
@@ -143,5 +167,11 @@ class App.Views.TrackViewForEmbendedPlayer extends App.Views.TrackView
 
     @panel.show()
 
+  on_close_play_panel: (e)->
+    @panel.close()
+    $('#popup-div').html ''
+    $('.ui-popup-screen').remove()
+    $('.ui-popup-container').remove()
+    @panel = null
 
 

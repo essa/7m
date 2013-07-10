@@ -208,6 +208,7 @@
                 self.avSession = nil;
             }
             [[self soundCache] removeObjectForKey:mediaId];
+            [audioFile invalidateTimer];
             NSLog(@"Media with id %@ released", mediaId);
         }
     }
@@ -331,7 +332,7 @@
   if (t.timescale > 0) {
     position = t.value / t.timescale;
   }
-  // NSLog(@"getCurrentPosition %f %lld %d", position, t.value, t.timescale);
+  NSLog(@"getCurrentPosition %f %lld %d", position, t.value, t.timescale);
   NSString* jsString = [NSString stringWithFormat:@"%@(\"%@\",%d,%.3f);\n", @"plugins.StreamAudio.onStatus", self.mediaId, MEDIA_POSITION, position];
   [self.parent.commandDelegate evalJs:jsString];
 }
@@ -373,6 +374,11 @@
   NSLog(@"called evalJs '%@'", jsString);
 }
 
+- (void)invalidateTimer
+{
+  NSLog(@"invalidateTimer");
+  [timer invalidate];
+}
 
 @end
 @implementation CDVStreamAudioPlayer

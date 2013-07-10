@@ -1,6 +1,12 @@
 
-
 console.log "Hello SevenMinutes!"
+
+# hook points for test
+window.Env =
+  reset: ->
+    App.router.navigate('', trigger: false)
+    location.reload()
+
 originalAjax = $.ajax
 
 ajaxNestCnt = 0
@@ -148,7 +154,8 @@ window.App = App =
     playlists: ->
       console.log 'Router#playlists', @currentView
       unless App.programs and App.playlists and App.programs.length > 0 and App.playlists.length > 0
-        location.reload()
+        # location.reload()
+        Env.reset()
         
       App.stopped = false
       view = new App.Views.PlaylistsView
@@ -222,7 +229,7 @@ window.App = App =
                 el: $("#page")
                 model: track
                 type: type
-                playlist_id: playlist_id
+                playlist: pl
               App.changeView view
             else
               App.router.navigate('playlists', trigger: true)

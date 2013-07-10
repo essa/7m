@@ -22,11 +22,15 @@ class App.Players.MediaManager
       , 10 * 1000
 
 class App.Players.ClientManagedMM extends App.Players.MediaManager
-  onPlayTrack: (list, track, bps)->
+  onPlayTrack: (list, track, options={})->
     @list = list
+    if options.full
+      track.set 'bookmark', 0
+      track.set 'pause_at', null
+
     @track = track
     opt = @mediaOption()
-    opt.bps = bps
+    opt.bps = options.bps
     console.log 'MM#play', opt, track.mediaUrl(opt), track.get('bookmark')
     @player.play track.mediaUrl(opt), track.get('bookmark')
 
@@ -38,14 +42,17 @@ class App.Players.ClientManagedMM extends App.Players.MediaManager
     { bps: bps, prepareNext: 'no' }
 
 class App.Players.ServerManagedMM extends App.Players.MediaManager
-  onPlayTrack: (list, track, bps)->
+  onPlayTrack: (list, track, options={})->
     @list = list
+    if options.full
+      track.set 'bookmark', 0
+      track.set 'pause_at', null
     @track = track
     @start = parseInt(track.get('bookmark'))
     @pause = track.get('pause_at')
     @track = track
-    console.log 'MM#playTrack', bps, @start, @pause
-    @player.play track.mediaUrl(bps: bps, start: @start, pause: @pause), 0 
+    console.log 'MM#playTrack', options.bps, @start, @pause
+    @player.play track.mediaUrl(bps: options.bps, start: @start, pause: @pause), 0 
 
   onTimeUpdate: (pos)->
     unless @pause? and @start + pos >= @pause - 1
@@ -64,9 +71,9 @@ class App.Players.ServerManagedMM extends App.Players.MediaManager
     { bps: bps, start: start, pause: pause }
 
 class App.Players.ListMM extends App.Players.MediaManager
-  onPlayTrack: (list, track, bps)->
+  onPlayTrack: (list, track, options={})->
     @posInList = parseInt(track.get('posInList'))
-    @player.play list.mediaUrl(bps: bps), @posInList
+    @player.play list.mediaUrl(bps: options.bps), @posInList
 
     @trackEndPos = @posInList + parseInt(track.get('trimedDuration'))
     @lastPos = @posInList

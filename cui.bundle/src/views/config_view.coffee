@@ -97,8 +97,7 @@ class App.Views.ConfigView extends Backbone.View
 
   reset: ->
     @model.resetToDefault()
-    window.location.reload()
-    # App.router.navigate('playlist')
+    Env.reset()
 
   close: ->
     @undelegateEvents()

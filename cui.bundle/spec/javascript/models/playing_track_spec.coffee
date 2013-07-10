@@ -215,6 +215,7 @@ describe 'PlayingTrack', ->
 
   describe 'pause_at', ->
     beforeEach ->
+      @playing.set('status', App.Status.PLAYING)
       @playing.track = @track
       @playing.set 'pause_at', 60
 

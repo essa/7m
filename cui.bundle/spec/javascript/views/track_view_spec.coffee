@@ -8,32 +8,35 @@ describe 'TrackView', ->
     <div id="playlist">
       <div data-role="header"></div>
       <div data-role="content">
-        <div data-role="popup" id="track-play-panel" style='padding: 15px;' />
+        <div id='popup-div' />
       </div>
     </div>
     '''
-    app = 
+    @app = 
       hasTrackPlaying: -> false
-      on: ->
+      on: sinon.spy()
+      trigger: sinon.spy()
+      router:
+        navigate: sinon.spy()
     @list = new Playlist
       id: 111
     ,
-      app: app 
+      app: @app 
     @list.set 'name', 'list 111'
     @track = new Track
       id: 123
       name: 'track1 name'
       artist: 'track1 artist'
     ,
-      app: app
+      app: @app
       type: 'programs'
 
     @view = new TrackView
-      app: app
+      app: @app
       model: @track
       el: $('#playlist')
       type: 'programs'
-      playlist_id: @list.id
+      playlist: @list
 
   it 'should be initialized', ->
     expect(@view).toEqual jasmine.any(TrackView)
@@ -51,18 +54,40 @@ describe 'TrackView', ->
       footer = @view.render().$el.find('div[data-role="footer"]')
       expect(footer).toContainText 'Play!'
 
+  describe 'play-button', ->
+    beforeEach ->
+      @view.render()
+      $('#button-play').trigger('tap')
+
+    it 'should trigger playRequest on tap', ->
+      expect(@app.trigger).toHaveBeenCalled()
+      call = @app.trigger.getCall(0)
+      expect(call.args).toEqual ['playRequest', @list, @track]
+
   describe 'play-panel', ->
     beforeEach ->
-      $.fn.popup = ->
+      $.fn.popup = sinon.spy()
       @view.render()
-      console.log 'trigger click'
-      $('#button-play').trigger('click')
+      $('#button-play').trigger('taphold')
 
     it 'should have buttons for playing ', ->
       expect(@view.el).toContain 'div[data-role="popup"]'
+      expect($.fn.popup).toHaveBeenCalled()
       panel = @view.$el.find('div[data-role="popup"]')
       expect(panel).toContainText 'Play only this track'
-      expect(panel).toContainText 'Play the playlist from this track'
+      expect(panel).toContainText 'Play this track full duration'
+
+    it 'should play only this track', ->
+      $('#button-play-track').trigger('tap')
+      expect(@app.trigger).toHaveBeenCalled()
+      call = @app.trigger.getCall(0)
+      expect(call.args).toEqual ['playRequest', null, @track, {}]
+
+    it 'should play only this track full duration', ->
+      $('#button-play-track-full').trigger('tap')
+      expect(@app.trigger).toHaveBeenCalled()
+      call = @app.trigger.getCall(0)
+      expect(call.args).toEqual ['playRequest', null, @track, full: true]
 
 
 
