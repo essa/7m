@@ -332,7 +332,7 @@
   if (t.timescale > 0) {
     position = t.value / t.timescale;
   }
-  NSLog(@"getCurrentPosition %f %lld %d", position, t.value, t.timescale);
+  // NSLog(@"getCurrentPosition %f %lld %d", position, t.value, t.timescale);
   NSString* jsString = [NSString stringWithFormat:@"%@(\"%@\",%d,%.3f);\n", @"plugins.StreamAudio.onStatus", self.mediaId, MEDIA_POSITION, position];
   [self.parent.commandDelegate evalJs:jsString];
 }
@@ -363,6 +363,7 @@
 
   [[NSNotificationCenter defaultCenter] removeObserver:self];
   [timer invalidate];
+  timer = nil;
 
   CDVStreamAudio *parent = (CDVStreamAudio *) self.parent;
   if (parent.avSession) {
@@ -376,8 +377,10 @@
 
 - (void)invalidateTimer
 {
-  NSLog(@"invalidateTimer");
-  [timer invalidate];
+  if (timer != nil) {
+    NSLog(@"invalidateTimer");
+    [timer invalidate];
+  }
 }
 
 @end

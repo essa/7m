@@ -14,4 +14,6 @@ html { background-color: #333; }
     border-right: 5px #666 outset !important;
     border-left: 5px #666 outset !important;
   }
+  .ui-grid-a .ui-block-a { width: 30% }
+  .ui-grid-a .ui-block-b { width: 70%; } 
 }

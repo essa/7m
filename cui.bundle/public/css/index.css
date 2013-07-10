@@ -113,3 +113,6 @@ h1 {
     animation:fade 3000ms infinite;
     -webkit-animation:fade 3000ms infinite;
 }
+
+.ui-grid-a .ui-block-a { width: 30% }
+.ui-grid-a .ui-block-b { width: 70%; } 

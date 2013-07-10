@@ -17,22 +17,11 @@ class App.Views.TrackView extends Backbone.View
     <div data-role="header"></div>
     <div data-role="content">
       <div id='popup-div' />
-      <div style='text-align: center'>
-        <div style='font-size: small'>
-          <span class='artist'><%= artist %></span>
-        </div>
-        <div style='font-size: xx-large'>
-          <span class='name'><%= name %></span>
-        </div>
-        <div style='font-size: small'>
-          <span class='album'><%= album %></span>
-        </div>
-        <div style='font-size: small'>
-          <span class='time-range'><%= bookmark %>-><%= pause_at %></span>
-        </div>
-      </div>
-      <div style='text-align: center'>
-        <span href="#" id="button-skip30sec" data-role="button" data-inline='true'>+30 sec</span>
+      <div id='items' class='ui-grid-a'>
+        <% for(i = 0; i< props.length;i++) { %>
+          <div style='font-size: small' class='ui-block-a'><%= props[i][0] %>:</div>
+          <div class='ui-block-b'><%= props[i][1] %></div>
+        <% } %>
       </div>
     </div>
   ''' 
@@ -44,11 +33,23 @@ class App.Views.TrackView extends Backbone.View
   render: ->
     console.log 'TrackView.render', @model.get('status')
     attrs = @model.toJSON()
-    console.log attrs
     attrs.type = @type
     attrs.playlist_id = @playlist.id
     attrs.bookmark = @hhmmss(attrs.bookmark || 0)
     attrs.pause_at = @hhmmss(attrs.pause_at || attrs.duration || 0)
+    attrs.props = [
+      [ 'name', @model.get('name') ],
+      [ 'artist', @model.get('artist') ],
+      [ 'album', @model.get('album') ],
+      [ 'id', @model.id ],
+      [ 'duration', @hhmmss @model.get('duration') ],
+      [ 'bookmark', @hhmmss @model.get('bookmark') ],
+      [ 'pause_at', @hhmmss @model.get('pause_at') ],
+      [ 'playedCount', @model.get('playedCount') ],
+      [ 'playedDate', @model.get('playedDate') ],
+      [ 'original bitrate', @model.get('bitRate') ],
+      [ 'rating', @model.get('rating') ],
+    ]
     @$el.html @template(attrs)
     @renderHeader()
     @renderFooter() 
@@ -77,6 +78,7 @@ class App.Views.TrackView extends Backbone.View
     @$el.append footerRenderer.render().el
 
   hhmmss: (s)->
+      return '' unless s
       sec_numb = parseInt(s, 10)
       hours = Math.floor(sec_numb / 3600)
       minutes = Math.floor((sec_numb - (hours * 3600)) / 60)
