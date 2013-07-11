@@ -362,8 +362,7 @@
   NSLog(@"Finished playing audio '%@' %@", resourcePath, self.mediaId);
 
   [[NSNotificationCenter defaultCenter] removeObserver:self];
-  [timer invalidate];
-  timer = nil;
+  [self invalidateTimer];
 
   CDVStreamAudio *parent = (CDVStreamAudio *) self.parent;
   if (parent.avSession) {
@@ -380,6 +379,7 @@
   if (timer != nil) {
     NSLog(@"invalidateTimer");
     [timer invalidate];
+    timer = nil;
   }
 }
 

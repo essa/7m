@@ -25,10 +25,6 @@ class App.Views.TrackView extends Backbone.View
       </div>
     </div>
   ''' 
-  events:
-    "tap #button-play" : "play"
-    "taphold #button-play" : "show_play_panel"
-    "popupafterclose #track-play-panel": "on_close_play_panel"
 
   render: ->
     console.log 'TrackView.render', @model.get('status')
@@ -98,6 +94,38 @@ class App.Views.TrackView extends Backbone.View
     @model.off 'change', @render
 
 class App.Views.TrackViewForEmbendedPlayer extends App.Views.TrackView
+  events:
+    "tap #button-play" : "play"
+    "taphold #button-play" : "show_play_panel"
+    "popupafterclose #track-play-panel": "on_close_play_panel"
+
+  play: (e)->
+    e.preventDefault()
+    return if @panel
+    @app.trigger 'playRequest', @playlist, @model
+    @app.router.navigate('#playing', trigger: true)
+
+  show_play_panel: (e)->
+    e.preventDefault()
+    console.log 'trackView#show_play_panel'
+    $('#popup-div').html '<div data-role="popup" id="track-play-panel" style="padding: 15px;" />'
+    $panel = $('#track-play-panel')
+    @panel = new Panel
+      el: $panel
+      model: @model
+      app: @app
+      type: @type
+      playlist_id: @playlist_id
+
+    @panel.show()
+
+  on_close_play_panel: (e)->
+    @panel.close()
+    $('#popup-div').html ''
+    $('.ui-popup-screen').remove()
+    $('.ui-popup-container').remove()
+    @panel = null
+
   class Panel extends Backbone.View
     events:
       "tap #button-play-track" : "play_track"
@@ -149,11 +177,11 @@ class App.Views.TrackViewForEmbendedPlayer extends App.Views.TrackView
       @stopListening()
       @undelegateEvents() 
 
-  play: (e)->
-    e.preventDefault()
-    return if @panel
-    @app.trigger 'playRequest', @playlist, @model
-    @app.router.navigate('#playing', trigger: true)
+
+class App.Views.TrackViewForExternalPlayer extends App.Views.TrackView
+  events:
+    "tap #button-play" : "show_play_panel"
+    "popupafterclose #track-play-panel": "on_close_play_panel"
 
   show_play_panel: (e)->
     e.preventDefault()
@@ -164,8 +192,6 @@ class App.Views.TrackViewForEmbendedPlayer extends App.Views.TrackView
       el: $panel
       model: @model
       app: @app
-      type: @type
-      playlist_id: @playlist_id
 
     @panel.show()
 
@@ -176,4 +202,38 @@ class App.Views.TrackViewForEmbendedPlayer extends App.Views.TrackView
     $('.ui-popup-container').remove()
     @panel = null
 
+  class Panel extends Backbone.View
+
+    template: _.template '''
+      <div>
+        <a href="<%= play_track_link %>" target="_blank" data-role="button" data-theme='b'>Play only this track</a>
+      </div>
+      <hr />
+      <div>
+        <a href="<%= play_track_full_link %>" target="_blank" data-role="button" data-theme='b'>Play this track full duration</a>
+      </div>
+    '''
+    initialize: (options)->
+      super(options)
+      @app = options.app
+
+    render: ->
+      bps = @app.config.bps()
+      start = parseInt(@model.get('bookmark'))
+      pause = @model.get('pause_at')
+      play_track_link = @model.mediaUrl(bps: bps, start: start, pause: pause)
+      play_track_full_link = @model.mediaUrl(bps: bps)
+      @$el.html @template
+        play_track_link: play_track_link
+        play_track_full_link: play_track_full_link
+
+      @$el.trigger("create")
+      this
+
+    show: ->
+      @render()
+      console.log @el
+      @$el.popup()
+      @$el.popup "open",
+        transition: 'flip'
 
