@@ -4,6 +4,9 @@ console.log "Hello SevenMinutes!"
 # hook points for test
 window.Env =
   reset: ->
+    if window.plugins?
+      vs = window.plugins.volumeSlider
+      vs?.hideVolumeSlider()
     App.router.navigate('', trigger: false)
     location.reload()
 
@@ -49,7 +52,7 @@ window.App = App =
 
     @router = new App.Router()
     @config = new App.Models.Config(this)
-    @config.loadFromLocalStorage()
+    @config.fetch()
 
     @initPlayingTrack()
     @initPlayer(@config.player())
@@ -158,7 +161,9 @@ window.App = App =
         Env.reset()
         
       App.stopped = false
-      view = new App.Views.PlaylistsView
+      viewClass = App.Views.PlaylistsView 
+      viewClass = App.Views.PlaylistsViewOld if App.config.get('face') == 'mobileold' 
+      view = new viewClass
         app: App
         el: $("#page")
         programs: App.programs
