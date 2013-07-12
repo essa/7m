@@ -209,8 +209,14 @@ module SevenMinutes
 
       # user class must define tracks and get_new_tracks
       def refresh!(options={})
-        @tracks.clear
+        if options[:clear]
+          @tracks.clear
+        else
+          @tracks = @tracks.select {|t| not t.played }
+        end
         track_ids = {}
+        @tracks.each {|t| track_ids[t.persistentID] = true }
+
         self.get_new_tracks.each do |t|
           pid = t.persistentID
           cnt = 1
@@ -246,6 +252,7 @@ module SevenMinutes
 
       def to_json_array
         tracks = @list.tracks.map do |t|
+          t.validate_handle
           t.to_json_hash
         end
         set_prev_next(tracks)
@@ -268,6 +275,7 @@ module SevenMinutes
             files = []
             tracks = []
             @list.tracks.each do |t|
+              t.validate_handle
               t.extend Playable
               start = t.bookmark
               pause = t.pause_at
@@ -320,6 +328,7 @@ module SevenMinutes
           '[playlist]',
         ]
         @list.tracks.each.with_index(1) do |t, i|
+          t.validate_handle
           start = t.original_bookmark
           pause = t.pause_at
           t_options = {
@@ -353,6 +362,7 @@ module SevenMinutes
 
         @list.tracks.each do |t|
           next if t.played
+          t.validate_handle
           start = t.original_bookmark
           pause = t.pause_at
           t_options = {
