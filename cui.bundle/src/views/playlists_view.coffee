@@ -53,7 +53,7 @@ class App.Views.PlaylistsView extends Backbone.View
       $ul2.append itemView.render().$el
 
     @renderHeader()
-    @renderFooter() if @hasFlash
+    @renderFooter() 
 
     this
 
@@ -68,6 +68,7 @@ class App.Views.PlaylistsView extends Backbone.View
     headerRenderer.render()
 
   renderFooter: ->
+    return unless @app.hasTrackPlaying()
     r = new App.Views.FooterRenderer
       model:
         playing: @app.hasTrackPlaying()

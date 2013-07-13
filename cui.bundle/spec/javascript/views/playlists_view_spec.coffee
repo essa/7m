@@ -9,9 +9,12 @@ describe 'PlaylistsView', ->
       <div data-role="content"></div>
     </div>
     '''
+    app = 
+      hasTrackPlaying: -> false
     @programs = new Backbone.Collection()
     @playlists = new Backbone.Collection()
     @view = new PlaylistsView
+      app: app
       programs: @programs
       playlists: @playlists
       el: $('#playlists')

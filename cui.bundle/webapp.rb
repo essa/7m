@@ -41,8 +41,8 @@ module SevenMinutes
         length,
         now - began_at ]
 
-      if env['sinatra.error']
-        e = env['sinatra.error']
+      e = env['sinatra.error']
+      if e and not e.kind_of?(Sinatra::NotFound)
         @logger.error e.to_s
         @logger.error e.backtrace.join("\n")
       end
