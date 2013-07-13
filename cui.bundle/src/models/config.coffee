@@ -23,7 +23,7 @@ class App.Models.Config extends Backbone.Model
       @defaultPlayer
   
   resetToDefault: ->
-    window.localStorage.setItem(@KEY, undefined)
+    window.localStorage.setItem(KEY, undefined)
 
   KEY = '7m.config'
   sync: (method, model, options)->
@@ -78,7 +78,7 @@ class App.Models.Config extends Backbone.Model
       else
         /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) 
 
-  validate: (attrs)->
+  validate__: (attrs)->
     ret = null
     try
       console.log 'config validate', attrs, App.isPhonegap

@@ -4,16 +4,19 @@ class App.Views.PlaylistView extends Backbone.View
   seq: 2
   transition: 'slide'
   events:
-    "click #button-play" : "play"
-    "click #button-export" : "export_media"
-    "click #button-show-list-panel" : "show_panel"
-    "click #button-list-refresh" : "refresh_list"
-    "click #button-list-create-audio" : "create_audio"
-    "click #button-record-played" : "record_played"
+    "tap #button-play" : "play"
+    "tap #button-export" : "export_media"
+    "tap #button-show-list-panel" : "show_panel"
+    "tap #button-list-refresh" : "refresh_list"
+    "taphold #button-list-refresh" : "show_refresh_panel"
+    "tap #button-list-create-audio" : "create_audio"
+    "tap #button-record-played" : "record_played"
+    "popupafterclose #refresh-panel": "on_close_refresh_panel"
 
   template: _.template '''
     <div data-role="header"></div>
     <div data-role="content">
+      <div id='popup-refresh-div' />
       <div data-role="popup" id="list-panel" style='padding: 15px;'>
       </div>
       <div>
@@ -109,6 +112,8 @@ class App.Views.PlaylistView extends Backbone.View
     '''
 
     render: ->
+      $('.ui-popup-screen').remove()
+      $('.ui-popup-container').remove()
       html = @template
         id: @model.id
         playlist_id: @playlist.id
@@ -136,6 +141,100 @@ class App.Views.PlaylistView extends Backbone.View
       aling: center;
       background-color: #6080e0;
       """
+
+  show_panel: (e)->
+    e.preventDefault()
+    console.log 'show panel', 
+    $panel = $('#list-panel')
+    @panel = new Panel
+      el: $panel
+      model: @model
+      bps: @app.config.bps()
+
+    @panel.createAudio()
+    @panel.show()
+      
+
+  show_refresh_panel: (e)->
+    e.preventDefault()
+    console.log 'PlaylistView#show_refresh_panel'
+    $('#popup-refresh-div').html '<div data-role="popup" id="refresh-panel" style="padding: 15px;" />'
+    $panel = $('#refresh-panel')
+    @refreshPanel = new RefreshPanel
+      el: $panel
+      model: @model
+      app: @app
+      type: @type
+
+    @refreshPanel.show()
+
+  on_close_refresh_panel: (e)->
+    @refreshPanel.close() if @refreshPanel
+    $('#popup-refresh-div').html ''
+    $('.ui-popup-screen').remove()
+    $('.ui-popup-container').remove()
+    @refreshPanel = null
+
+
+  class RefreshPanel extends Backbone.View
+    events:
+      "tap #button-list-refresh2" : "refresh"
+      "tap #button-list-clear-and-refresh" : "clear_and_refresh"
+      "tap #button-list-refresh-and-play" : "refresh_and_play"
+
+
+    template: _.template '''
+      <div>
+        <a data-role="button" id='button-list-refresh2' data-theme='b'>Refresh</a>
+        <p>clear played and get new tracks</p>
+      </div>
+      <hr />
+      <div>
+        <a data-role="button" id='button-list-clear-and-refresh' data-theme='b'>Clear and Refresh</a>
+        <p>clear all tracks and get new</p>
+      </div>
+      <hr />
+      <div>
+        <a data-role="button" id='button-list-refresh-and-play' data-theme='b'>Refresh and Play</a>
+        <p>clear all tracks and get and play new</p>
+      </div>
+      <hr />
+    '''
+    initialize: (options)->
+      super(options)
+      @app = options.app
+
+    render: ->
+      @$el.html @template {}
+      @$el.trigger("create")
+      this
+
+    show: ->
+      @render()
+      console.log @el
+      @$el.popup()
+      @$el.popup "open",
+        transition: 'flip'
+
+    refresh: (e)->
+      e.preventDefault()
+      @model.refresh()
+      @$el.popup 'close'
+
+    clear_and_refresh: (e)->
+      e.preventDefault()
+      @model.refresh(clear: true)
+      @$el.popup 'close'
+
+    refresh_and_play: (e)->
+      e.preventDefault()
+      @app.trigger 'playRequest', @model
+      @$el.popup 'close'
+
+    close: ->
+      console.log 'PlaylistView::RefreshPanel#close'
+      @stopListening()
+      @undelegateEvents() 
 
 class App.Views.PlaylistViewForEmbendedPlayer extends App.Views.PlaylistView
   renderFooter: ->
@@ -235,18 +334,3 @@ class App.Views.PlaylistViewForExternalPlayer extends App.Views.PlaylistView
         export_media: true
 
     @$el.append r.render().el
-
-  show_panel: (e)->
-    e.preventDefault()
-    console.log 'show panel', 
-    $panel = $('#list-panel')
-    @panel = new Panel
-      el: $panel
-      model: @model
-      bps: @app.config.bps()
-
-    @panel.createAudio()
-    @panel.show()
-      
-
-

@@ -44,7 +44,7 @@ module SevenMinutes
       if env['sinatra.error']
         e = env['sinatra.error']
         @logger.error e.to_s
-        @logger.errro e.backtrace.join("\n")
+        @logger.error e.backtrace.join("\n")
       end
     end
 
@@ -132,7 +132,8 @@ module SevenMinutes
     post %r{^/(programs|playlists)/(\w+)/refresh$} do
       list, id = params[:captures]
       playlist = playlist_root(list).find(id)
-      playlist.refresh!
+      p params
+      playlist.refresh!(params)
       { ok: true }.to_json
     end
 
