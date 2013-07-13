@@ -26,6 +26,7 @@ module SevenMinutes
     private
     def log(env, status, header, began_at)
       now = Time.now
+
       length = extract_content_length(header)
 
       @logger.info FORMAT % [
@@ -39,7 +40,14 @@ module SevenMinutes
         status.to_s[0..3],
         length,
         now - began_at ]
+
+      if env['sinatra.error']
+        e = env['sinatra.error']
+        @logger.error e.to_s
+        @logger.errro e.backtrace.join("\n")
+      end
     end
+
     def extract_content_length(headers)
       value = headers['Content-Length'] or return '-'
       value.to_s == '0' ? '-' : value

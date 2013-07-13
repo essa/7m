@@ -189,7 +189,7 @@ describe "RadioProgram" do
       ids = program.tracks.map { |t| t.persistentID }
       ids.must_equal %w(0001 0002 1001)
 
-      program.refresh!
+      program.refresh!(clear: 1)
       program.tracks.size.must_equal 3
       ids = program.tracks.map { |t| t.persistentID }
       ids.must_equal %w(0003 0001 1001)
@@ -207,7 +207,7 @@ describe "RadioProgram" do
       ids = program.tracks.map { |t| t.persistentID }
       ids.must_equal %w(0001 0002 1001)
 
-      program.refresh!
+      program.refresh!(clear: 1)
       program.tracks.size.must_equal 3
       ids = program.tracks.map { |t| t.persistentID }
       ids.must_equal %w(0003 0001 1001)
@@ -226,7 +226,7 @@ describe "RadioProgram" do
       ids.must_equal %w(0001 0002 1001)
       program.tracks[1].pause_at.must_equal 30.0
 
-      program.refresh!
+      program.refresh!(clear: 1)
       program.tracks.size.must_equal 3
       ids = program.tracks.map { |t| t.persistentID }
       ids.must_equal %w(0003 0001 1001)
@@ -367,13 +367,13 @@ describe "RadioProgram" do
         { id: '0002', bookmark: nil, pause_at: 5},
         { id: '1001', bookmark: nil, pause_at: 20},
       ]
-      program.refresh!
+      program.refresh!(clear: 1)
       compare_tracks program.tracks, [
         { id: '0003', bookmark: nil, pause_at: 5},
         { id: '0001', bookmark: 5,   pause_at: 10},
         { id: '1001', bookmark: 20, pause_at: 40},
       ]
-      program.refresh!
+      program.refresh!(clear: 1)
       compare_tracks program.tracks, [
         { id: '0002', bookmark: 5, pause_at: 10},
         { id: '0003', bookmark: 5,   pause_at: 10},
