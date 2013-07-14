@@ -43,6 +43,7 @@ typedef NSUInteger CDVMediaMsg;
     NSString* mediaId;
 }
 @property (nonatomic, copy) NSString* mediaId;
+
 @end
 
 @interface CDVStreamAudioFile : NSObject
@@ -51,9 +52,6 @@ typedef NSUInteger CDVMediaMsg;
     NSURL* resourceURL;
     CDVStreamAudioPlayer* player;
     NSNumber* volume;
-    NSString* mediaId;
-    NSTimer* timer;
-    CDVPlugin* parent;
 }
 
 @property (nonatomic, strong) NSString* resourcePath;
@@ -62,6 +60,9 @@ typedef NSUInteger CDVMediaMsg;
 @property (nonatomic, strong) NSString* mediaId;
 @property (nonatomic, strong) CDVPlugin* parent;
 @property (nonatomic, strong) NSTimer* timer;
+
+- (void)play;
+- (void)invalidateTimer;
 
 @end
 

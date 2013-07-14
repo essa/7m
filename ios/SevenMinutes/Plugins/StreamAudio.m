@@ -76,7 +76,6 @@
     NSDictionary* options = [command.arguments objectAtIndex:2 withDefault:nil];
 
     BOOL bError = NO;
-    NSString* jsString = nil;
 
     CDVStreamAudioFile* audioFile = [self audioFileForResource:resourcePath withId:mediaId doValidation:YES forRecording:NO];
     if ((audioFile != nil) && (audioFile.resourceURL != nil)) {
@@ -245,8 +244,7 @@
     NSString* errMsg = @"";
     NSString* jsString = nil;
     CDVStreamAudioFile* audioFile = nil;
-    NSURL* resourceURL = nil;
-
+ 
     if ([self soundCache] == nil) {
         [self setSoundCache:[NSMutableDictionary dictionaryWithCapacity:1]];
     } else {
@@ -289,10 +287,12 @@
 - (void)dealloc
 {
     [[self soundCache] removeAllObjects];
+    [super dealloc];
 }
 
 - (void)onReset
 {
+    /*
     for (CDVStreamAudioFile* audioFile in [[self soundCache] allValues]) {
         if (audioFile != nil) {
             if (audioFile.player != nil) {
@@ -300,6 +300,7 @@
             }
         }
     }
+    */
 
     [[self soundCache] removeAllObjects];
 }
@@ -316,7 +317,7 @@
   NSLog(@"CDVStreamAudioFile play");
   player = [[CDVStreamAudioPlayer alloc]initWithURL:resourceURL];
   [player addObserver:self forKeyPath:@"status" options:0 context:nil];
-  timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateProgress:) userInfo:nil repeats:YES];
+  self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateProgress:) userInfo:nil repeats:YES];
       
   [player play];
   NSLog(@"StreamAudio startPlayingAudio played mediaId=%@", self.mediaId);
@@ -340,7 +341,7 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
 
     if (object == player && [keyPath isEqualToString:@"status"]) {
-      CDVMediaStates media_status;
+      CDVMediaStates media_status = 0;
         if (player.status == AVPlayerStatusFailed) {
             NSLog(@"AVPlayer Failed");
             media_status = MEDIA_STOPPED;
@@ -364,9 +365,9 @@
   [[NSNotificationCenter defaultCenter] removeObserver:self];
   [self invalidateTimer];
 
-  CDVStreamAudio *parent = (CDVStreamAudio *) self.parent;
-  if (parent.avSession) {
-        [parent.avSession setActive:NO error:nil];
+  CDVStreamAudio *p = (CDVStreamAudio *) self.parent;
+  if (p.avSession) {
+        [p.avSession setActive:NO error:nil];
   }
 
   NSString *jsString = [NSString stringWithFormat:@"%@(\"%@\",%d,%d);", @"plugins.StreamAudio.onStatus", self.mediaId, MEDIA_STATE, MEDIA_STOPPED];
@@ -376,10 +377,10 @@
 
 - (void)invalidateTimer
 {
-  if (timer != nil) {
+  if (self.timer != nil) {
     NSLog(@"invalidateTimer");
-    [timer invalidate];
-    timer = nil;
+    [self.timer invalidate];
+    self.timer = nil;
   }
 }
 
