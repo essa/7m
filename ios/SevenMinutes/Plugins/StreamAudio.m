@@ -17,6 +17,11 @@
 
 @implementation CDVStreamAudio
 
+static CDVStreamAudio* currentInstance = nil;
++ (CDVStreamAudio *)current { 
+  return currentInstance; 
+}
+
 @synthesize soundCache, avSession;
 
 // returns whether or not audioSession is available - creates it if necessary
@@ -95,8 +100,12 @@
           NSLog(@"Unable to play audio: %@", [err localizedFailureReason]);
           bError = YES;
         }
+        self.avSession.delegate = self;
+        self.mediaId = mediaId;
+        [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
       }
       [audioFile play];
+      currentInstance = self;
       /*
       [[NSNotificationCenter defaultCenter] addObserver:self
                                                selector:@selector(playerItemDidReachEnd:)
@@ -108,6 +117,39 @@
     }
     return;
 }
+
+- (void)beginInterruption {
+    NSLog(@"StreamAudio beginInterruption");
+    NSString* jsString = [NSString stringWithFormat:@"%@(\"%@\",%d,%d);", @"plugins.StreamAudio.onStatus", self.mediaId, MEDIA_COMMAND, MEDIA_BEGININTERACTION];
+    [self.commandDelegate evalJs:jsString];
+}
+
+- (void)endInterruptionWithFlags:(NSUInteger)flags {
+    NSLog(@"StreamAudio endInterruptionWithFlags");
+    if (flags == AVAudioSessionInterruptionFlags_ShouldResume){
+      NSString* jsString = [NSString stringWithFormat:@"%@(\"%@\",%d,%d);", @"plugins.StreamAudio.onStatus", self.mediaId, MEDIA_COMMAND, MEDIA_ENDINTERACTION];
+      [self.commandDelegate evalJs:jsString];
+    }
+}
+
+- (void)inputIsAvailableChanged:(BOOL)isInputAvailable{
+    NSLog(@"StreamAudio inputIsAvailableChanged");
+    NSString* jsString = [NSString stringWithFormat:@"%@(\"%@\",%d,%d);", @"plugins.StreamAudio.onStatus", self.mediaId, MEDIA_COMMAND, MEDIA_INPUTCHANGED];
+    [self.commandDelegate evalJs:jsString];
+}
+
+// Respond to remote control events
+#pragma mark -
+#pragma mark Remote-control event handling
+- (void) remoteControlReceivedWithEvent: (UIEvent *) receivedEvent {
+    NSLog(@"StreamAudio remoteControlReceivedWithEvent");
+
+    if (receivedEvent.type == UIEventTypeRemoteControl) {
+      NSString* jsString = [NSString stringWithFormat:@"%@(\"%@\",%d,%d,%d);", @"plugins.StreamAudio.onStatus", self.mediaId, MEDIA_COMMAND, MEDIA_REMOTECONTROL, receivedEvent.subtype];
+      [self.commandDelegate evalJs:jsString];
+    }
+}
+
 
 - (void)playerItemDidReachEnd:(NSNotification *)notification {
 
@@ -125,8 +167,14 @@
     if ((audioFile != nil) && (audioFile.player != nil)) {
         NSLog(@"Stopped playing audio sample '%@'", audioFile.resourcePath);
         [audioFile.player pause]; // AVPlayer doesn't support stop
+        [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
         jsString = [NSString stringWithFormat:@"%@(\"%@\",%d,%d);", @"plugins.StreamAudio.onStatus", mediaId, MEDIA_STATE, MEDIA_STOPPED];
     }  // ignore if no media playing
+
+    if (currentInstance == self) {
+        currentInstance = nil;
+    }
+
     if (jsString) {
         [self.commandDelegate evalJs:jsString];
     }

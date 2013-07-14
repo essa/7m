@@ -13,6 +13,7 @@ class App.Players.PhonegapStreamPlayer extends App.PlayerBase
     # I can't figure out why ???
     app = @app
     me = this
+    mm = @mm
     media = @media = new plugins.StreamAudio media_url, ->
       me.onSuccess()
     , ->
@@ -33,6 +34,9 @@ class App.Players.PhonegapStreamPlayer extends App.PlayerBase
           app.trigger 'notifyStarted'
         when 3
           app.trigger 'notifyPaused'
+    , (status, subType)->
+      mm.commandCallback(status, subType)
+      console.log 'StreamPlayer', status, subType
 
     if bookmark? and bookmark > 5
       media.seekTo(bookmark*1000)

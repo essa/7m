@@ -27,6 +27,7 @@
 
 #import "AppDelegate.h"
 #import "MainViewController.h"
+#import "StreamAudio.h"
 
 #import <Cordova/CDVPlugin.h>
 
@@ -128,6 +129,16 @@
 - (void)applicationDidReceiveMemoryWarning:(UIApplication*)application
 {
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
+}
+
+#pragma mark -
+#pragma mark Remote-control event handling
+- (void) remoteControlReceivedWithEvent: (UIEvent *) receivedEvent {
+    NSLog(@"AppDelegate remoteControlReceivedWithEvent");
+    CDVStreamAudio* audio = [CDVStreamAudio current];
+    if (audio != nil) {
+      [audio remoteControlReceivedWithEvent: receivedEvent];
+    }
 }
 
 @end

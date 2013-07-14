@@ -36,7 +36,6 @@ class App.Models.PlayingTrack extends Backbone.Model
     unless track
       @list.refresh
         clear: true
-        async: false
         success: =>
           track = playlist.tracks.at(0) 
           @trigger 'playRequest', @list, track, options

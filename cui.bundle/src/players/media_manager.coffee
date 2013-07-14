@@ -21,6 +21,30 @@ class App.Players.MediaManager
           nextTrack.prepareMedia(option)
       , 10 * 1000
 
+  commandCallback: (status, subType)->
+    StreamAudio = plugins.StreamAudio
+    console.log 'commandCallback', status, subType
+    switch(status)
+      when StreamAudio.MEDIA_BEGININTERACTION
+        console.log 'commandCallback MEDIA_BEGININTERACTION', status, subType
+        # @playing.trigger 'pauseRequest' # this will start silentAudio which stop the alarm
+      when StreamAudio.MEDIA_ENDINTERACTION
+        console.log 'commandCallback MEDIA_ENDINTERACTION', status, subType
+        @playing.trigger 'continueRequest'
+      when StreamAudio.MEDIA_INPUTCHANGED
+        @playing.trigger 'pauseRequest'
+      when StreamAudio.MEDIA_REMOTECONTROL
+        switch(subType)
+          when 103 
+            if @playing.get("status") == App.Status.PLAYING
+              @playing.trigger 'pauseRequest'
+            else
+              @playing.trigger 'continueRequest'
+          when 104
+            @playing.trigger 'skipRequest'
+          else
+            console.log 'unsupported remote control command', subType
+
 class App.Players.ClientManagedMM extends App.Players.MediaManager
   onPlayTrack: (list, track, options={})->
     @list = list

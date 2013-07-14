@@ -212,7 +212,7 @@ module SevenMinutes
         if options[:clear]
           @tracks.clear
         else
-          @tracks = @tracks.select {|t| not t.played }
+          @tracks = @tracks.select {|t| t.validate_handle and not t.played }
         end
         track_ids = {}
         @tracks.each {|t| track_ids[t.persistentID] = true }

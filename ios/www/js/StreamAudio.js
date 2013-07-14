@@ -17,8 +17,10 @@
  *                                  errorCallback(int errorCode) - OPTIONAL
  * @param statusCallback        The callback to be called when media status has changed.
  *                                  statusCallback(int statusCode) - OPTIONAL
+ * @param commandCallback        The callback to be called when command event was occured.
+ *                                  commandCallback(int mstType, int statusCode) - OPTIONAL
  */
-var StreamAudio = function(src, successCallback, errorCallback, statusCallback) {
+var StreamAudio = function(src, successCallback, errorCallback, statusCallback, commandCallback) {
     console.log('StreamAudio constructor');
     argscheck.checkArgs('SFFF', 'StreamAudio', arguments);
     this.id = utils.createUUID();
@@ -27,6 +29,7 @@ var StreamAudio = function(src, successCallback, errorCallback, statusCallback) 
     this.successCallback = successCallback;
     this.errorCallback = errorCallback;
     this.statusCallback = statusCallback;
+    this.commandCallback = commandCallback;
     this._duration = -1;
     this._position = -1;
     cordovaRef.exec(null, this.errorCallback, "StreamAudio", "create", [this.id, this.src]);
@@ -36,6 +39,7 @@ var StreamAudio = function(src, successCallback, errorCallback, statusCallback) 
 StreamAudio.MEDIA_STATE = 1;
 StreamAudio.MEDIA_DURATION = 2;
 StreamAudio.MEDIA_POSITION = 3;
+StreamAudio.MEDIA_COMMAND = 4;
 StreamAudio.MEDIA_ERROR = 9;
 
 // StreamAudio states
@@ -44,6 +48,10 @@ StreamAudio.MEDIA_STARTING = 1;
 StreamAudio.MEDIA_RUNNING = 2;
 StreamAudio.MEDIA_PAUSED = 3;
 StreamAudio.MEDIA_STOPPED = 4;
+StreamAudio.MEDIA_BEGININTERACTION = 5;
+StreamAudio.MEDIA_ENDINTERACTION = 6;
+StreamAudio.MEDIA_INPUTCHANGED = 7;
+StreamAudio.MEDIA_REMOTECONTROL = 8;
 StreamAudio.MEDIA_MSG = ["None", "Starting", "Running", "Paused", "Stopped"];
 
 // "static" function to return existing objs.
@@ -163,7 +171,7 @@ StreamAudio.prototype.setVolume = function(volume) {
  * @param msgType       The 'type' of update this is
  * @param value         Use of value is determined by the msgType
  */
-StreamAudio.onStatus = function(id, msgType, value) {
+StreamAudio.onStatus = function(id, msgType, value, subType) {
 
     var media = mediaObjects[id];
 
@@ -188,6 +196,10 @@ StreamAudio.onStatus = function(id, msgType, value) {
                 break;
             case StreamAudio.MEDIA_POSITION :
                 media._position = Number(value);
+                break;
+            case StreamAudio.MEDIA_COMMAND:
+                console.error && console.error("StreamAudio.onStatus :: " + msgType + value + subType);
+                media.commandCallback && media.commandCallback(value, subType);
                 break;
             default :
                 console.error && console.error("Unhandled StreamAudio.onStatus :: " + msgType);
