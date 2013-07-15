@@ -55,6 +55,7 @@ module SevenMinutes
         mode: Config::GUI,
         logger: logger
       )
+      logger.open_logfile(conf[:logfile]) 
 
       ITunes::init_app(conf)
       RadioProgram::Program::init(conf, ITunes)
@@ -89,12 +90,23 @@ module SevenMinutes
           @logs = []
           @max = 500
           @queue = Dispatch::Queue.main
+          @logfile = nil
+        end
+
+        def open_logfile(logfile)
+          @logfile = logfile
         end
 
         LENGTH_OF_DATETIME = 14
 
         def write(str)
           @queue.async do
+            if @logfile
+              File::open(@logfile, 'a') do |f|
+                f.puts str
+              end
+            end
+
             color = case str
                     when / :I /
                       NSColor::blueColor
@@ -137,6 +149,10 @@ module SevenMinutes
         self.formatter = proc do |severity, datetime, progname, message|
           "#{datetime.strftime('%m-%dT%H:%M:%S ')}:#{severity[0]} #{message}"
         end
+      end
+
+      def open_logfile(logfile)
+        @dev.open_logfile(logfile)
       end
 
       def write(msg)

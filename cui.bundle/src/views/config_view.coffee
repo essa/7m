@@ -6,20 +6,12 @@ class App.Views.ConfigView extends Backbone.View
   events:
     "click #config-save" : "save"
     "click #config-reset" : "reset"
+    "change #dev-only": "change_dev_only"
   template: _.template '''
     <div data-role="header">
       <h1 id='config-header'>Config</h1>
     </div>
     <div data-role="content">
-      <fieldset data-role="controlgroup" data-type="horizontal">
-        <legend>Interface:</legend>
-        <input type="radio" name="interface" id="interface-default" checked='checked' value='default'></input>
-        <label for="interface-default">Default</label>
-        <input type="radio" name="interface" id="interface-pc" value='pc'></input>
-        <label for="interface-pc">PC</label>
-        <input type="radio" name="interface" id="interface-mobile" value='mobile'></input>
-        <label for="interface-mobile">Mobile</label>
-      </fieldset>
       <fieldset data-role="controlgroup" data-type="horizontal">
         <legend>Max kbps:</legend>
         <input type="radio" name="bps" id="bps-none" checked='checked' value='none'></input>
@@ -42,6 +34,29 @@ class App.Views.ConfigView extends Backbone.View
         <input type="text" name="server-port" id="server-port" value=""/>
       <% } %>
       <hr />
+        <label for="dev-only">Show devloper only options:</label>
+        <select name="dev-only" id="dev-only" data-role="slider">
+          <option value="off">Off</option>
+          <option value="on">On</option>
+        </select>
+        <div id='dev-only-area'>
+          <fieldset data-role="controlgroup" data-type="horizontal">
+            <legend>Interface:</legend>
+            <input type="radio" name="interface" id="interface-default" checked='checked' value='default'></input>
+            <label for="interface-default">Default</label>
+            <input type="radio" name="interface" id="interface-pc" value='pc'></input>
+            <label for="interface-pc">PC</label>
+            <input type="radio" name="interface" id="interface-mobile" value='mobile'></input>
+            <label for="interface-mobile">Mobile</label>
+            <input type="radio" name="interface" id="interface-mobileold" value='mobileold'></input>
+            <label for="interface-mobileold">Mobile(older version)</label>
+          </fieldset>
+          <div class='ui-grid-b'>
+            <div class='ui-block-a'>UserAgent: </div>
+            <div class='ui-block-b'><%= navigator.userAgent %></div>
+          </div>
+        </div>
+      <hr />
       <a href='#' id='config-save' data-role="button" data-inline='true'>save</a>
       <a href='#' data-role="button" data-inline='true'>cancel</a>
       <a href='#' id='config-reset' data-role="button" data-inline='true'>reset</a>
@@ -50,7 +65,6 @@ class App.Views.ConfigView extends Backbone.View
 
   initialize: (options)->
     super(options)
-    @model.loadFromLocalStorage()
 
   render_header: ->
     $header = @$el.find('div[data-role="header"]')
@@ -76,29 +90,32 @@ class App.Views.ConfigView extends Backbone.View
     
     bps = @model.get('bps')
     $("#bps-#{bps}").attr('checked', true).trigger('create')
+    @change_dev_only()
     this
+
+  change_dev_only: ->
+    f = $('select[name="dev-only"]').val()
+    console.log 'change_dev_only', f
+    if f == "on"
+      $('#dev-only-area').show()
+    else
+      $('#dev-only-area').hide()
+
 
   save: ->
     bps = $('input[name="bps"]').filter(':checked').val();
     face = $('input[name="interface"]').filter(':checked').val();
-    @model.set
+    @model.save
       server_addr: @$el.find('#server-addr').val()
       server_port: @$el.find('#server-port').val()
       bps: bps
       face: face
-    ret =  @model.saveToLocalStorage()
-    console.log 'saveToLocalStorage returned', ret
-    if ret
-      console.log 'saveToLocalStorage ok', ret
-      App.router.navigate('playlists', trigger: true)
-    else
-      console.log 'saveToLocalStorage error', ret
-      App.router.navigate('config', trigger: true)
+    alert('save end')
+    App.router.navigate('playlists', trigger: true)
 
   reset: ->
     @model.resetToDefault()
-    window.location.reload()
-    # App.router.navigate('playlist')
+    Env.reset()
 
   close: ->
     @undelegateEvents()

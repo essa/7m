@@ -29,7 +29,7 @@
 
 #import <Cordova/CDVViewController.h>
 
-@interface AppDelegate : NSObject <UIApplicationDelegate>{}
+@interface AppDelegate : UIResponder <UIApplicationDelegate>{}
 
 // invoke string is passed to your app on launch, this is only valid if you
 // edit SevenMinutes-Info.plist to add a protocol

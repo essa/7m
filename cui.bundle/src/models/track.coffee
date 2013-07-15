@@ -4,6 +4,10 @@ class App.Models.Track extends Backbone.Model
     super(attrs, options)
     @app = options.app
 
+  defaults:
+    artist: ''
+    album: ''
+
   url: -> 
     path = @get('path')
     "#{@app.baseUrl()}#{path}"

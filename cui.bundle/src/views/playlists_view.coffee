@@ -53,7 +53,7 @@ class App.Views.PlaylistsView extends Backbone.View
       $ul2.append itemView.render().$el
 
     @renderHeader()
-    @renderFooter() if @hasFlash
+    @renderFooter() 
 
     this
 
@@ -68,6 +68,7 @@ class App.Views.PlaylistsView extends Backbone.View
     headerRenderer.render()
 
   renderFooter: ->
+    return unless @app.hasTrackPlaying()
     r = new App.Views.FooterRenderer
       model:
         playing: @app.hasTrackPlaying()
@@ -81,6 +82,7 @@ class App.Views.PlaylistsView extends Backbone.View
     , 1
 
   close: ->
+    console.log @programs
     @undelegateEvents()
     @stopListening()
     @programs.off 'sync', @updateScreen, this if @programs
@@ -93,4 +95,49 @@ class App.Views.PlaylistsView extends Backbone.View
       html = @template(@model)
       @$el.html html
       this
+  App.Views.PlaylistsItemView = Item
+
+class App.Views.PlaylistsViewOld extends App.Views.PlaylistsView
+  Item = App.Views.PlaylistsItemView
+
+  template: _.template '''
+    <div data-role="header"></div>
+    <div data-role="content">
+      <ul id='playlists-ul'  data-role="listview"/>
+    </div>
+    '''
+
+  render: ->
+    @$el.html @template()
+    return unless @programs and @playlists
+
+    $content = @$el.find('div[data-role="content"]')
+
+    $ul = $content.find('ul#playlists-ul')
+    $ul.append '<li data-role="list-divider">My Programs</li>'
+    
+    @programs.each (pl)->
+      console.log pl.get('name')
+      itemView = new Item
+        model: 
+          type: 'programs'
+          id: pl.id 
+          name: pl.get('name')
+      $ul.append itemView.render().$el
+
+    $ul.append '<li data-role="list-divider">My Playlists</li>'
+    @playlists.each (pl)->
+      console.log pl.get('name')
+      itemView = new Item
+        model: 
+          type: 'playlists'
+          id: pl.id 
+          name: pl.get('name')
+      $ul.append itemView.render().$el
+
+    @renderHeader()
+    @renderFooter() if @hasFlash
+
+    this
+
 

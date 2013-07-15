@@ -110,7 +110,7 @@ module SevenMinutes
       loglevel = self[:loglevel]
       return unless loglevel
       logger = self[:logger]
-      logger.info "setting loglevel to #{loglevel}"
+      # logger.info "setting loglevel to #{loglevel}"
       case loglevel
       when "DEBUG"
         logger.level = Logger::DEBUG

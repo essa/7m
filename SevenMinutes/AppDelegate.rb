@@ -16,17 +16,15 @@ class AppDelegate
   
 
   def initialize
-    p 'AppDelegate::initialize'
     SevenMinutes::Gui::create_default_config
   end
 
   def applicationDidFinishLaunching(a_notification)
-    p 'AppDelegate::applicationDidFinishLaunching'
     @logger = SevenMinutes::Gui::TextViewLogger.new(self.logview)
     @config_path = File::join(SevenMinutes::Config::application_support_directory, "7m.yml")
     config_path_label.setStringValue @config_path
     load_config
-    @server = SevenMinutes::Gui::start_as_gui(@logger)
+    start_webserver
     on_status_change
     p 'AppDelegate::applicationDidFinishLaunching end'
   rescue Errno::ENOENT
@@ -85,7 +83,7 @@ class AppDelegate
   end
 
   def load_config
-    @logger.info "loading config file from #{@config_path}"
+    @logger.info "loading config file from #{@config_path} for config view"
     File::open(@config_path) do |f|
       self.config_text.setString f.read
     end

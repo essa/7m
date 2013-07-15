@@ -36,9 +36,14 @@ class App.Models.Playlist extends Backbone.Model
     success = options.success
     error = options.error
     async = options.async
+    data = if options.clear
+      "?clear=1"
+    else
+      ""
 
+    console.log "refresh #{data}"
     $.ajax 
-      url: @url() + '/refresh'
+      url: @url() + '/refresh' + data
       type: 'POST'
       async: async
       success: =>

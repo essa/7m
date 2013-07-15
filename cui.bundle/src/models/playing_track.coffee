@@ -26,7 +26,7 @@ class App.Models.PlayingTrack extends Backbone.Model
     @pauseAtProcessed = false
     @stallDetector = new App.Models.PlayingTrack.StallDetector(this) if @app.isPhonegap
 
-  onPlayRequest: (playlist, track)->
+  onPlayRequest: (playlist, track, options={})->
     console.log 'onPlayRequest', @player
     if @track and @get('status') == App.Status.PLAYING
       @player.stop() 
@@ -35,21 +35,23 @@ class App.Models.PlayingTrack extends Backbone.Model
 
     unless track
       @list.refresh
-        async: false
+        clear: true
         success: =>
           track = playlist.tracks.at(0) 
-          @trigger 'playRequest', @list, track
+          @trigger 'playRequest', @list, track, options
       return 
         
     console.log 'PlayingTrack setTrack', track
     @setTrack track
     @set 'status', App.Status.SELECTED
+    @playFull = options.full
     @track.fetch
       success: =>
         console.log 'pause_at', track.get('pause_at')
         @pos = track.bookmark
         @set 'status', App.Status.LOADING
-        @trigger 'playTrack', playlist, track, @app.config.bps()
+        options.bps = @app.config.bps()
+        @trigger 'playTrack', playlist, track, options
       error: =>
         @trigger 'error'
     @player.startSilent() if @app.isPhonegap
@@ -73,6 +75,7 @@ class App.Models.PlayingTrack extends Backbone.Model
     @player.pause()
     @track.recordPaused(@pos)
     @stallDetector?.stopTimer()
+    @player.startSilent() if @app.isPhonegap
 
   onContinueRequest: ->
     console.log 'jontinueRequest'
@@ -80,6 +83,7 @@ class App.Models.PlayingTrack extends Backbone.Model
     console.log 'continueRequest'
 
   onSkipRequest: ->
+    return if @get('status') == App.Status.INIT
     console.log 'trigger onSkipRequest', @pos
     @track.recordPaused(@pos, completed: true)
     @player.pause =>
@@ -99,10 +103,15 @@ class App.Models.PlayingTrack extends Backbone.Model
     return if @get('status') == App.Status.INIT
     @track.recordPlayed(completed: true)
     @set 'status', App.Status.SELECTED
-    @trigger 'playNextOf', @list, @track
+    @trigger 'playNextOf', @list, @track if @list
     @stallDetector?.stopTimer()
 
   playNextOf: (playlist, track)->
+    return if @get('status') == App.Status.INIT
+    unless @list
+      @set 'status', App.Status.INIT
+      return
+
     @set 'status', App.Status.SELECTED
     console.log 'playNextOf'
     status = @get('status')
@@ -113,12 +122,14 @@ class App.Models.PlayingTrack extends Backbone.Model
       unless status == App.Status.INIT
         me.trigger 'playRequest', list, nextTrack 
     , 1000
+    @player.startSilent() if @app.isPhonegap
 
   onTimeUpdate: (pos)->
+    return if @get('status') == App.Status.INIT
     @pos = parseInt(pos)
     pause_at = @get('pause_at')
     # console.log 'onTimeUpdate', @pos, pause_at, @pauseAtProcessed
-    if pause_at?
+    if pause_at? and not @playFull
       # console.log 'PlayingTrack onTimeUpdate', pos, pause_at, @pauseAtProcessed
       if pos >= parseInt(pause_at) and not @pauseAtProcessed
         console.log 'trigger skipRequest'
@@ -149,8 +160,11 @@ class App.Models.PlayingTrack extends Backbone.Model
       @track.recordPaused(@pos)
     @set 'status', App.Status.INIT
     @stallDetector?.stopTimer()
-    @player.stop()
-    App.router.navigate('', trigger: true)
+    @player.pause()
+    setInterval =>
+      @player.stop()
+      Env.reset()
+    , 1000
     
   status: ->
     switch @get('status')

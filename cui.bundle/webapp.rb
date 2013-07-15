@@ -26,6 +26,7 @@ module SevenMinutes
     private
     def log(env, status, header, began_at)
       now = Time.now
+
       length = extract_content_length(header)
 
       @logger.info FORMAT % [
@@ -39,7 +40,14 @@ module SevenMinutes
         status.to_s[0..3],
         length,
         now - began_at ]
+
+      e = env['sinatra.error']
+      if e and not e.kind_of?(Sinatra::NotFound)
+        @logger.error e.to_s
+        @logger.error e.backtrace.join("\n")
+      end
     end
+
     def extract_content_length(headers)
       value = headers['Content-Length'] or return '-'
       value.to_s == '0' ? '-' : value
@@ -124,7 +132,8 @@ module SevenMinutes
     post %r{^/(programs|playlists)/(\w+)/refresh$} do
       list, id = params[:captures]
       playlist = playlist_root(list).find(id)
-      playlist.refresh!
+      p params
+      playlist.refresh!(params)
       { ok: true }.to_json
     end
 

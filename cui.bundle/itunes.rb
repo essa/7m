@@ -215,7 +215,7 @@ module SevenMinutes
       end
 
       def validate_handle
-        if @handle and @handle.persistentID == @persistentID
+        if @handle and @handle.get and @handle.persistentID == @persistentID
           true
         else
           @handle = ITunes::index[@persistentID]
