@@ -238,7 +238,7 @@ class App.Views.PlaylistView extends Backbone.View
 
 class App.Views.PlaylistViewForEmbendedPlayer extends App.Views.PlaylistView
   renderFooter: ->
-    firstTrack = @model.tracks.at(0)
+    firstTrack = @model.nextUnplayed()
     r = new App.Views.FooterRenderer
       model:
         playing: @app.hasTrackPlaying()

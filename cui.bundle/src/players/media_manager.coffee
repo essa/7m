@@ -9,8 +9,7 @@ class App.Players.MediaManager
     
   onNotifyStarted: ->
     return unless @track? and @list?
-    nextId = @track.get('next_id') 
-    nextTrack = @list.tracks.get(nextId)
+    nextTrack = @list.nextUnplayed(@track)
     if nextTrack?
       console.log 'next', nextId, nextTrack
       @playing.set 'next_track_name', nextTrack.get('name')

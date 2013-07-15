@@ -52,6 +52,13 @@ class App.Models.Playlist extends Backbone.Model
           error: error
           async: async
           reset: true
+          
+  nextUnplayed: (start=null)->
+    i = @tracks.indexOf(start) + 1
+
+    while @tracks.length > i and @tracks.at(i).get('played')
+      i++
+    @tracks.at(i)
 
   prepareMedia: (options={})->
     options.type = 'POST'

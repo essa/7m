@@ -37,8 +37,9 @@ class App.Models.PlayingTrack extends Backbone.Model
       @list.refresh
         clear: true
         success: =>
-          track = playlist.tracks.at(0) 
+          track = playlist.nextUnplayed()
           @trigger 'playRequest', @list, track, options
+      @player.startSilent() if @app.isPhonegap
       return 
         
     console.log 'PlayingTrack setTrack', track
@@ -60,15 +61,6 @@ class App.Models.PlayingTrack extends Backbone.Model
     @set 'status', App.Status.PLAYING
     @pauseAtProcessed = false
     @stallDetector?.startTimer()
-    # nextId = @get('next_id') 
-    # nextTrack = @list.tracks.get(nextId)
-    # if nextTrack?
-      # console.log 'next', nextId, nextTrack
-      # @set 'next_track_name', nextTrack.get('name')
-      # setTimeout =>
-        # if @get('status') != App.Status.INIT
-          # nextTrack.prepareMedia()
-      # , 30 * 1000
 
   onPauseRequest: ->
     console.log 'PlayingTrack onPauseRquest', @pos
@@ -116,13 +108,12 @@ class App.Models.PlayingTrack extends Backbone.Model
     console.log 'playNextOf'
     status = @get('status')
     list = @list
-    nextTrack = @list.getTrack(@get('next_id'))
+    nextTrack = list.nextUnplayed()
     me = this
     setTimeout ->
       unless status == App.Status.INIT
         me.trigger 'playRequest', list, nextTrack 
     , 1000
-    @player.startSilent() if @app.isPhonegap
 
   onTimeUpdate: (pos)->
     return if @get('status') == App.Status.INIT

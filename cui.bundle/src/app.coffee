@@ -97,6 +97,8 @@ window.App = App =
       @mediaManager = @playing.player.createMediaManager(@playing)
 
   baseUrl: ->
+    return "/" unless @isPhonegap
+
     server_addr = @config.get('server_addr')
     server_port = @config.get('server_port')
     if server_addr? and server_addr != '' 
@@ -193,18 +195,23 @@ window.App = App =
       else
         App.Views.PlaylistViewForExternalPlayer
 
+      showView = (pl)->
+        view = new viewClass
+          app: App
+          el: $("#page")
+          model: pl
+          type: collection.type
+          hasFlash: App.config.hasFlash()
+        App.changeView view
+
       pl = collection.get(id)
+      App.currentPlaylist = pl 
       if pl?
-        pl.tracks.fetch
-          success: ->
-            view = new viewClass
-              app: App
-              el: $("#page")
-              model: pl
-              type: collection.type
-              hasFlash: App.config.hasFlash()
-            App.changeView view
-        App.currentPlaylist = pl 
+        if pl.tracks.length == 0 
+          pl.tracks.fetch
+            success: -> showView(pl)
+        else
+          showView(pl)
       else
         alert("can't find playlist id#{id}")
             
