@@ -108,7 +108,7 @@ class App.Models.PlayingTrack extends Backbone.Model
     console.log 'playNextOf'
     status = @get('status')
     list = @list
-    nextTrack = list.nextUnplayed()
+    nextTrack = list.nextUnplayed(track)
     me = this
     setTimeout ->
       unless status == App.Status.INIT

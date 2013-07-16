@@ -11,7 +11,7 @@ class App.Players.MediaManager
     return unless @track? and @list?
     nextTrack = @list.nextUnplayed(@track)
     if nextTrack?
-      console.log 'next', nextId, nextTrack
+      console.log 'next', nextTrack
       @playing.set 'next_track_name', nextTrack.get('name')
       setTimeout =>
         if @playing.get('status') != App.Status.INIT
@@ -33,16 +33,17 @@ class App.Players.MediaManager
       when StreamAudio.MEDIA_INPUTCHANGED
         @playing.trigger 'pauseRequest'
       when StreamAudio.MEDIA_REMOTECONTROL
-        switch(subType)
-          when 103 
-            if @playing.get("status") == App.Status.PLAYING
-              @playing.trigger 'pauseRequest'
-            else
-              @playing.trigger 'continueRequest'
-          when 104
-            @playing.trigger 'skipRequest'
+        if subType <= 103
+          if @playing.get("status") == App.Status.PLAYING
+            @playing.trigger 'pauseRequest'
           else
-            console.log 'unsupported remote control command', subType
+            @playing.trigger 'continueRequest'
+        else
+          switch(subType)
+            when 104
+              @playing.trigger 'skipRequest'
+            else
+              console.log 'unsupported remote control command', subType
 
 class App.Players.ClientManagedMM extends App.Players.MediaManager
   onPlayTrack: (list, track, options={})->

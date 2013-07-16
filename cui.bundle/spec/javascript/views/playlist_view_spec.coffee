@@ -9,11 +9,15 @@ describe 'PlaylistView', ->
       <div data-role="content"></div>
     </div>
     '''
+    $.mobile = 
+      popup: {}
     app = 
+      baseUrl: -> '/'
       hasTrackPlaying: -> false
       trigger: sinon.spy()
     @model = new Playlist({}, app: app) 
     sinon.stub @model, 'refresh', ->
+    sinon.stub @model.tracks, 'fetch', ->
     @model.set 'name', 'list 111'
     @view = new PlaylistView
       app: app
@@ -39,8 +43,8 @@ describe 'PlaylistView', ->
       beforeEach ->
         @view.render().$el.find('#button-list-refresh').trigger('tap')
 
-      it 'should refresh the list', ->
-        expect(@model.refresh).toHaveBeenCalled()
+      it 'should sync the tracks', ->
+        expect(@model.tracks.fetch).toHaveBeenCalled()
 
   describe 'refresh-panel', ->
     beforeEach ->

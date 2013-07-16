@@ -9,6 +9,11 @@ window.Env =
       vs?.hideVolumeSlider()
     App.router.navigate('', trigger: false)
     location.reload()
+  alert: (msg)->
+    window.alert(msg)
+
+  gotoLocation: (url)->
+    window.location = url
 
 originalAjax = $.ajax
 
@@ -472,21 +477,11 @@ class App.Views.FooterRenderer extends Backbone.View
   template: _.template '''
     <div data-role="footer" class="ui-bar"  data-position="fixed">
 
-    <% if (typeof list_id != 'undefined') { %>
-      <a id='button-play' href="#playing/<%= type %>/<%= list_id %>/<%= track_id %>" data-theme='b'>Play!</a>
-    <% } %>
+      <a id='button-play' data-theme='b' href='#'>Play!</a>
 
-    <% if (typeof play_external != 'undefined' && play_external ) { %>
-      <a href="<%= play_external %>" data-theme='b' target='_blank'>Play!</a>
-    <% } %>
-
-    <% if (typeof export_media != 'undefined' && export_media ) { %>
-      <a id='button-export' href="#" data-theme='b'>Export</a>
-    <% } %>
-
-    <% if (typeof playing != 'undefined' && playing) { %>
-      <a href="#playing" data-theme='b' style="float:right;margin-right:27px;">Now Playing...</a>
-    <% } %>
+      <% if (typeof playing != 'undefined' && playing) { %>
+        <a href="#playing" data-theme='b' style="float:right;margin-right:27px;">Now Playing...</a>
+      <% } %>
     </div>
   '''
 

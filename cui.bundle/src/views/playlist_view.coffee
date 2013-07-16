@@ -5,20 +5,17 @@ class App.Views.PlaylistView extends Backbone.View
   transition: 'slide'
   events:
     "tap #button-play" : "play"
-    "tap #button-export" : "export_media"
-    "tap #button-show-list-panel" : "show_panel"
-    "tap #button-list-refresh" : "refresh_list"
+    "taphold #button-play" : "show_play_panel"
+    "tap #button-list-refresh" : "sync_list"
     "taphold #button-list-refresh" : "show_refresh_panel"
-    "tap #button-list-create-audio" : "create_audio"
-    "tap #button-record-played" : "record_played"
     "popupafterclose #refresh-panel": "on_close_refresh_panel"
+    "popupafterclose #play-panel": "on_close_play_panel"
 
   template: _.template '''
     <div data-role="header"></div>
     <div data-role="content">
       <div id='popup-refresh-div' />
-      <div data-role="popup" id="list-panel" style='padding: 15px;'>
-      </div>
+      <div id='popup-play-div' />
       <div>
         <ul id='tracks-ul'  data-role="listview"></ul>
       </div>
@@ -69,18 +66,18 @@ class App.Views.PlaylistView extends Backbone.View
 
     r.render()
 
-  play: (e)->
-    console.log 'play', @hasFlash
-    unless @hasFlash
-      @show_panel(e)
+  renderFooter: ->
+    r = new App.Views.FooterRenderer
+      model:
+        playing: @app.hasTrackPlaying()
 
+    @$el.append r.render().el
 
-  refresh_list: (e)->
+  sync_list: (e)->
     e.preventDefault()
+    return if @refreshPanel
     console.log 'refresh list'
-    @model.refresh
-      error: ->
-        alert('refresh error!')
+    @model.tracks.fetch()
 
   export_media: (e)->
     e.preventDefault()
@@ -88,10 +85,8 @@ class App.Views.PlaylistView extends Backbone.View
       export: true
       bps: @app.config.bps()
       success: =>
-        alert('export completed')
-        @model.refresh
-          success: =>
-            @render()
+        Env.alert('export completed')
+        @model.tracks.fetch()
       error: =>
         alert('media export error')
 
@@ -99,6 +94,65 @@ class App.Views.PlaylistView extends Backbone.View
     @undelegateEvents()
     @stopListening()
     @model.off 'sync', @render, this
+
+  show_panel: (e)->
+    e.preventDefault()
+    console.log 'show panel', 
+    $panel = $('#list-panel')
+    @panel = new Panel
+      el: $panel
+      model: @model
+      bps: @app.config.bps()
+
+    @panel.createAudio()
+    @panel.show()
+      
+
+  show_refresh_panel: (e)->
+    e.preventDefault()
+    e.stopImmediatePropagation()
+    $.mobile.popup.active = undefined # sometimes popup seems not to close normally
+
+    console.log 'PlaylistView#show_refresh_panel'
+    $('#popup-refresh-div').html '<div data-role="popup" id="refresh-panel" style="padding: 15px;" />'
+    $panel = $('#refresh-panel')
+    @refreshPanel = new RefreshPanel
+      el: $panel
+      model: @model
+      app: @app
+      type: @type
+      parent: this
+
+    @refreshPanel.show()
+
+  on_close_refresh_panel: (e)->
+    @refreshPanel.close() if @refreshPanel
+    $('#popup-refresh-div').html ''
+    # $('.ui-popup-screen').remove()
+    # $('.ui-popup-container').remove()
+    @refreshPanel = null
+
+  show_play_panel: (e)->
+    e.preventDefault()
+    e.stopImmediatePropagation()
+    $.mobile.popup.active = undefined # sometimes popup seems not to close normally
+
+    console.log 'PlaylistView#show_play_panel'
+    $('#popup-play-div').html '<div data-role="popup" id="play-panel" style="padding: 15px;" />'
+    $panel = $('#play-panel')
+    @playPanel = new PlayPanel
+      el: $panel
+      model: @model
+      app: @app
+      type: @type
+      parent: this
+
+    @playPanel.show()
+
+  on_close_play_panel: (e)->
+    @playPanel.close() if @playPanel
+    $('#popup-play-div').html ''
+    @playPanel = null
 
   class Item extends Backbone.View
     initialize: (options)->
@@ -142,48 +196,20 @@ class App.Views.PlaylistView extends Backbone.View
       background-color: #6080e0;
       """
 
-  show_panel: (e)->
-    e.preventDefault()
-    console.log 'show panel', 
-    $panel = $('#list-panel')
-    @panel = new Panel
-      el: $panel
-      model: @model
-      bps: @app.config.bps()
-
-    @panel.createAudio()
-    @panel.show()
-      
-
-  show_refresh_panel: (e)->
-    e.preventDefault()
-    console.log 'PlaylistView#show_refresh_panel'
-    $('#popup-refresh-div').html '<div data-role="popup" id="refresh-panel" style="padding: 15px;" />'
-    $panel = $('#refresh-panel')
-    @refreshPanel = new RefreshPanel
-      el: $panel
-      model: @model
-      app: @app
-      type: @type
-
-    @refreshPanel.show()
-
-  on_close_refresh_panel: (e)->
-    @refreshPanel.close() if @refreshPanel
-    $('#popup-refresh-div').html ''
-    $('.ui-popup-screen').remove()
-    $('.ui-popup-container').remove()
-    @refreshPanel = null
-
-
   class RefreshPanel extends Backbone.View
     events:
+      "tap #button-list-sync" : "sync"
       "tap #button-list-refresh2" : "refresh"
       "tap #button-list-clear-and-refresh" : "clear_and_refresh"
       "tap #button-list-refresh-and-play" : "refresh_and_play"
 
 
     template: _.template '''
+      <div>
+        <a data-role="button" id='button-list-sync' data-theme='b'>Sync</a>
+        <p>sync list with server</p>
+      </div>
+      <hr />
       <div>
         <a data-role="button" id='button-list-refresh2' data-theme='b'>Refresh</a>
         <p>clear played and get new tracks</p>
@@ -198,11 +224,78 @@ class App.Views.PlaylistView extends Backbone.View
         <a data-role="button" id='button-list-refresh-and-play' data-theme='b'>Refresh and Play</a>
         <p>clear all tracks and get and play new</p>
       </div>
-      <hr />
     '''
     initialize: (options)->
       super(options)
       @app = options.app
+      @parent = options.parent
+
+    render: ->
+      @$el.html @template {}
+      @$el.trigger("create")
+      this
+
+    show: ->
+      console.log 'RefreshPanel#show'
+      @render()
+      @$el.popup
+        positionTo: 'window'
+      @$el.popup "open",
+        transition: 'flip'
+      @$el.show()
+
+    sync: (e)->
+      console.log 'sync'
+      e.preventDefault()
+      @model.tracks.fetch()
+      @closePanel()
+
+    refresh: (e)->
+      e.preventDefault()
+      @model.refresh()
+      @closePanel()
+
+    clear_and_refresh: (e)->
+      e.preventDefault()
+      @model.refresh(clear: true)
+      @closePanel()
+
+    refresh_and_play: (e)->
+      e.preventDefault()
+      @app.trigger 'playRequest', @model
+      @closePanel()
+
+    closePanel: ->
+      @$el.popup 'close'
+      $.mobile.popup.active = undefined # popup('close') seems not to close normally
+
+    close: ->
+      console.log 'PlaylistView::RefreshPanel#close'
+      @stopListening()
+      @undelegateEvents() 
+
+  class PlayPanel extends Backbone.View
+    events:
+      "tap #button-play-play" : "play"
+      "tap #button-play-export" : "export"
+
+    template: _.template '''
+      <div>
+        <a data-role="button" id='button-play-play' data-theme='b'>Play</a>
+        <p>play this list</p>
+      </div>
+      <hr />
+      <div>
+        <a data-role="button" id='button-play-export' data-theme='b'>Export to Dropbox</a>
+        <p>export this list to Dropbox</p>
+      </div>
+      <div>
+    '''
+
+    initialize: (options)->
+      super(options)
+      @app = options.app
+      @parent = options.parent
 
     render: ->
       @$el.html @template {}
@@ -216,121 +309,37 @@ class App.Views.PlaylistView extends Backbone.View
       @$el.popup "open",
         transition: 'flip'
 
-    refresh: (e)->
-      e.preventDefault()
-      @model.refresh()
-      @$el.popup 'close'
+    play: (e)->
+      @closePanel()
+      @parent.play(e)
 
-    clear_and_refresh: (e)->
-      e.preventDefault()
-      @model.refresh(clear: true)
-      @$el.popup 'close'
+    export: (e)->
+      @parent.export_media(e)
+      @closePanel()
 
-    refresh_and_play: (e)->
-      e.preventDefault()
-      @app.trigger 'playRequest', @model
+    closePanel: ->
       @$el.popup 'close'
+      $.mobile.popup.active = undefined # popup('close') seems not to close normally
 
     close: ->
-      console.log 'PlaylistView::RefreshPanel#close'
+      console.log 'PlaylistView::PlayPanel#close'
       @stopListening()
       @undelegateEvents() 
 
 class App.Views.PlaylistViewForEmbendedPlayer extends App.Views.PlaylistView
-  renderFooter: ->
-    firstTrack = @model.nextUnplayed()
-    r = new App.Views.FooterRenderer
-      model:
-        playing: @app.hasTrackPlaying()
-        type: @type
-        list_id: @model.id
-        track_id: firstTrack?.id
-        export_media: true
+  play: (e)->
+    e.preventDefault()
 
-    @$el.append r.render().el
-
+    console.log 'play'
+    href="playing/#{@type}/#{@model.id}"
+    @app.router.navigate(href, trigger: true)
 
 class App.Views.PlaylistViewForExternalPlayer extends App.Views.PlaylistView
-  class Panel extends Backbone.View
-    events:
-      "click #button-record-played" : "record_played"
-
-    template: _.template '''
-      <% if (mediaPrepared) { %>
-        <div>
-          <span id="list-stream">
-            <a href="<%= mediaUrl %>" target="_blank" data-role="button"> Play it with external player</a>
-          </span>
-          <div style='font-size: small'>
-            A new tab will open and combined audio stream will be played
-          </div>
-        </div>
-        <hr />
-        <div>
-          <div style='font-size: small'>
-            After playing it, you can ....  
-          </div>
-          <a href='#' id='button-record-played' data-role="button">
-            Save bookmark and palyedDate to iTunes
-          </a>
-        </div>
-      <% } else { %>
-        <div>
-          <p>Preparing media. Just a moment please.</p>
-        </div>
-      <% } %>
-    '''
-    initialize: (options)->
-      super(options)
-      @bps = options.bps
-
-    render: ->
-      @$el.html @template
-        mediaPrepared: @mediaPrepared
-        mediaUrl: @model.mediaUrl(bps: @bps)
-      @$el.trigger("create")
-      this
-
-    show: ->
-      @render()
-      @$el.popup "open",
-        transition: 'flip'
-
-    createAudio: ->
-      @mediaPrepared = @model.mediaPrepared(bps: @bps)
-      unless @mediaPrepared
-        console.log @model.prepareMedia
-        @model.prepareMedia
-          bps: @bps
-          success: =>
-            @mediaPrepared = true
-            @render()
-            alert('create completed')
-          error: =>
-            alert('media creation error')
-
-    record_played: (e)->
-      e.preventDefault()
-      @model.recordPlayed
-        success: =>
-          @model.refresh
-            success: =>
-              alert('record success')
-        error: ->
-          alert('error')
-          Env.reset()
-
-  initialize: (options)->
-    super(options)
-    
-  renderFooter: ->
-    firstTrack = @model.tracks.at(0)
+  play: (e)->
+    e.preventDefault()
+    return if @playPanel
+    console.log 'play'
     m3u8 = "/#{@type}/#{@model.id}.m3u8"
     bps = @app.config.bps()
     m3u8 += "?bps=#{bps}" if bps?
-    r = new App.Views.FooterRenderer
-      model:
-        play_external: m3u8
-        export_media: true
-
-    @$el.append r.render().el
+    Env.gotoLocation(m3u8)
