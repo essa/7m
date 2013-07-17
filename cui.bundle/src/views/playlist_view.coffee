@@ -75,6 +75,7 @@ class App.Views.PlaylistView extends Backbone.View
 
   sync_list: (e)->
     e.preventDefault()
+    e.stopImmediatePropagation()
     return if @refreshPanel
     console.log 'refresh list'
     @model.tracks.fetch()
@@ -329,6 +330,8 @@ class App.Views.PlaylistView extends Backbone.View
 class App.Views.PlaylistViewForEmbendedPlayer extends App.Views.PlaylistView
   play: (e)->
     e.preventDefault()
+    e.stopImmediatePropagation()
+    return if @playPanel
 
     console.log 'play'
     href="playing/#{@type}/#{@model.id}"
@@ -337,7 +340,9 @@ class App.Views.PlaylistViewForEmbendedPlayer extends App.Views.PlaylistView
 class App.Views.PlaylistViewForExternalPlayer extends App.Views.PlaylistView
   play: (e)->
     e.preventDefault()
+    e.stopImmediatePropagation()
     return if @playPanel
+
     console.log 'play'
     m3u8 = "/#{@type}/#{@model.id}.m3u8"
     bps = @app.config.bps()

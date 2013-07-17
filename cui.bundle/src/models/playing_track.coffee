@@ -34,6 +34,9 @@ class App.Models.PlayingTrack extends Backbone.Model
     @list = playlist
 
     unless track
+      track = playlist.nextUnplayed(null)
+
+    unless track
       @list.refresh
         clear: true
         success: =>

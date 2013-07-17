@@ -9,6 +9,7 @@
 require 'control_tower_ext'
 require 'yaml'
 require 'logger'
+require 'fileutils'
 
 require 'version'
 require 'config'
@@ -25,17 +26,12 @@ module SevenMinutes
       template_path = File::join(SevenMinutes::base_dir, "7m.yml.sample.erb")
       path = File::join(SevenMinutes::Config::application_support_directory, "7m.yml")
       return if File::exists?(path)
-      File::mkdir_p SevenMinutes::Config::application_support_directory
+      FileUtils::mkdir_p SevenMinutes::Config::application_support_directory
       ITunes::init_itunes(SevenMinutes::base_dir)
-      playlists = []
-      ITunes::app.sources[0].playlists.map do |pl|
-        next if pl.name == 'ムービー'
-        next if pl.name == 'ライブラリ'
-        next if pl.name == 'テレビ番組'
-        next if pl.name == 'ミュージックビデオ'
-        next if pl.name == 'Genius'
-        playlists << pl.name
+      playlists = ITunes::Playlist::all.map do |pl|
+        pl.name
       end
+      p playlists
       File::open(template_path) do |tmpl|
         require 'erb'
         erb = ERB.new(tmpl.read)
