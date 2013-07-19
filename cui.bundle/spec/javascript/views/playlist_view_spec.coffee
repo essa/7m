@@ -41,7 +41,7 @@ describe 'PlaylistView', ->
   describe 'refresh button', ->
     describe 'when tapped', ->
       beforeEach ->
-        @view.render().$el.find('#button-list-refresh').trigger('tap')
+        @view.render().$el.find('#button-list-refresh').trigger('taphold')
 
       it 'should sync the tracks', ->
         expect(@model.tracks.fetch).toHaveBeenCalled()
@@ -50,7 +50,7 @@ describe 'PlaylistView', ->
     beforeEach ->
       $.fn.popup = sinon.spy()
       @view.render()
-      $('#button-list-refresh').trigger('taphold')
+      $('#button-list-refresh').trigger('tap')
 
     it 'should have buttons for refreshing ', ->
       expect(@view.el).toContain 'div[data-role="popup"]'

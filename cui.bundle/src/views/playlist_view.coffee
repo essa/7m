@@ -6,8 +6,8 @@ class App.Views.PlaylistView extends Backbone.View
   events:
     "tap #button-play" : "play"
     "taphold #button-play" : "show_play_panel"
-    "tap #button-list-refresh" : "sync_list"
-    "taphold #button-list-refresh" : "show_refresh_panel"
+    "tap #button-list-refresh" : "show_refresh_panel"
+    "taphold #button-list-refresh" : "sync_list"
     "popupafterclose #refresh-panel": "on_close_refresh_panel"
     "popupafterclose #play-panel": "on_close_play_panel"
 
@@ -155,6 +155,11 @@ class App.Views.PlaylistView extends Backbone.View
     $('#popup-play-div').html ''
     @playPanel = null
 
+  playlist_address: (bps)->
+    m3u8 = "/#{@type}/#{@model.id}.m3u"
+    m3u8 += "?bps=#{bps}" if bps?
+    m3u8
+
   class Item extends Backbone.View
     initialize: (options)->
       @type = options.type
@@ -290,7 +295,11 @@ class App.Views.PlaylistView extends Backbone.View
         <a data-role="button" id='button-play-export' data-theme='b'>Export to Dropbox</a>
         <p>export this list to Dropbox</p>
       </div>
+      <hr />
       <div>
+        <a href='<%= pl_addr %>'>Link to this playlist</a>
+        <p>register it to your net radio player</p>
+      </div>
     '''
 
     initialize: (options)->
@@ -299,7 +308,8 @@ class App.Views.PlaylistView extends Backbone.View
       @parent = options.parent
 
     render: ->
-      @$el.html @template {}
+      @$el.html @template
+       pl_addr: @parent.playlist_address()
       @$el.trigger("create")
       this
 
@@ -344,7 +354,8 @@ class App.Views.PlaylistViewForExternalPlayer extends App.Views.PlaylistView
     return if @playPanel
 
     console.log 'play'
-    m3u8 = "/#{@type}/#{@model.id}.m3u8"
     bps = @app.config.bps()
-    m3u8 += "?bps=#{bps}" if bps?
-    Env.gotoLocation(m3u8)
+    pl_addr = @playlist_address(bps)
+    console.log pl_addr
+    Env.gotoLocation(pl_addr)
+
