@@ -77,6 +77,10 @@ module SevenMinutes
       def active?(now=Time.now)
         @track.playable? and not played_recently?(now)
       end
+
+      def validate_handle
+        @track.validate_handle
+      end
     end
 
     class Context
@@ -248,6 +252,7 @@ module SevenMinutes
 
     class Program
       include Utils
+      include Refresher
       @@programs = nil
       def self.init(conf, itunes)
         manager = SourceManager.new(conf)
@@ -286,7 +291,7 @@ module SevenMinutes
         end
       end
 
-      attr_reader :config, :manager, :id, :name, :refresh_interval, :tracks, :frames, :track_cache
+      attr_reader :config, :manager, :id, :name, :tracks, :frames
       attr_accessor :refreshed_at
       def initialize(config, manager = nil)
         @config = config.symbolize_keys_recursive
@@ -298,53 +303,23 @@ module SevenMinutes
           @logger.level = Logger::FATAL
         end
         @manager = manager
-        @refresh_interval = @config[:refresh_interval] || 3600
-        # @refreshed_at = Time.now.to_i - @refresh_interval.to_i - 1
-        @frames = @config[:frames].map do |frame_config|
-          Frame.new frame_config.merge(logger: @logger), @manager
-        end
         @tracks = []
-        @track_cache = {}
       end
 
-      def refresh_if_needed!(force=false)
-        now = Time.now
-        if force or need_refresh?(now) 
-          refresh!
-          record_refresh
-        end
-      end
-
-      def need_refresh?(now = Time.now)
-        return true unless @refreshed_at
-        @refreshed_at.to_i + refresh_interval <= now.to_i
-      end
-
-      def record_refresh(now = Time.now)
-        @refreshed_at = now
-      end
-
-      def refresh!
+      def get_new_tracks
         @logger.info 'refresh! start'
-        @track_cache = {}
         context = Context.new
         context_file = @config[:context_file]
         context.load_from(context_file, @logger) if context_file
         @manager.load_from(context)
         tracks = []
         Config::with_config(@config.merge(context: context)) do
-          @frames.each do |f|
+          @config[:frames].each do |frame_config|
+            f = Frame.new frame_config.merge(logger: @logger), @manager
             Config::with_config(f.config) do
               begin
                 f.get_tracks.each do |t|
-                  cnt = 1
-                  pid = t.persistentID
-                  while @track_cache[t.persistentID]
-                    cnt += 1
-                    t.persistentID = "#{pid}_#{cnt}"
-                  end
                   tracks << t
-                  @track_cache[t.persistentID] = t
                 end
               rescue SourceManager::UnknownSource
                 @logger.warn $!
@@ -359,8 +334,8 @@ module SevenMinutes
         end
         context.save_to(context_file) if context_file
         @manager.clear_sources
-        @tracks = tracks
         @logger.info 'refresh! end'
+        tracks
       end
 
       def to_json_hash

@@ -9,10 +9,9 @@ class App.Players.MediaManager
     
   onNotifyStarted: ->
     return unless @track? and @list?
-    nextId = @track.get('next_id') 
-    nextTrack = @list.tracks.get(nextId)
+    nextTrack = @list.nextUnplayed(@track)
     if nextTrack?
-      console.log 'next', nextId, nextTrack
+      console.log 'next', nextTrack
       @playing.set 'next_track_name', nextTrack.get('name')
       setTimeout =>
         if @playing.get('status') != App.Status.INIT
@@ -21,12 +20,41 @@ class App.Players.MediaManager
           nextTrack.prepareMedia(option)
       , 10 * 1000
 
+  commandCallback: (status, subType)->
+    StreamAudio = plugins.StreamAudio
+    console.log 'commandCallback', status, subType
+    switch(status)
+      when StreamAudio.MEDIA_BEGININTERACTION
+        console.log 'commandCallback MEDIA_BEGININTERACTION', status, subType
+        # @playing.trigger 'pauseRequest' # this will start silentAudio which stop the alarm
+      when StreamAudio.MEDIA_ENDINTERACTION
+        console.log 'commandCallback MEDIA_ENDINTERACTION', status, subType
+        @playing.trigger 'continueRequest'
+      when StreamAudio.MEDIA_INPUTCHANGED
+        @playing.trigger 'pauseRequest'
+      when StreamAudio.MEDIA_REMOTECONTROL
+        if subType <= 103
+          if @playing.get("status") == App.Status.PLAYING
+            @playing.trigger 'pauseRequest'
+          else
+            @playing.trigger 'continueRequest'
+        else
+          switch(subType)
+            when 104
+              @playing.trigger 'skipRequest'
+            else
+              console.log 'unsupported remote control command', subType
+
 class App.Players.ClientManagedMM extends App.Players.MediaManager
-  onPlayTrack: (list, track, bps)->
+  onPlayTrack: (list, track, options={})->
     @list = list
+    if options.full
+      track.set 'bookmark', 0
+      track.set 'pause_at', null
+
     @track = track
     opt = @mediaOption()
-    opt.bps = bps
+    opt.bps = options.bps
     console.log 'MM#play', opt, track.mediaUrl(opt), track.get('bookmark')
     @player.play track.mediaUrl(opt), track.get('bookmark')
 
@@ -38,14 +66,17 @@ class App.Players.ClientManagedMM extends App.Players.MediaManager
     { bps: bps, prepareNext: 'no' }
 
 class App.Players.ServerManagedMM extends App.Players.MediaManager
-  onPlayTrack: (list, track, bps)->
+  onPlayTrack: (list, track, options={})->
     @list = list
+    if options.full
+      track.set 'bookmark', 0
+      track.set 'pause_at', null
     @track = track
     @start = parseInt(track.get('bookmark'))
     @pause = track.get('pause_at')
     @track = track
-    console.log 'MM#playTrack', bps, @start, @pause
-    @player.play track.mediaUrl(bps: bps, start: @start, pause: @pause), 0 
+    console.log 'MM#playTrack', options.bps, @start, @pause
+    @player.play track.mediaUrl(bps: options.bps, start: @start, pause: @pause), 0 
 
   onTimeUpdate: (pos)->
     unless @pause? and @start + pos >= @pause - 1
@@ -64,9 +95,9 @@ class App.Players.ServerManagedMM extends App.Players.MediaManager
     { bps: bps, start: start, pause: pause }
 
 class App.Players.ListMM extends App.Players.MediaManager
-  onPlayTrack: (list, track, bps)->
+  onPlayTrack: (list, track, options={})->
     @posInList = parseInt(track.get('posInList'))
-    @player.play list.mediaUrl(bps: bps), @posInList
+    @player.play list.mediaUrl(bps: options.bps), @posInList
 
     @trackEndPos = @posInList + parseInt(track.get('trimedDuration'))
     @lastPos = @posInList

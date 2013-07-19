@@ -1,6 +1,20 @@
 
-
 console.log "Hello SevenMinutes!"
+
+# hook points for test
+window.Env =
+  reset: ->
+    if window.plugins?
+      vs = window.plugins.volumeSlider
+      vs?.hideVolumeSlider()
+    App.router.navigate('', trigger: false)
+    location.reload()
+  alert: (msg)->
+    window.alert(msg)
+
+  gotoLocation: (url)->
+    window.location = url
+
 originalAjax = $.ajax
 
 ajaxNestCnt = 0
@@ -43,7 +57,7 @@ window.App = App =
 
     @router = new App.Router()
     @config = new App.Models.Config(this)
-    @config.loadFromLocalStorage()
+    @config.fetch()
 
     @initPlayingTrack()
     @initPlayer(@config.player())
@@ -88,6 +102,8 @@ window.App = App =
       @mediaManager = @playing.player.createMediaManager(@playing)
 
   baseUrl: ->
+    return "/" unless @isPhonegap
+
     server_addr = @config.get('server_addr')
     server_port = @config.get('server_port')
     if server_addr? and server_addr != '' 
@@ -148,10 +164,13 @@ window.App = App =
     playlists: ->
       console.log 'Router#playlists', @currentView
       unless App.programs and App.playlists and App.programs.length > 0 and App.playlists.length > 0
-        location.reload()
+        # location.reload()
+        Env.reset()
         
       App.stopped = false
-      view = new App.Views.PlaylistsView
+      viewClass = App.Views.PlaylistsView 
+      viewClass = App.Views.PlaylistsViewOld if App.config.get('face') == 'mobileold' 
+      view = new viewClass
         app: App
         el: $("#page")
         programs: App.programs
@@ -181,18 +200,23 @@ window.App = App =
       else
         App.Views.PlaylistViewForExternalPlayer
 
+      showView = (pl)->
+        view = new viewClass
+          app: App
+          el: $("#page")
+          model: pl
+          type: collection.type
+          hasFlash: App.config.hasFlash()
+        App.changeView view
+
       pl = collection.get(id)
+      App.currentPlaylist = pl 
       if pl?
-        pl.tracks.fetch
-          success: ->
-            view = new viewClass
-              app: App
-              el: $("#page")
-              model: pl
-              type: collection.type
-              hasFlash: App.config.hasFlash()
-            App.changeView view
-        App.currentPlaylist = pl 
+        if pl.tracks.length == 0 
+          pl.tracks.fetch
+            success: -> showView(pl)
+        else
+          showView(pl)
       else
         alert("can't find playlist id#{id}")
             
@@ -212,13 +236,17 @@ window.App = App =
           success: ->
             track = pl.tracks.get(track_id)
             if track
-              view = new App.Views.TrackView
+              view_class = if App.config.hasFlash() or App.isPhonegap
+                App.Views.TrackViewForEmbendedPlayer
+              else
+                App.Views.TrackViewForExternalPlayer
+
+              view = new view_class
                 app: App
                 el: $("#page")
                 model: track
                 type: type
-                playlist_id: playlist_id
-                hasPlayer: App.config.hasFlash() or App.isPhonegap
+                playlist: pl
               App.changeView view
             else
               App.router.navigate('playlists', trigger: true)
@@ -296,7 +324,7 @@ class App.PlayerBase
       callback() if callback
   
   startSilent: ->
-    new App.Players.SilentAudioPlayer(@app)
+    new App.Players.SilentAudioPlayer(@app).play()
 
 class App.Players.PhonegapMediaPlayer extends App.PlayerBase
   startMedia: (media_url, bookmark, callback)->
@@ -401,24 +429,22 @@ class App.Players.SilentAudioPlayer
     @silentmp3 = new Media fname, @onSuccess, @onError
     # url = 'http://192.168.1.10:3000/sound/silent.mp3'
     # @silentmp3 = new plugins.StreamAudio url, @onSuccess, @onError
-    @silentmp3.play
-      numberOfLoops: 10
 
     console.log 'SilentAudio#constructor end'
 
-  @play: ->
+  play: ->
     console.log 'silient play'
-    @silentmp3.play()
+    @silentmp3.play
+      numberOfLoops: 10
   
-  @pause: ->
+  pause: ->
     console.log 'silient pause'
     @silentmp3.pause()
 
-  @onSuccess: ->
+  onSuccess: ->
     console.log 'silient success'
-    @play()
 
-  @onError: ->
+  onError: ->
     console.log 'silent error'
 
 
@@ -451,21 +477,11 @@ class App.Views.FooterRenderer extends Backbone.View
   template: _.template '''
     <div data-role="footer" class="ui-bar"  data-position="fixed">
 
-    <% if (typeof list_id != 'undefined') { %>
-      <a id='button-play' href="#playing/<%= type %>/<%= list_id %>/<%= track_id %>" data-theme='b'>Play!</a>
-    <% } %>
+      <a id='button-play' data-theme='b' href='#'>Play!</a>
 
-    <% if (typeof play_external != 'undefined' && play_external ) { %>
-      <a href="<%= play_external %>" data-theme='b' target='_blank'>Play!</a>
-    <% } %>
-
-    <% if (typeof export_media != 'undefined' && export_media ) { %>
-      <a id='button-export' href="#" data-theme='b'>Export</a>
-    <% } %>
-
-    <% if (typeof playing != 'undefined' && playing) { %>
-      <a href="#playing" data-theme='b' style="float:right;margin-right:27px;">Now Playing...</a>
-    <% } %>
+      <% if (typeof playing != 'undefined' && playing) { %>
+        <a href="#playing" data-theme='b' style="float:right;margin-right:27px;">Now Playing...</a>
+      <% } %>
     </div>
   '''
 

@@ -67,7 +67,7 @@ describe "SevenMinutes integration test" do
     page.body.must_match /SevenMinutes/
     click_link 'config-save'
     page.body.must_match /7mtest/
-    click_link 'main'
+    click_link '7m_demo'
     sleep 1.0
     page.body.must_match /Deux Arabesques/
   end

@@ -1,34 +1,39 @@
 
 # 7m (SevenMinutes)
 
-SevenMinutes is an open source Audio Media Server for Mac. It makes a Net Radio Station from your iTunes contents.
+SevenMinutes is an open source Audio Media Server for Mac focusing on
+
+- ubiquitous listening 
+- remix a "Radio Program" from podcasts and your favorite musics
 
 It can 
 
-- distributes iTunes audio contents to web browsers (players as WebApp) / a dedicated iOS App / mp3 player apps(using m3u / pls playlist)
-- plays your playlists and mix a "Radio Program" for you from them
+- distribute iTunes audio contents to web browsers (players as WebApp) / a dedicated iOS app / mp3 player apps(supporting m3u playlist)
+- play your playlists and remix a "Radio Program" for you from them
 - sync bookmark and played date real-time to iTunes after playing
-- plays partially your long tracks 
+- play partially your long tracks 
 - export playlists / "Radio Program" as a combined mp3 file for Dropbox mobile apps to listen off line
-- reduce trafic by converting audio tracks to specified bit rate for slow 3G connection
+- reduce traffic by converting audio tracks to specified bit rate for slow 3G connection
 
 A "Radio Program" in SevenMinutes
 
 - uses iTunes playlists / smart playlists as source of audio tracks
 - picks up audio tracks from sources in specified duration or number of tracks
 - mixes them and create a new combined playlist in real time
-- refresh tracks on demand anytime, so you can listen new distrubted podcasts
-- cuts a long track to specified duration, limets track duration from one source
+- refresh tracks on demand anytime, so you can listen new distributed podcasts
+- cuts a long track to specified duration, limits track duration from one source
 
 So you can listen to your "Radio Program"s consists of talk (podcasts) and music anytime, anywhere on virtually every device you have.
 
+Start here -> https://github.com/essa/7m/wiki/GettingStarted
+
 ## Why "SevenMinutes" ?
 
-I subscribe many podcasts for lerning English and gathering news in tech domain. But most of them are too long for me to listen all because listening English contents requires much concentration for a non-native speaker.
+I subscribe many podcasts for learning English and gathering news in tech domain. But most of them are too long for me to listen all because listening English contents requires much concentration for a non-native speaker.
 
 I can listen for only "Seven Minutes" at most with enough concentration.
 
-I need to refresh myself listening my favarite songs some duration after listening podcasts.
+I need to refresh myself listening my favorite songs some duration after listening podcasts.
 
 So I tried a prototype version of this project and found it was real "Radio Station".
 
@@ -44,9 +49,9 @@ Now I am enjoying my personal "Radio" consists of "Seven Minutes" talks and favo
 
 SevenMinutes is consists of 
 
-- a web server with iTunes interface that distributes audio contents by http streaming
-- simple GUI front end for Mac
-- a Web App to play contents on PC/Mac browser
+- a web app with iTunes interface that distributes audio contents by http streaming
+- simple GUI front end for OS/X
+- a javascript player to play contents on PC/Mac browser
 - a real-time converter from iTunes playlists to m3u playlist for many mp3 players
 - a dedicated iOS App
 
@@ -58,13 +63,13 @@ SevenMinutes is distributed for end users as a Mac App with every module except 
 
 http://www.uncate.org/7m/
 
-In this mode, you can invoke it as a Mac desktop app just by clicking icon. See usage -> (under construction)
+In this mode, you can invoke it as a Mac desktop app just by clicking icon.
 
 Only requirement in this mode is sox.
 
 ### CUI mode
 
-SevenMinutes is distributed for power users and developers as a github repository.
+SevenMinutes is distributed for power users and developers as a github repository at https://github.com/essa/7m .
 
 You can checkout it and invoke it with MacRuby in a terminal window.
 
@@ -76,7 +81,7 @@ You can checkout it and invoke it with MacRuby in a terminal window.
 
 Mac OS/X Mountain Lion or higher.
 
-SevenMinutes is written in MacRuby, so it will not run in other os.
+The web app of SevenMinutes is written in MacRuby, so it will not run in other os.
 
 #### sox and ffmpeg
 
@@ -174,10 +179,9 @@ for testing JS
 
 Players are written in Coffeescript with backbone.js, jQuery mobile, phonegap.
 
-Most of sources are common in web app and native app for iOS (and comming Android app).
+Most of sources are common in web app and native app for iOS (and coming Android app).
 
-The player in iOS uses a phonegap plugin for streaming audio (AVPlayer).
-
+The player in iOS uses a phonegap plug-in for streaming audio (AVPlayer).
 
 ## Related Projects
 
@@ -195,6 +199,8 @@ You can connect to SevenMinutes across 3G using
 
 UPnP PortMapper
 http://upnp-portmapper.sourceforge.net/
+
+Caution: Currently, no consideration for security!!! Do it at your own risk!!!
 
 ## Status
 
@@ -217,13 +223,13 @@ It modifies 'bookmark', 'playedDate', 'playedCount', 'bookmarkable' attributes o
 - Simple authentication with Basic Auth
 - UPnP Integration
 - editing 7m.yml in GUI
-- plugin System for Radio Program
+- plug-in System for remixing "Radio Program"
 
 ## Credits
 
 ### Source imported in this repository
 
-- VolumeSlider phonegap plugin (https://github.com/phonegap/phonegap-plugins/tree/master/iPhone/VolumeSlider) -- ios/SevenMinutes/VolumeSlider.*
+- VolumeSlider phonegap plug-in (https://github.com/phonegap/phonegap-plugins/tree/master/iPhone/VolumeSlider) -- ios/SevenMinutes/VolumeSlider.*
 - jQuery -- cui.bundle/public/jslib/jquery-*
 - jQueryMobile -- cui.bundle/public/jslib/jquery-mobile
 - jPlayer -- cui.bundle/public/jslib/jplayer*
@@ -241,12 +247,12 @@ WebServer was modified from control_tower (https://github.com/MacRuby/ControlTow
 
 - cui.bundle/control_tower_ext.rb
 
-### Sample mp3 files for tests are public domain music and donwloaded from
-
-cui.bundle/spec/fixtures/*.mp3
+### Sample mp3 files for tests are public domain music and downloaded from
 
 Classical Music mp3 Free Download Historical Recordings Public Domain
 http://classicalmusicmp3freedownload.com/index.php?title=Main_Page
+
+cui.bundle/spec/fixtures/*.mp3
 
 ### icon files 
 

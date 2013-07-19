@@ -27,6 +27,7 @@
 
 #import "AppDelegate.h"
 #import "MainViewController.h"
+#import "StreamAudio.h"
 
 #import <Cordova/CDVPlugin.h>
 
@@ -77,7 +78,6 @@
 #else
         self.viewController = [[[MainViewController alloc] init] autorelease];
 #endif
-    self.viewController.useSplashScreen = YES;
 
     // Set your app's start page by setting the <content src='foo.html' /> tag in config.xml.
     // If necessary, uncomment the line below to override it.
@@ -129,6 +129,16 @@
 - (void)applicationDidReceiveMemoryWarning:(UIApplication*)application
 {
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
+}
+
+#pragma mark -
+#pragma mark Remote-control event handling
+- (void) remoteControlReceivedWithEvent: (UIEvent *) receivedEvent {
+    NSLog(@"AppDelegate remoteControlReceivedWithEvent");
+    CDVStreamAudio* audio = [CDVStreamAudio current];
+    if (audio != nil) {
+      [audio remoteControlReceivedWithEvent: receivedEvent];
+    }
 }
 
 @end

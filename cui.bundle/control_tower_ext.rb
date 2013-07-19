@@ -102,7 +102,6 @@ module ControlTowerExt
       @socket.close
     end
 
-
     private
 
     def parse!(connection, env)

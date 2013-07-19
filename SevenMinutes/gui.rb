@@ -9,6 +9,7 @@
 require 'control_tower_ext'
 require 'yaml'
 require 'logger'
+require 'fileutils'
 
 require 'version'
 require 'config'
@@ -25,17 +26,12 @@ module SevenMinutes
       template_path = File::join(SevenMinutes::base_dir, "7m.yml.sample.erb")
       path = File::join(SevenMinutes::Config::application_support_directory, "7m.yml")
       return if File::exists?(path)
-      File::mkdir_p SevenMinutes::Config::application_support_directory
+      FileUtils::mkdir_p SevenMinutes::Config::application_support_directory
       ITunes::init_itunes(SevenMinutes::base_dir)
-      playlists = []
-      ITunes::app.sources[0].playlists.map do |pl|
-        next if pl.name == 'ムービー'
-        next if pl.name == 'ライブラリ'
-        next if pl.name == 'テレビ番組'
-        next if pl.name == 'ミュージックビデオ'
-        next if pl.name == 'Genius'
-        playlists << pl.name
+      playlists = ITunes::Playlist::all.map do |pl|
+        pl.name
       end
+      p playlists
       File::open(template_path) do |tmpl|
         require 'erb'
         erb = ERB.new(tmpl.read)
@@ -55,6 +51,7 @@ module SevenMinutes
         mode: Config::GUI,
         logger: logger
       )
+      logger.open_logfile(conf[:logfile]) 
 
       ITunes::init_app(conf)
       RadioProgram::Program::init(conf, ITunes)
@@ -87,15 +84,53 @@ module SevenMinutes
         def initialize(tv)
           @tv = tv
           @logs = []
-          @max = 50
+          @max = 500
           @queue = Dispatch::Queue.main
+          @logfile = nil
         end
+
+        def open_logfile(logfile)
+          @logfile = logfile
+        end
+
+        LENGTH_OF_DATETIME = 14
 
         def write(str)
           @queue.async do
+            if @logfile
+              File::open(@logfile, 'a') do |f|
+                f.puts str
+              end
+            end
+
+            color = case str
+                    when / :I /
+                      NSColor::blueColor
+                    when / :D /
+                      NSColor::blackColor
+                    else
+                      NSColor::redColor
+                    end
+            attr_str = NSMutableAttributedString.alloc.initWithString(str+"\n")
+            attr_str.addAttribute(NSForegroundColorAttributeName,
+                value: NSColor.grayColor,
+                range: NSMakeRange(0, LENGTH_OF_DATETIME))
+            attr_str.addAttribute(NSForegroundColorAttributeName,
+                value: color,
+                range: NSMakeRange(LENGTH_OF_DATETIME, attr_str.length-LENGTH_OF_DATETIME))
+            @tv.insertText attr_str
+
             @logs << str
-            @logs.shift if @logs.size > @max
-            @tv.setString(@logs.join("\n"))
+            if @logs.size > @max
+              len = @tv.textStorage.string.each_line.first.size
+              @tv.textStorage.deleteCharactersInRange NSMakeRange(0, len)
+              @logs.shift 
+            end
+            
+            newScrollOrigin=NSMakePoint(0.0,10000.0)
+            @tv.scrollPoint(newScrollOrigin)
+
+            # @tv.setString(@logs.join("\n"))
             #@tv.insertText str
           end
         end
@@ -110,6 +145,10 @@ module SevenMinutes
         self.formatter = proc do |severity, datetime, progname, message|
           "#{datetime.strftime('%m-%dT%H:%M:%S ')}:#{severity[0]} #{message}"
         end
+      end
+
+      def open_logfile(logfile)
+        @dev.open_logfile(logfile)
       end
 
       def write(msg)

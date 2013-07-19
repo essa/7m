@@ -176,6 +176,86 @@ describe Utils::Sox do
   end
 end
 
+describe SevenMinutes::Utils::Refresher do
+  Refresher = SevenMinutes::Utils::Refresher
+  before do
+    @pl = Object.new 
+    @pl.instance_eval do
+      class << self 
+        attr_reader :tracks
+        def get_new_tracks
+          [
+            { persistentID: '0001', duration: 60.0 },
+            { persistentID: '0002', duration: 60.0 },
+            { persistentID: '0001', duration: 60.0 },
+          ].map do |t|
+            MockTrack.new t
+          end
+        end
+      end
+      @tracks = []
+    end
+    @pl.extend Refresher
+  end
+
+  it 'should refresh when @tracks is empty' do
+    @pl.refresh_if_needed!
+    @pl.tracks.size.must_equal 3
+  end
+  it 'should record refreshed_at and timestamp' do
+    now = Time.now
+    @pl.refresh_if_needed!(now: now)
+    @pl.refreshed_at.must_equal now
+    @pl.timestamp.must_equal now.to_i
+  end
+
+  it 'should not refresh when fresh' do
+    now = Time.now
+    @pl.refresh_if_needed!(now: now)
+    @pl.refresh_if_needed!(now: now + 1)
+    @pl.refreshed_at.must_equal now
+  end
+
+  it 'should refresh when forced' do
+    now = Time.now
+    @pl.refresh_if_needed!(now: now)
+    @pl.refresh_if_needed!(now: now + 1, force: true)
+    @pl.refreshed_at.must_equal now + 1
+  end
+
+  it 'should refresh when it dose not have enough tracks' do
+    now = Time.now
+    @pl.refresh_if_needed!(now: now)
+    @pl.refresh_if_needed!(now: now + 1, minimum_tracks: 2)
+    @pl.refreshed_at.must_equal now 
+    @pl.refresh_if_needed!(now: now + 1, minimum_tracks: 4)
+    @pl.refreshed_at.must_equal now + 1
+  end
+
+  it 'should refresh when it dose not have enough active tracks' do
+    now = Time.now
+    @pl.refresh_if_needed!(now: now)
+    @pl.tracks[0].played = true
+    @pl.refresh_if_needed!(now: now + 1, minimum_tracks: 2)
+    @pl.refreshed_at.must_equal now + 1
+  end
+
+  it 'should refresh when it dose not have enough duration' do
+    now = Time.now
+    @pl.refresh_if_needed!(now: now)
+    @pl.refresh_if_needed!(now: now + 1, minimum_duration: 170)
+    @pl.refreshed_at.must_equal now 
+    @pl.tracks[0].played = true
+    @pl.refresh_if_needed!(now: now + 2, minimum_duration: 170)
+    @pl.refreshed_at.must_equal now + 2
+  end
+
+  it 'should avoid duplicate id' do
+    @pl.refresh_if_needed!
+    @pl.tracks.map(&:persistentID).must_equal %w(0001 0002 0001_2)
+  end
+end
+
 describe SevenMinutes::Utils::Playable do
   Playable = SevenMinutes::Utils::Playable
   describe 'duration_left' do

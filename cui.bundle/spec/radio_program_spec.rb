@@ -189,7 +189,7 @@ describe "RadioProgram" do
       ids = program.tracks.map { |t| t.persistentID }
       ids.must_equal %w(0001 0002 1001)
 
-      program.refresh!
+      program.refresh!(clear: 1)
       program.tracks.size.must_equal 3
       ids = program.tracks.map { |t| t.persistentID }
       ids.must_equal %w(0003 0001 1001)
@@ -207,7 +207,7 @@ describe "RadioProgram" do
       ids = program.tracks.map { |t| t.persistentID }
       ids.must_equal %w(0001 0002 1001)
 
-      program.refresh!
+      program.refresh!(clear: 1)
       program.tracks.size.must_equal 3
       ids = program.tracks.map { |t| t.persistentID }
       ids.must_equal %w(0003 0001 1001)
@@ -226,7 +226,7 @@ describe "RadioProgram" do
       ids.must_equal %w(0001 0002 1001)
       program.tracks[1].pause_at.must_equal 30.0
 
-      program.refresh!
+      program.refresh!(clear: 1)
       program.tracks.size.must_equal 3
       ids = program.tracks.map { |t| t.persistentID }
       ids.must_equal %w(0003 0001 1001)
@@ -367,13 +367,13 @@ describe "RadioProgram" do
         { id: '0002', bookmark: nil, pause_at: 5},
         { id: '1001', bookmark: nil, pause_at: 20},
       ]
-      program.refresh!
+      program.refresh!(clear: 1)
       compare_tracks program.tracks, [
         { id: '0003', bookmark: nil, pause_at: 5},
         { id: '0001', bookmark: 5,   pause_at: 10},
         { id: '1001', bookmark: 20, pause_at: 40},
       ]
-      program.refresh!
+      program.refresh!(clear: 1)
       compare_tracks program.tracks, [
         { id: '0002', bookmark: 5, pause_at: 10},
         { id: '0003', bookmark: 5,   pause_at: 10},
@@ -474,16 +474,9 @@ describe "RadioProgram" do
       it 'should have name' do
         @program.name.must_equal 'program1'
       end
-      it 'should have refresh interval' do
-        @program.refresh_interval.must_equal 3600
-      end
       it 'should have 0 tracks' do
         @program.tracks.must_be_kind_of(Array)
         @program.tracks.size.must_equal 0
-      end
-      it 'should have program frames' do
-        @program.frames.must_be_kind_of(Array)
-        @program.frames.size.must_equal 1
       end
       it 'should symbolize_keys_recursive of config' do
         program = SevenMinutes::RadioProgram::Program.new ({
@@ -495,33 +488,6 @@ describe "RadioProgram" do
       end
     end
 
-    describe "Frame" do
-      it "should be initialized" do
-        @frame = @program.frames.first
-        @frame.must_be_kind_of(SevenMinutes::RadioProgram::Frame)
-        @frame.name.must_equal 'podcast'
-      end
-    end
-
-    describe "refresh_interval" do
-      it 'should be true after initialized' do
-        @program.need_refresh?.must_equal true
-      end
-      it 'should be false after refreshed' do
-        t = Time.now
-        @program.need_refresh?(t).must_equal true
-        @program.record_refresh(t)
-        @program.need_refresh?(t).must_equal false
-      end
-      it 'should be true after refresh_interval from refreshed' do
-        t = Time.now
-        @program.need_refresh?(t).must_equal true
-        @program.record_refresh(t)
-        @program.need_refresh?(t).must_equal false
-        @program.need_refresh?(t+3599).must_equal false
-        @program.need_refresh?(t+3600).must_equal true
-      end
-    end
     describe "refresh simple" do
       it 'should have tracks' do
         program = SevenMinutes::RadioProgram::Program.new @config, @g

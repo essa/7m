@@ -26,6 +26,7 @@ module SevenMinutes
     private
     def log(env, status, header, began_at)
       now = Time.now
+
       length = extract_content_length(header)
 
       @logger.info FORMAT % [
@@ -39,7 +40,14 @@ module SevenMinutes
         status.to_s[0..3],
         length,
         now - began_at ]
+
+      e = env['sinatra.error']
+      if e and not e.kind_of?(Sinatra::NotFound)
+        @logger.error e.to_s
+        @logger.error e.backtrace.join("\n")
+      end
     end
+
     def extract_content_length(headers)
       value = headers['Content-Length'] or return '-'
       value.to_s == '0' ? '-' : value
@@ -99,7 +107,7 @@ module SevenMinutes
       playlist = playlist_root(list).find(id)
       return 404 unless playlist
 
-      playlist.refresh_if_needed!(params[:refresh])
+      playlist.refresh_if_needed!(force: params[:refresh])
       content_type 'audio/mpegurl'
       Config::with_config(playlist.config) do
         tl = Utils::TrackList.new(playlist)
@@ -112,7 +120,7 @@ module SevenMinutes
       playlist = playlist_root(list).find(id)
       return 404 unless playlist
 
-      playlist.refresh_if_needed!(params[:refresh]) if playlist.kind_of?(Program)
+      playlist.refresh_if_needed!(force: params[:refresh]) 
       # playlist.refresh! if playlist.kind_of?(Program)
       content_type 'audio/x-mpegurl'
       Config::with_config(playlist.config) do
@@ -124,7 +132,8 @@ module SevenMinutes
     post %r{^/(programs|playlists)/(\w+)/refresh$} do
       list, id = params[:captures]
       playlist = playlist_root(list).find(id)
-      playlist.refresh!
+      p params
+      playlist.refresh!(params)
       { ok: true }.to_json
     end
 
@@ -159,9 +168,16 @@ module SevenMinutes
       list, id = params[:captures]
       playlist = playlist_root(list).find(id)
       if playlist
-        playlist.refresh_if_needed!(params[:refresh]) 
-        tl = Utils::TrackList.new(playlist)
-        tl.to_json_array.to_json
+        begin
+          playlist.refresh_if_needed!(force: params[:refresh]) 
+          tl = Utils::TrackList.new(playlist)
+          tl.to_json_array.to_json
+        rescue
+          logger = playlist.config[:logger]
+          logger.error $!
+          logger.error $@
+          halt 500
+        end
       else
         404
       end
@@ -232,34 +248,6 @@ module SevenMinutes
       end
     end
 
-    # post '/playlists/:playlist_id/tracks/:track_id/play' do
-      # track = find_track_in_playlist(params)
-      # options = JSON.parse(request.body.read)
-      # track.play options
-      # { ok: true }.to_json
-    # end
-
-    # delete '/playlists/:playlist_id/tracks/:track_id' do
-      # track = find_track_in_playlist(params)
-      # return 404 unless track
-      # puts "delete not supported now"
-      # # track.delete
-      # { ok: true }.to_json
-    # end
-
-    # # for sourcemap debugging
-    # get '/cui.bundle/*' do
-      # x_send_file  params[:splat].join('/')
-    # end
-
-    # get '/public/*' do
-      # x_send_file  (%w(public) + params[:splat]).join('/')
-    # end
-
-    # get '/app.js' do
-      # x_send_file  'public/js/app.js'
-    # end
-
     def find_track_in_playlist(params)
       list, list_id, track_id = params[:captures]
       playlist = playlist_root(list).find(list_id)
@@ -267,7 +255,7 @@ module SevenMinutes
         # logger = playlist.config[:logger]
         # logger.debug "tracks #{playlist.name} #{playlist.tracks.map(&:name).inspect}" if logger
         playlist.tracks.find do |t|
-          track_id == t.persistentID
+          t.validate_handle and track_id == t.persistentID
         end
       else
         nil

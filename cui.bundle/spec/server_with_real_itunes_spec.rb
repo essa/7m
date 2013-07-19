@@ -44,7 +44,6 @@ describe "Server Test with racktest with real iTunes" do
 
   before(:each) do
     SevenMinutes::RadioProgram::Program::init_manager
-    SevenMinutes::ITunes::cache.clear
   end
 
   describe 'get "/"' do

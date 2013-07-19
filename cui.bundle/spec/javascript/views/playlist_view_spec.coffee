@@ -9,14 +9,23 @@ describe 'PlaylistView', ->
       <div data-role="content"></div>
     </div>
     '''
+    $.mobile = 
+      popup: {}
     app = 
+      baseUrl: -> '/'
       hasTrackPlaying: -> false
+      trigger: sinon.spy()
     @model = new Playlist({}, app: app) 
+    sinon.stub @model, 'refresh', ->
+    sinon.stub @model.tracks, 'fetch', ->
     @model.set 'name', 'list 111'
     @view = new PlaylistView
       app: app
       model: @model
       el: $('#playlist')
+
+  afterEach ->
+    @model.refresh.restore()
 
   it 'should be initialized', ->
     expect(@view).toEqual jasmine.any(PlaylistView)
@@ -28,6 +37,36 @@ describe 'PlaylistView', ->
       expect(el).toContainHtml  '<h1>list 111</h1>'
       expect(el).toContain 'a[data-role="button"][href="#"][data-icon="arrow-l"]'
       expect(el).toContain 'a[data-role="button"][data-icon="refresh"]'
+
+  describe 'refresh button', ->
+    describe 'when tapped', ->
+      beforeEach ->
+        @view.render().$el.find('#button-list-refresh').trigger('taphold')
+
+      it 'should sync the tracks', ->
+        expect(@model.tracks.fetch).toHaveBeenCalled()
+
+  describe 'refresh-panel', ->
+    beforeEach ->
+      $.fn.popup = sinon.spy()
+      @view.render()
+      $('#button-list-refresh').trigger('tap')
+
+    it 'should have buttons for refreshing ', ->
+      expect(@view.el).toContain 'div[data-role="popup"]'
+      expect($.fn.popup).toHaveBeenCalled()
+      panel = @view.$el.find('div[data-role="popup"]')
+      expect(panel).toContainText 'Clear and Refresh'
+      expect(panel).toContainText 'Refresh and Play'
+
+    it 'should clear and refresh', ->
+      $('#button-list-clear-and-refresh').trigger('tap')
+      expect(@model.refresh).toHaveBeenCalled()
+      
+    it 'should refresh and play', ->
+      $('#button-list-refresh-and-play').trigger('tap')
+      expect(@view.app.trigger).toHaveBeenCalled()
+
 """
   describe 'contents', ->
     it 'should render programs', ->

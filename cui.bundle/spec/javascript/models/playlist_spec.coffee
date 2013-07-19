@@ -38,10 +38,40 @@ describe 'Playlist', ->
       expect(args.type).toEqual 'POST'
       expect(args.url).toEqual 'http://base/playlists/123/refresh'
 
-  describe 'recordPlayed', ->
+
+  describe 'nextUnplayed', ->
     beforeEach ->
       _.each [111, 222, 333], (id)=>
         console.log id
+        @playlist.tracks.add
+          id: id
+        ,
+          app: {}
+
+    it 'should return first track if unplayed', ->
+      t = @playlist.nextUnplayed()
+      expect(t.id).toEqual 111
+
+    it 'should return second track if the first is played', ->
+      @playlist.tracks.at(0).set('played', true)
+      t = @playlist.nextUnplayed()
+      expect(t.id).toEqual 222
+
+    it 'should return null if all tracks are played', ->
+      @playlist.tracks.at(0).set('played', true)
+      @playlist.tracks.at(1).set('played', true)
+      @playlist.tracks.at(2).set('played', true)
+      t = @playlist.nextUnplayed()
+      expect(t).toEqual null
+
+    it 'should return next unplayed if starting point was specified', ->
+      @playlist.tracks.at(1).set('played', true)
+      t = @playlist.nextUnplayed(@playlist.tracks.at(0))
+      expect(t.id).toEqual 333
+
+  describe 'recordPlayed', ->
+    beforeEach ->
+      _.each [111, 222, 333], (id)=>
         @playlist.tracks.add
           id: id
           path: "playlists/123/tracks/#{id}"

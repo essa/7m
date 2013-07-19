@@ -84,7 +84,7 @@ describe 'MediaManager', ->
     describe 'ClientManagedMM', ->
       beforeEach ->
         @mmc = new ClientManagedMM(@playing, @player)
-        @playing.trigger 'playTrack', @list, @track, 128
+        @playing.trigger 'playTrack', @list, @track, bps: 128
 
       it 'should play track', ->
         expect(@player.play.lastCall.args[0]).toEqual 'http://mock.server/playlists/123/track/456/media/128?prepareNext=no'
@@ -92,7 +92,7 @@ describe 'MediaManager', ->
     describe 'ServerManagedMM', ->
       beforeEach ->
         @mms = new ServerManagedMM(@playing, @player)
-        @playing.trigger 'playTrack', @list, @track, 128
+        @playing.trigger 'playTrack', @list, @track, bps: 128
 
       it 'should play track', ->
         expect(@player.play.lastCall.args[0]).toEqual 'http://mock.server/playlists/123/track/456/media/128/10-'
@@ -100,10 +100,32 @@ describe 'MediaManager', ->
     describe 'ListMM', ->
       beforeEach ->
         @mml = new ListMM(@playing, @player)
-        @playing.trigger 'playTrack', @list, @track, 128
+        @playing.trigger 'playTrack', @list, @track, bps: 128
 
       it 'should play track', ->
         expect(@player.play.lastCall.args[0]).toEqual 'http://mock.server/playlists/123/media/128'
+
+  describe 'onPlayTrack full', ->
+    beforeEach ->
+      @list = new App.Models.Playlist 
+        path: 'playlists/123'
+      ,
+        app: @app
+
+      @track = new App.Models.Track 
+        path: 'playlists/123/track/456'
+        bookmark: 10
+        posInList: 20
+      ,
+        app: @app
+
+    describe 'ServerManagedMM', ->
+      beforeEach ->
+        @mms = new ServerManagedMM(@playing, @player)
+        @playing.trigger 'playTrack', @list, @track, bps: 128, full: true
+
+      it 'should play track', ->
+        expect(@player.play.lastCall.args[0]).toEqual 'http://mock.server/playlists/123/track/456/media/128'
 
   describe 'onTimeUpdate', ->
 
@@ -123,7 +145,7 @@ describe 'MediaManager', ->
         @mms = new ServerManagedMM(@playing, @player)
         @timeupdate = sinon.spy()
         @playing.on 'timeupdate', @timeupdate
-        @playing.trigger 'playTrack', @list, @track, 128
+        @playing.trigger 'playTrack', @list, @track, bps: 128
         @mms.onTimeUpdate(0)
 
       it 'should trigger timeupdate', ->
@@ -133,7 +155,7 @@ describe 'MediaManager', ->
     describe 'ListMM', ->
       beforeEach ->
         @mml = new ListMM(@playing, @player)
-        @playing.trigger 'playTrack', @list, @track, 128
+        @playing.trigger 'playTrack', @list, @track, bps: 128
 
       it 'should trigger timeupdate', ->
         @timeupdate = sinon.spy()

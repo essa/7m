@@ -1,17 +1,18 @@
 
 loglevel: INFO
-cursor_file: cursor.json
 port: 16017
 programs:
-  - name: main
-    refresh_interval: 3600
+  - name: 7m_demo
+    m3u:
+      minimum_tracks: 3
+      minimum_duration: 300
     frames:
     <% playlists.each do |pl| %>
       - name: <%= pl %>
         source: <%= pl %>
         max_track: 3
-        max_duration: 420
-        max_duration_per_track: 300
+        duration: 60-180
+        max_duration_per_track: 20
     <% end %>
 
 

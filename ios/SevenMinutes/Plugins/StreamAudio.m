@@ -17,6 +17,11 @@
 
 @implementation CDVStreamAudio
 
+static CDVStreamAudio* currentInstance = nil;
++ (CDVStreamAudio *)current { 
+  return currentInstance; 
+}
+
 @synthesize soundCache, avSession;
 
 // returns whether or not audioSession is available - creates it if necessary
@@ -76,7 +81,6 @@
     NSDictionary* options = [command.arguments objectAtIndex:2 withDefault:nil];
 
     BOOL bError = NO;
-    NSString* jsString = nil;
 
     CDVStreamAudioFile* audioFile = [self audioFileForResource:resourcePath withId:mediaId doValidation:YES forRecording:NO];
     if ((audioFile != nil) && (audioFile.resourceURL != nil)) {
@@ -96,8 +100,12 @@
           NSLog(@"Unable to play audio: %@", [err localizedFailureReason]);
           bError = YES;
         }
+        self.avSession.delegate = self;
+        self.mediaId = mediaId;
+        [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
       }
       [audioFile play];
+      currentInstance = self;
       /*
       [[NSNotificationCenter defaultCenter] addObserver:self
                                                selector:@selector(playerItemDidReachEnd:)
@@ -109,6 +117,39 @@
     }
     return;
 }
+
+- (void)beginInterruption {
+    NSLog(@"StreamAudio beginInterruption");
+    NSString* jsString = [NSString stringWithFormat:@"%@(\"%@\",%d,%d);", @"plugins.StreamAudio.onStatus", self.mediaId, MEDIA_COMMAND, MEDIA_BEGININTERACTION];
+    [self.commandDelegate evalJs:jsString];
+}
+
+- (void)endInterruptionWithFlags:(NSUInteger)flags {
+    NSLog(@"StreamAudio endInterruptionWithFlags");
+    if (flags == AVAudioSessionInterruptionFlags_ShouldResume){
+      NSString* jsString = [NSString stringWithFormat:@"%@(\"%@\",%d,%d);", @"plugins.StreamAudio.onStatus", self.mediaId, MEDIA_COMMAND, MEDIA_ENDINTERACTION];
+      [self.commandDelegate evalJs:jsString];
+    }
+}
+
+- (void)inputIsAvailableChanged:(BOOL)isInputAvailable{
+    NSLog(@"StreamAudio inputIsAvailableChanged");
+    NSString* jsString = [NSString stringWithFormat:@"%@(\"%@\",%d,%d);", @"plugins.StreamAudio.onStatus", self.mediaId, MEDIA_COMMAND, MEDIA_INPUTCHANGED];
+    [self.commandDelegate evalJs:jsString];
+}
+
+// Respond to remote control events
+#pragma mark -
+#pragma mark Remote-control event handling
+- (void) remoteControlReceivedWithEvent: (UIEvent *) receivedEvent {
+    NSLog(@"StreamAudio remoteControlReceivedWithEvent");
+
+    if (receivedEvent.type == UIEventTypeRemoteControl) {
+      NSString* jsString = [NSString stringWithFormat:@"%@(\"%@\",%d,%d,%d);", @"plugins.StreamAudio.onStatus", self.mediaId, MEDIA_COMMAND, MEDIA_REMOTECONTROL, receivedEvent.subtype];
+      [self.commandDelegate evalJs:jsString];
+    }
+}
+
 
 - (void)playerItemDidReachEnd:(NSNotification *)notification {
 
@@ -126,8 +167,14 @@
     if ((audioFile != nil) && (audioFile.player != nil)) {
         NSLog(@"Stopped playing audio sample '%@'", audioFile.resourcePath);
         [audioFile.player pause]; // AVPlayer doesn't support stop
+        [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
         jsString = [NSString stringWithFormat:@"%@(\"%@\",%d,%d);", @"plugins.StreamAudio.onStatus", mediaId, MEDIA_STATE, MEDIA_STOPPED];
     }  // ignore if no media playing
+
+    if (currentInstance == self) {
+        currentInstance = nil;
+    }
+
     if (jsString) {
         [self.commandDelegate evalJs:jsString];
     }
@@ -208,6 +255,7 @@
                 self.avSession = nil;
             }
             [[self soundCache] removeObjectForKey:mediaId];
+            [audioFile invalidateTimer];
             NSLog(@"Media with id %@ released", mediaId);
         }
     }
@@ -244,8 +292,7 @@
     NSString* errMsg = @"";
     NSString* jsString = nil;
     CDVStreamAudioFile* audioFile = nil;
-    NSURL* resourceURL = nil;
-
+ 
     if ([self soundCache] == nil) {
         [self setSoundCache:[NSMutableDictionary dictionaryWithCapacity:1]];
     } else {
@@ -288,10 +335,12 @@
 - (void)dealloc
 {
     [[self soundCache] removeAllObjects];
+    [super dealloc];
 }
 
 - (void)onReset
 {
+    /*
     for (CDVStreamAudioFile* audioFile in [[self soundCache] allValues]) {
         if (audioFile != nil) {
             if (audioFile.player != nil) {
@@ -299,6 +348,7 @@
             }
         }
     }
+    */
 
     [[self soundCache] removeAllObjects];
 }
@@ -315,7 +365,7 @@
   NSLog(@"CDVStreamAudioFile play");
   player = [[CDVStreamAudioPlayer alloc]initWithURL:resourceURL];
   [player addObserver:self forKeyPath:@"status" options:0 context:nil];
-  timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateProgress:) userInfo:nil repeats:YES];
+  self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateProgress:) userInfo:nil repeats:YES];
       
   [player play];
   NSLog(@"StreamAudio startPlayingAudio played mediaId=%@", self.mediaId);
@@ -339,7 +389,7 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
 
     if (object == player && [keyPath isEqualToString:@"status"]) {
-      CDVMediaStates media_status;
+      CDVMediaStates media_status = 0;
         if (player.status == AVPlayerStatusFailed) {
             NSLog(@"AVPlayer Failed");
             media_status = MEDIA_STOPPED;
@@ -361,11 +411,11 @@
   NSLog(@"Finished playing audio '%@' %@", resourcePath, self.mediaId);
 
   [[NSNotificationCenter defaultCenter] removeObserver:self];
-  [timer invalidate];
+  [self invalidateTimer];
 
-  CDVStreamAudio *parent = (CDVStreamAudio *) self.parent;
-  if (parent.avSession) {
-        [parent.avSession setActive:NO error:nil];
+  CDVStreamAudio *p = (CDVStreamAudio *) self.parent;
+  if (p.avSession) {
+        [p.avSession setActive:NO error:nil];
   }
 
   NSString *jsString = [NSString stringWithFormat:@"%@(\"%@\",%d,%d);", @"plugins.StreamAudio.onStatus", self.mediaId, MEDIA_STATE, MEDIA_STOPPED];
@@ -373,6 +423,14 @@
   NSLog(@"called evalJs '%@'", jsString);
 }
 
+- (void)invalidateTimer
+{
+  if (self.timer != nil) {
+    NSLog(@"invalidateTimer");
+    [self.timer invalidate];
+    self.timer = nil;
+  }
+}
 
 @end
 @implementation CDVStreamAudioPlayer
