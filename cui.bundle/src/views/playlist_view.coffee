@@ -6,8 +6,8 @@ class App.Views.PlaylistView extends Backbone.View
   events:
     "tap #button-play" : "play"
     "taphold #button-play" : "show_play_panel"
-    "tap #button-list-refresh" : "sync_list"
-    "taphold #button-list-refresh" : "show_refresh_panel"
+    "tap #button-list-refresh" : "show_refresh_panel"
+    "taphold #button-list-refresh" : "sync_list"
     "popupafterclose #refresh-panel": "on_close_refresh_panel"
     "popupafterclose #play-panel": "on_close_play_panel"
 
