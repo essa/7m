@@ -168,9 +168,16 @@ module SevenMinutes
       list, id = params[:captures]
       playlist = playlist_root(list).find(id)
       if playlist
-        playlist.refresh_if_needed!(force: params[:refresh]) 
-        tl = Utils::TrackList.new(playlist)
-        tl.to_json_array.to_json
+        begin
+          playlist.refresh_if_needed!(force: params[:refresh]) 
+          tl = Utils::TrackList.new(playlist)
+          tl.to_json_array.to_json
+        rescue
+          logger = playlist.config[:logger]
+          logger.error $!
+          logger.error $@
+          halt 500
+        end
       else
         404
       end
