@@ -19,7 +19,7 @@ class App.Views.PlayerUIView extends Backbone.View
         <div style='font-size: small'>
           <span class='artist'><%= artist %></span>
         </div>
-        <div style='font-size: xx-large'>
+        <div style='font-size: xx-large;height: 60px;white-space: nowrap;'>
           <span class='name'><%= name %></span>
         </div>
         <div style='font-size: small'>
@@ -42,6 +42,9 @@ class App.Views.PlayerUIView extends Backbone.View
         <img id="button-skip" src='./images/Skip-forward64.png' /> 
         <img id="button-stop" src='./images/Stop64.png' /> 
       </div>
+      <div style='text-align: center; margin: 10px;'>
+        <a href='<%= track_link %>'>show track infomation</a>
+      </div>
     </div>
   ''' 
 
@@ -59,10 +62,14 @@ class App.Views.PlayerUIView extends Backbone.View
     attrs = @model.toJSON()
     attrs.bookmark = @hhmmss(attrs.bookmark || 0)
     attrs.pause_at = @hhmmss(attrs.pause_at || attrs.duration || 0)
+    attrs.track_link =  "##{@model.list.type}/#{@model.list.id}/tracks/#{@model.track.id}" if @model.list and @model.track
     @$el.html @template(attrs)
     # $content = @$el.find('div[data-role="content"]')
     # $content.trigger 'create'
     @render_header()
+    if @model.get('status') == App.Status.PLAYING
+      $('.name').marquee
+        width: '100%'
 
     # unless @$el.hasClass('ui-page-active')
     setTimeout =>

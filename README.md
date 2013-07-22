@@ -235,6 +235,8 @@ It modifies 'bookmark', 'playedDate', 'playedCount', 'bookmarkable' attributes o
 - jPlayer -- cui.bundle/public/jslib/jplayer*
 - backbone.js -- cui.bundle/public/jslib/backbone.js
 - underscore.js -- cui.bundle/public/jslib/underscore.js
+- rateit -- http://rateit.codeplex.com/ cui/public/jslib/jquery.rateit.min.js
+- jquery.marquee -- http://remysharp.com/2008/09/10/the-silky-smooth-marquee/ cui/public/jslib/jquery.marquee.js
 
 ### Sources modified from other projects.
 
