@@ -255,6 +255,7 @@ module SevenMinutes
       end
 
       def update(param)
+        @handle.rating = param['rating'] if param['rating']
         @handle.bookmarkable = param['bookmarkable'] if param['bookmarkable']
         @handle.bookmark = param['bookmark'] if param['bookmark']
         @handle.playedCount = param['playedCount'] if param['playedCount']

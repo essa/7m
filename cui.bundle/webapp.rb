@@ -188,6 +188,10 @@ module SevenMinutes
 
     route 'PATCH', %r{^/(programs|playlists)/(\w+)/tracks/(\w+)$} do
       track = find_track_in_playlist(params)
+      unless track
+        list, list_id, track_id = params[:captures]
+        track = ITunes::Track::find(track_id)
+      end
       if track
         body = JSON.parse(request.body.read)
         p body
