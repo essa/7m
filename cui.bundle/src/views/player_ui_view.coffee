@@ -29,22 +29,43 @@ class App.Views.PlayerUIView extends Backbone.View
           <span class='time-range'><%= bookmark %>-><%= pause_at %></span>
         </div>
         <div style='font-size: small'>
+          <div style='margin-right: 50px'>
+            <input type="range" name="time-slider" id="time-slider" value="0" min="0" max="100" data-highlight="true" data-mini="true" />
+          </div>
           <span class='currentTime'><%= '00:00:00/00:00:00' %></span>
         </div>
       </div>
-      <div style='text-align: center; margin: 10px;'>
-        <img id="button-skip30sec" src='./images/Fast-forward64.png' /> 
-        <% if (status == App.Status.PLAYING) { %>
-          <img id="button-pause" src='./images/Pause64.png' />
-        <% } else { %>
-          <img id="button-continue" src='./images/Play64.png' /> 
-        <% } %>
-        <img id="button-skip" src='./images/Skip-forward64.png' /> 
-        <img id="button-stop" src='./images/Stop64.png' /> 
+      <div class='ui-grid-c'>
+        <div class='ui-block-a'>
+          <a data-role='button' style='width: 100%;' >
+            <img id="button-skip30sec" src='./images/Fast-forward32.png'/> 
+          </a>
+        </div>
+        <div class='ui-block-b'>
+          <a data-role='button' style='width: 100%;'>
+          <% if (status == App.Status.PLAYING) { %>
+              <img id="button-pause" src='./images/Pause32.png' />
+          <% } else { %>
+            <img id="button-continue" src='./images/Play32.png' /> 
+          <% } %>
+          </a>
+        </div>
+        <div class='ui-block-c'>
+          <a data-role='button' style='width: 100%;'>
+            <img id="button-skip" src='./images/Skip-forward32.png' /> 
+          </a>
+        </div>
+        <div class='ui-block-d'>
+          <a data-role='button' style='width: 100%;'>
+            <img id="button-stop" src='./images/Stop32.png' /> 
+          </a>
+        </div>
       </div>
-      <div style='text-align: center; margin: 10px;'>
-        <a href='<%= track_link %>'>show track infomation</a>
-      </div>
+      <% if (track_link != null) { %>
+        <div style='text-align: center; margin: 10px;'>
+          <a href='<%= track_link %>'>show track infomation</a>
+        </div>
+      <% } %>
     </div>
   ''' 
 
@@ -54,6 +75,7 @@ class App.Views.PlayerUIView extends Backbone.View
     "click #button-stop" : "stop"
     "click #button-skip" : "skip"
     "click #button-skip30sec" : "skip30sec"
+    'mouseup .ui-slider-handle': "seekRequest"
 
   render: ->
     console.log 'PlayerUIView#render'
@@ -62,7 +84,9 @@ class App.Views.PlayerUIView extends Backbone.View
     attrs = @model.toJSON()
     attrs.bookmark = @hhmmss(attrs.bookmark || 0)
     attrs.pause_at = @hhmmss(attrs.pause_at || attrs.duration || 0)
+    attrs.track_link = null
     attrs.track_link =  "##{@model.list.type}/#{@model.list.id}/tracks/#{@model.track.id}" if @model.list and @model.track
+    console.log 'PlayerUIView#render template', attrs
     @$el.html @template(attrs)
     # $content = @$el.find('div[data-role="content"]')
     # $content.trigger 'create'
@@ -71,11 +95,14 @@ class App.Views.PlayerUIView extends Backbone.View
       $('.name').marquee
         width: '100%'
 
+    $('#time-slider').hide()
+    @setTimeSlider(0)
     # unless @$el.hasClass('ui-page-active')
     setTimeout =>
       @onTimeUpdate(@currentSecond)
       @$el.trigger "pagecreate" 
     , 1
+    console.log 'PlayerUIView#render end'
 
     this
 
@@ -117,6 +144,43 @@ class App.Views.PlayerUIView extends Backbone.View
     @currentSecond = pos 
     @currentTime = "#{@hhmmss(pos)}/#{@hhmmss(@model.get('duration'))}"
     @$el.find('.currentTime').html @currentTime
+    @setTimeSlider(pos)
+
+  setTimeSlider: (pos)->
+    return unless $('#time-slider').hasClass('ui-slider-input')
+    duration = parseInt(@model.get('duration'))
+    bookmark = parseInt(@model.get('bookmark'))
+    pause_at = parseInt(@model.get('pause_at'))
+    if bookmark > 0  
+      if pause_at > 0
+        duration = pause_at - bookmark
+      else
+        duration = duration - bookmark
+    else
+      if pause_at > 0
+        duration = pause_at
+    v = (pos - bookmark)*100.0/duration
+    if v >= 0 and v <= 100
+      $('#time-slider').val(v).slider('refresh')
+
+  seekRequest: (e)->
+    v = $('#time-slider').val()
+    console.log 'seekRequest', v
+    duration = parseInt(@model.get('duration'))
+    bookmark = parseInt(@model.get('bookmark'))
+    pause_at = parseInt(@model.get('pause_at'))
+    if bookmark > 0  
+      if pause_at > 0
+        duration = pause_at - bookmark
+      else
+        duration = duration - bookmark
+    else
+      if pause_at > 0
+        duration = pause_at
+
+    t = duration * v /100.0 + bookmark
+    @model.trigger('seekRequest', t)
+
 
   hhmmss: (s)->
       sec_numb = parseInt(s, 10)
