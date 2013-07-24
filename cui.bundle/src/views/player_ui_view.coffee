@@ -92,8 +92,9 @@ class App.Views.PlayerUIView extends Backbone.View
     # $content.trigger 'create'
     @render_header()
     if @model.get('status') == App.Status.PLAYING
+      console.log $(window).width()
       $('.name').marquee
-        width: '100%'
+        width: Math.min(570, $(window).width())
 
     $('#time-slider').hide()
     @setTimeSlider(0)

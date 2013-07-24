@@ -190,7 +190,7 @@ module SevenMinutes
       track = find_track_in_playlist(params)
       unless track
         list, list_id, track_id = params[:captures]
-        track = ITunes::Track::find(track_id)
+        track = ITunes::Track::find(nil, track_id)
       end
       if track
         body = JSON.parse(request.body.read)

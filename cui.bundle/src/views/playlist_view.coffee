@@ -271,8 +271,11 @@ class App.Views.PlaylistView extends Backbone.View
 
     refresh_and_play: (e)->
       e.preventDefault()
-      @app.trigger 'playRequest', @model
-      @closePanel()
+      @model.refresh
+        clear: true
+        success: =>
+          @app.trigger 'playRequest', @model
+          @closePanel()
 
     closePanel: ->
       @$el.popup 'close'
