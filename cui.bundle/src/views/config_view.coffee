@@ -110,8 +110,7 @@ class App.Views.ConfigView extends Backbone.View
       server_port: @$el.find('#server-port').val()
       bps: bps
       face: face
-    alert('save end')
-    App.router.navigate('playlists', trigger: true)
+    App.router.navigate('', trigger: true)
 
   reset: ->
     @model.resetToDefault()
