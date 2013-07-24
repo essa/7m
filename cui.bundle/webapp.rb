@@ -168,16 +168,9 @@ module SevenMinutes
       list, id = params[:captures]
       playlist = playlist_root(list).find(id)
       if playlist
-        begin
-          playlist.refresh_if_needed!(force: params[:refresh]) 
-          tl = Utils::TrackList.new(playlist)
-          tl.to_json_array.to_json
-        rescue
-          logger = playlist.config[:logger]
-          logger.error $!
-          logger.error $@
-          halt 500
-        end
+        playlist.refresh_if_needed!(force: params[:refresh]) 
+        tl = Utils::TrackList.new(playlist)
+        tl.to_json_array.to_json
       else
         404
       end
@@ -195,6 +188,10 @@ module SevenMinutes
 
     route 'PATCH', %r{^/(programs|playlists)/(\w+)/tracks/(\w+)$} do
       track = find_track_in_playlist(params)
+      unless track
+        list, list_id, track_id = params[:captures]
+        track = ITunes::Track::find(nil, track_id)
+      end
       if track
         body = JSON.parse(request.body.read)
         p body

@@ -416,6 +416,9 @@ describe SevenMinutes::Utils::TrackList do
       def t.to_json_hash 
         to_hash.symbolize_keys_recursive
       end
+      def t.validate_handle
+        true
+      end
     end
     @tl = TrackList.new(@list)
     a = @tl.to_json_array

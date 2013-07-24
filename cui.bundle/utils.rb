@@ -251,8 +251,9 @@ module SevenMinutes
 
 
       def to_json_array
-        tracks = @list.tracks.map do |t|
+        tracks = @list.tracks.select do |t|
           t.validate_handle
+        end.map do |t|
           t.to_json_hash
         end
         set_prev_next(tracks)

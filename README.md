@@ -6,6 +6,9 @@ SevenMinutes is an open source Audio Media Server for Mac focusing on
 - ubiquitous listening 
 - remix a "Radio Program" from podcasts and your favorite musics
 
+[slide](http://www.uncate.org/7m/slide/7m.html#/)
+[日本語](https://github.com/essa/7m/blob/master/READMEJA.md)
+
 It can 
 
 - distribute iTunes audio contents to web browsers (players as WebApp) / a dedicated iOS app / mp3 player apps(supporting m3u playlist)
@@ -235,6 +238,8 @@ It modifies 'bookmark', 'playedDate', 'playedCount', 'bookmarkable' attributes o
 - jPlayer -- cui.bundle/public/jslib/jplayer*
 - backbone.js -- cui.bundle/public/jslib/backbone.js
 - underscore.js -- cui.bundle/public/jslib/underscore.js
+- rateit -- http://rateit.codeplex.com/ cui/public/jslib/jquery.rateit.min.js
+- jquery.marquee -- http://remysharp.com/2008/09/10/the-silky-smooth-marquee/ cui/public/jslib/jquery.marquee.js
 
 ### Sources modified from other projects.
 

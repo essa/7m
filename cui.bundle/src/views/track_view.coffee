@@ -18,6 +18,10 @@ class App.Views.TrackView extends Backbone.View
     <div data-role="content">
       <div id='popup-div' />
       <div id='items' class='ui-grid-a'>
+        <div style='font-size: small' class='ui-block-a'>Rateing:</div>
+        <div class='ui-block-b'>
+          <div class='rateit' data-rateit-step='1.0' />
+        </div>
         <% for(i = 0; i< props.length;i++) { %>
           <div style='font-size: small' class='ui-block-a'><%= props[i][0] %>:</div>
           <div class='ui-block-b'><%= props[i][1] %></div>
@@ -44,11 +48,16 @@ class App.Views.TrackView extends Backbone.View
       [ 'playedCount', @model.get('playedCount') ],
       [ 'playedDate', @model.get('playedDate') ],
       [ 'original bitrate', @model.get('bitRate') ],
-      [ 'rating', @model.get('rating') ],
     ]
     @$el.html @template(attrs)
+    $('.rateit').rateit
+      value: parseInt(@model.get('rating'))/20
+
     @renderHeader()
     @renderFooter() 
+    setTimeout =>
+      @$el.trigger("pagecreate")
+    , 10
 
     this
 
@@ -87,6 +96,17 @@ class App.Views.TrackView extends Backbone.View
         seconds = "0"+seconds
       hours+':'+minutes+':'+seconds
 
+  rated: (e, value)->
+    console.log 'rated', value
+    @model.save
+      rating: value*20
+    ,
+      patch: true
+
+  reset_rate: (e)->
+    @rated(e, 0)
+
+
   close: ->
     console.log 'TrackView#close'
     @stopListening()
@@ -98,6 +118,8 @@ class App.Views.TrackViewForEmbendedPlayer extends App.Views.TrackView
     "tap #button-play" : "play"
     "taphold #button-play" : "show_play_panel"
     "popupafterclose #track-play-panel": "on_close_play_panel"
+    "rated .rateit": "rated"
+    "reset .rateit": "reset_rate"
 
   play: (e)->
     e.preventDefault()
@@ -182,6 +204,8 @@ class App.Views.TrackViewForExternalPlayer extends App.Views.TrackView
   events:
     "tap #button-play" : "show_play_panel"
     "popupafterclose #track-play-panel": "on_close_play_panel"
+    "rated .rateit": "rated"
+    "reset .rateit": "reset_rate"
 
   show_play_panel: (e)->
     e.preventDefault()

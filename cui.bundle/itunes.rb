@@ -141,11 +141,10 @@ module SevenMinutes
       end
 
       def get_new_tracks
-        tracks_limit = ITunes::conf[:tracks_limit] || 100
+        tracks_limit = ITunes::conf[:tracks_limit] || 30
         cnt = 0
         tracks = []
-        @handle.tracks.map do |t|
-          break if cnt > tracks_limit
+        @handle.tracks[0..tracks_limit].each do |t|
           cnt += 1
           tt = Track.new(self, t.persistentID)
           tracks << tt if tt.handle
@@ -178,6 +177,9 @@ module SevenMinutes
       def_delegators :@handle, :'bookmark=', :'bookmarkable=', :'playedDate=', :'playedCount='
 
       def self.find(playlist_id, track_id)
+        unless playlist_id
+          return new(nil, track_id)
+        end
         pl = Playlist.find(playlist_id)
         return nil unless pl
 
@@ -230,9 +232,6 @@ module SevenMinutes
       def to_json_hash(options={})
         h = {
           id: persistentID,
-          path: "playlists/#{self.parent.persistentID}/tracks/#{persistentID}",
-          access_path: "playlists/#{self.parent.persistentID}/tracks/#{persistentID}",
-          parent_path: "playlists/#{self.parent.persistentID}",
           name: name,
           bookmarkable: bookmarkable,
           bookmark: bookmark,
@@ -245,6 +244,13 @@ module SevenMinutes
           rating: rating,
           pause_at: pause_at,
         }
+        if self.parent
+          h.merge!(
+            path: "playlists/#{self.parent.persistentID}/tracks/#{persistentID}",
+            access_path: "playlists/#{self.parent.persistentID}/tracks/#{persistentID}",
+            parent_path: "playlists/#{self.parent.persistentID}",
+          )
+        end
 
         with_location = options[:with_location]
         if with_location
@@ -255,6 +261,7 @@ module SevenMinutes
       end
 
       def update(param)
+        @handle.rating = param['rating'] if param['rating']
         @handle.bookmarkable = param['bookmarkable'] if param['bookmarkable']
         @handle.bookmark = param['bookmark'] if param['bookmark']
         @handle.playedCount = param['playedCount'] if param['playedCount']

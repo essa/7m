@@ -216,11 +216,13 @@ class App.Views.PlaylistView extends Backbone.View
         <p>sync list with server</p>
       </div>
       <hr />
-      <div>
-        <a data-role="button" id='button-list-refresh2' data-theme='b'>Refresh</a>
-        <p>clear played and get new tracks</p>
-      </div>
-      <hr />
+      <% if (show_refresh) { %>
+        <div>
+          <a data-role="button" id='button-list-refresh2' data-theme='b'>Refresh</a>
+          <p>clear played and get new tracks</p>
+        </div>
+        <hr />
+      <% } %>
       <div>
         <a data-role="button" id='button-list-clear-and-refresh' data-theme='b'>Clear and Refresh</a>
         <p>clear all tracks and get new</p>
@@ -237,7 +239,8 @@ class App.Views.PlaylistView extends Backbone.View
       @parent = options.parent
 
     render: ->
-      @$el.html @template {}
+      @$el.html @template 
+        show_refresh: @parent.type == 'programs'
       @$el.trigger("create")
       this
 
@@ -268,8 +271,11 @@ class App.Views.PlaylistView extends Backbone.View
 
     refresh_and_play: (e)->
       e.preventDefault()
-      @app.trigger 'playRequest', @model
-      @closePanel()
+      @model.refresh
+        clear: true
+        success: =>
+          @app.trigger 'playRequest', @model
+          @closePanel()
 
     closePanel: ->
       @$el.popup 'close'
