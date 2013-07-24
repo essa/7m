@@ -13,6 +13,7 @@ describe 'TrackView', ->
       </div>
     </div>
     '''
+    $.fn.rateit = sinon.spy()
     @app = 
       hasTrackPlaying: -> false
       on: sinon.spy()
