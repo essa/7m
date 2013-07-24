@@ -213,55 +213,11 @@ http://upnp-portmapper.sourceforge.net/
 
 ## ToDo
 
-- documents
-- more specs
-- improve visual design
-- enable rating 
-- cross fade
-- notification about interaction with server in players
-- better audio session handling in iOS app
-- Android App
-- Simple authentication with Basic Auth
-- UPnP Integration
-- editing 7m.yml in GUI
-- plug-in System for remixing "Radio Program"
+[README](https://github.com/essa/7m) を参照してください
 
 ## Credits
 
-### Source imported in this repository
-
-- VolumeSlider phonegap plug-in (https://github.com/phonegap/phonegap-plugins/tree/master/iPhone/VolumeSlider) -- ios/SevenMinutes/VolumeSlider.*
-- jQuery -- cui.bundle/public/jslib/jquery-*
-- jQueryMobile -- cui.bundle/public/jslib/jquery-mobile
-- jPlayer -- cui.bundle/public/jslib/jplayer*
-- backbone.js -- cui.bundle/public/jslib/backbone.js
-- underscore.js -- cui.bundle/public/jslib/underscore.js
-
-### Sources modified from other projects.
-
-StreamAudio plugin was modified from phonegap Media plugin
-
-- ios/SevenMinutes/Plugins/StreamAudio.h
-- ios/SevenMinutes/Plugins/StreamAudio.m
-
-WebServer was modified from control_tower (https://github.com/MacRuby/ControlTower)
-
-- cui.bundle/control_tower_ext.rb
-
-### Sample mp3 files for tests are public domain music and downloaded from
-
-Classical Music mp3 Free Download Historical Recordings Public Domain
-http://classicalmusicmp3freedownload.com/index.php?title=Main_Page
-
-cui.bundle/spec/fixtures/*.mp3
-
-### icon files 
-
-cui.bundle/public/images/*
-
-Pretty Office Icon Set Part 8 | Custom Icon Design
-http://www.customicondesign.com/free-icons/pretty-office-icon-set/pretty-office-icon-set-part-8/
-http://www.iconarchive.com/show/pretty-office-8-icons-by-custom-icon-design.html
+[README](https://github.com/essa/7m) を参照してください
 
 ## ライセンス
 
