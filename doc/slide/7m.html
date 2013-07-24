@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>7m (SevenMinutes) - an ubiquitous personal radio server for Mac</title>
+
+		<meta name="description" content="an ubiquitous personal radio server for Mac">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/simple.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+				<section>
+					<h1>7m</h1>
+					<h3>an ubiquitous personal radio</h3>
+					<p>
+						<small>Created by <a href="http://github.com/essa"></a>Taku NAKAJIMA / <a href="http://twitter.com/essa">@essa</a></small>
+					</p>
+				</section>
+
+        <section>
+          <img src="https://raw.github.com/essa/7m/master/ios/SevenMinutes/Resources/splash/Default-Landscape@2x~ipad.png"/>
+        </section>
+
+        <section>
+          <img src="images/7m.png"/>
+        </section>
+
+				<section>
+          <section>
+            <h2>an <em style='color:orange;font: bold'>ubiquitous</em> personal radio</h2>
+            <p>You can play audio contents of iTunes on...</p>
+            <ul>
+              <li class='fragment'>pc / mac browsers</li>
+              <li class='fragment'>iPhone / iPad (iRadio)</li>
+              <li class='fragment'>Android smart phones / tablets(ServeStream)</li>
+              <li class='fragment'>dedicated player app (comming soon)</li>
+              <li class='fragment'>any mp3 player that supports m3u playlist</li>
+            </ul>
+
+          </section>
+          <section>
+            <h2>an <em style='color:orange;font: bold'>ubiquitous</em> personal radio</h2>
+            <p>Reduce bitrate realtime</p>
+            <p class='fragment'>good for slow 3g connection</p>
+          </section>
+
+          <section>
+            <h2>an <em style='color:orange;font: bold'>ubiquitous</em> personal radio</h2>
+            <p>sync realtime</p>
+            <ul>
+              <li class='fragment'>You can pause a long track on PC</li>
+              <li class='fragment'>and contiue it on iPhone</li>
+              <li class='fragment'>without syncing</li>
+              <li class='fragment'>and vice versa</li>
+            </ul>
+
+          </section>
+
+          <section>
+            <h2>an <em style='color:orange;font: bold'>ubiquitous</em> personal radio</h2>
+            <p>play offline with Dropbox</p>
+            <p class='fragment'>create a combined mp3 file for playlists</p>
+          </section>
+				</section>
+
+				<section>
+          <section>
+          <h2>an ubiquitous<em style='color:orange;font: bold'> personal radio</em></h2>
+            <p>remix podcasts and musics</p>
+            <img src="images/radio.png"/>
+
+          </section>
+          <section>
+            <h2>an <em style='color:orange;font: bold'>ubiquitous</em> personal radio</h2>
+            <p>A "Radio Program" in SevenMinute</p>
+            <ul>
+              <li class='fragment'>uses iTunes playlists as a source</li>
+              <li class='fragment'>picks up some tracks from sources</li>
+              <li class='fragment'>mixes them up</li>
+              <li class='fragment'>create a new combined playlist in real time</li>
+              <li class='fragment'>refresh tracks on demand anytime, so you can listen new distributed podcasts</li>
+            </ul>
+
+          </section>
+				</section>
+
+				<section>
+          <section>
+            <h2>an <em style='color:orange;font: bold'>opensource</em> ubiquitous personal radio </h2>
+            <ul>
+              <li class='fragment'>MacRuby</li>
+              <li class='fragment'>coffeescript / backbone.js / jqueryMobile </li>
+              <li class='fragment'>common GUI source written with phonegap</li>
+              <li class='fragment'>player written by jPlayer(for browsers) / as phonegap plugin(for ios app)</li>
+            </ul>
+          </section>
+          <section>
+            <h2>an <em style='color:orange;font: bold'>opensource</em> ubiquitous personal radio </h2>
+            <p>CUI / GUI mode</p>
+            <img src="images/WebReady.png" style='width: 40%'/>
+            <img src="images/cui.png" style='width: 40%'/>
+          </section>
+          <section>
+            <h2>an <em style='color:orange;font: bold'>opensource</em> ubiquitous personal radio </h2>
+            <p>GUI mode</p>
+            <ul>
+              <li class='fragment'><a href="http://www.uncate.org/7m/">all in one distribution</a></li>
+              <li class='fragment'>click icon / run in window</li>
+              <li class='fragment'>for users</li>
+            </ul>
+            <p>CUI mode</p>
+            <ul>
+              <li class='fragment'>checkout the <a href="https://github.com/essa/7m">repository</a></li>
+              <li class='fragment'>run in terminal</li>
+              <li class='fragment'>for developers</li>
+            </ul>
+          </section>
+          <section>
+            <h2>an <em style='color:orange;font: bold'>opensource</em> ubiquitous personal radio </h2>
+            <p>phonegap plugins (will be separated later)</p>
+            <ul>
+              <li class='fragment'>http audio streaming (AVPlayer)</li>
+              <li class='fragment'>remote control</li>
+              <li class='fragment'>audio session interruption handling (Alarm, etc...)</li>
+            </ul>
+          </section>
+          <section>
+            <h2>an <em style='color:orange;font: bold'>opensource</em> ubiquitous personal radio </h2>
+            <p>control_tower_ext (will be separated later)</p>
+            <ul>
+              <li class='fragment'>refactored ControlTower and added some function</li>
+              <li class='fragment'>restart</li>
+              <li class='fragment'>http range request</li>
+            </ul>
+          </section>
+
+        </section>
+
+				<section>
+					<h1>THE END</h1>
+					<h3>BY Taku NAKAJIMA / @essa</h3>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
