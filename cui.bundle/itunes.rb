@@ -102,6 +102,14 @@ module SevenMinutes
       end
     end
 
+    def self.search(q)
+      library = @@itunes.sources.find { |s| s.kind == ITunesESrcLibrary }
+      pl = library.libraryPlaylists.find { |l|  l.specialKind == ITunesESpKLibrary }
+      pl.searchFor(q, only: ITunesESrAAll).map do |t|
+        Track.new(nil, t.persistentID)
+      end
+    end
+
     class Playlist
       include Utils::Refresher
       extend Forwardable
