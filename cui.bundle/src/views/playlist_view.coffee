@@ -54,11 +54,15 @@ class App.Views.PlaylistView extends Backbone.View
 
   renderHeader: ->
     $header = @$el.find('div[data-role="header"]')
+    if @type == 'search'
+      left_href = "search/#{@model.get('word')}"
+    else
+      left_href = ''
     r = new App.Views.HeaderRenderer
       el: $header
       model:
         left_icon: 'arrow-l'
-        left_href: ''
+        left_href: left_href 
         title: @model.get('name')
         right_icon: 'refresh'
         right_href: ''

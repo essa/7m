@@ -118,7 +118,8 @@ class App.Models.Query extends Backbone.Model
     @app = options.app 
     @type = 'query'
     options.playlist = this
-
     @tracks = new App.Models.Tracks([], options)
+    @tracks.on 'sync', =>
+      @trigger('sync')
 
   url: -> "#{@app.baseUrl()}search/#{@get('word')}"

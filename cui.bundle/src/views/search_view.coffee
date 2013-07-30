@@ -7,6 +7,7 @@ class App.Views.SearchView extends Backbone.View
 
   template: _.template '''
     <div data-role="header">
+      <a href='#' data-role='button' data-icon='arrow-l' data-iconpos="notext"></a>
       <h1 id='config-header'>Search</h1>
     </div>
     <div data-role="content">
@@ -24,7 +25,8 @@ class App.Views.SearchView extends Backbone.View
 
   initialize: (options)->
     super(options)
-    @model.on 'change', @render_result, @
+    @model.on 'sync', @render_result, @
+    @model.tracks.fetch()
 
   render_header: ->
     $header = @$el.find('div[data-role="header"]')
@@ -57,9 +59,10 @@ class App.Views.SearchView extends Backbone.View
   render_result: ->
     $ul = @$('#search-result')
     $ul.html ''
-    @model.tracks.each (t)->
-      console.log t
-      $ul.append "<li><a href='#{t.id}'>#{t.get('name')}</a></li>"
+    @model.tracks.each (t)=>
+      href = "#search/#{@model.get('word')}/tracks/#{t.id}"
+      console.log href
+      $ul.append "<li><a href='#{href}'>#{t.get('name')}</a></li>"
     $ul.listview('refresh')
 
 

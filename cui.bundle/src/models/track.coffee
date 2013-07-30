@@ -97,3 +97,10 @@ class App.Models.Track extends Backbone.Model
     , 30*1000
     @prepared = true
 
+  addToQueue: ->
+    url = "#{@app.baseUrl()}/queue/#{@id}"
+    $.ajax
+      url: url
+      method: 'post'
+
+
