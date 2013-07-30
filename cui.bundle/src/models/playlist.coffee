@@ -111,3 +111,14 @@ class App.Models.Tracks extends Backbone.Collection
     @each (t)=>
       t.setPlaylist(playlist)
 
+class App.Models.Query extends Backbone.Model
+  initialize: (attrs, options)->
+    console.log 'Query#initialize', options
+    super(attrs, options)
+    @app = options.app 
+    @type = 'query'
+    options.playlist = this
+
+    @tracks = new App.Models.Tracks([], options)
+
+  url: -> "#{@app.baseUrl()}search/#{@get('word')}"

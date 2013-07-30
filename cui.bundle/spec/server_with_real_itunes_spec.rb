@@ -203,12 +203,12 @@ describe "Server Test with racktest with real iTunes" do
 
   describe 'get "/search/xxxx"' do
     it "should be seccess" do
-      get "/search/Deux"
+      get "/search/Deux/tracks"
       last_response.status.must_equal 200
     end
 
     it "should return matched results" do
-      get "/search/Deux"
+      get "/search/Deux/tracks"
       j = JSON.parse(last_response.body)
       j.must_be_kind_of(Array)
       j.size.must_equal 2

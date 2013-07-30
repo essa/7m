@@ -245,8 +245,9 @@ module SevenMinutes
       end
     end
 
-    get %r{^/search/(\w+)$} do
-      q = $1
+    get %r{^/search/(.+)/tracks$} do
+      q = URI.unescape($1).force_encoding("UTF-8")
+      p q
       tracks = SevenMinutes::ITunes::search(q)
       search_result = Struct.new(:tracks).new(tracks)
       tl = Utils::TrackList.new(search_result)

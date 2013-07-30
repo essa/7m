@@ -154,6 +154,7 @@ window.App = App =
     routes:
       "": "playlists"
       "config": "config"
+      "search(/:word)": "search"
       "programs/:playlist_id": "program"
       "programs/:playlist_id/tracks/:track_id": "program_track"
       "playlists/:playlist_id": "playlist"
@@ -184,6 +185,17 @@ window.App = App =
         app: App
         el: $("#page")
         model: App.config
+      App.changeView view
+
+    search: (word)->
+      console.log "Router#search", App.config
+      query = new App.Models.Query {}, 
+        app: App
+        word: word
+      view = new App.Views.SearchView
+        app: App
+        el: $("#page")
+        model: query
       App.changeView view
 
     program: (id)->
