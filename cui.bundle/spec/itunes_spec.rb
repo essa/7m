@@ -48,6 +48,16 @@ describe "ITunes" do
       t2.must_be_kind_of(ITunes::Track)
       t2.name.must_equal "Deux Arabesques: No 2. Allegretto scherzando"
     end
+
+    it 'should match to artist' do
+      a = SevenMinutes::ITunes::search("Meyer：１９５４年３月５日～８日録音")
+      a.must_be_kind_of(Array)
+      a.size.must_equal 1
+      t1 = a.first
+      t1.must_be_kind_of(ITunes::Track)
+      t1.name.must_equal "Ravel：亡き王女のためのパヴァーヌ"
+    end
+
   end
 
   describe SevenMinutes::ITunes::Playlist do

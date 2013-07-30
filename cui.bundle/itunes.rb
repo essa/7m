@@ -110,6 +110,7 @@ module SevenMinutes
       end
     end
 
+
     class Playlist
       include Utils::Refresher
       extend Forwardable
