@@ -19,6 +19,47 @@ describe "ITunes" do
     end
   end
 
+  describe 'serach' do
+    it 'should return empty array when not match' do
+      a = SevenMinutes::ITunes::search('xxx non-existing query')
+      a.must_be_kind_of(Array)
+      a.size.must_equal 0
+    end
+
+    it 'should return track when match' do
+      t = Test::pl.tracks.first
+      t_name = t.name.dup
+      a = SevenMinutes::ITunes::search(t_name)
+      a.must_be_kind_of(Array)
+      a.size.must_equal 1
+      tt = a.first
+      tt.must_be_kind_of(ITunes::Track)
+      tt.persistentID.must_equal t.persistentID
+    end
+
+    it 'should return all track when match many' do
+      a = SevenMinutes::ITunes::search("Deux Arabesques")
+      a.must_be_kind_of(Array)
+      a.size.must_equal 2
+      t1 = a.first
+      t1.must_be_kind_of(ITunes::Track)
+      t1.name.must_equal "Deux Arabesques: No 1. Andantino con moto"
+      t2 = a[1]
+      t2.must_be_kind_of(ITunes::Track)
+      t2.name.must_equal "Deux Arabesques: No 2. Allegretto scherzando"
+    end
+
+    it 'should match to artist' do
+      a = SevenMinutes::ITunes::search("Meyer：１９５４年３月５日～８日録音")
+      a.must_be_kind_of(Array)
+      a.size.must_equal 1
+      t1 = a.first
+      t1.must_be_kind_of(ITunes::Track)
+      t1.name.must_equal "Ravel：亡き王女のためのパヴァーヌ"
+    end
+
+  end
+
   describe SevenMinutes::ITunes::Playlist do
     describe ".all" do
       it "should return playlists" do

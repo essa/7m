@@ -201,6 +201,24 @@ describe "Server Test with racktest with real iTunes" do
 
   end
 
+  describe 'get "/search/xxxx"' do
+    it "should be seccess" do
+      get "/search/Deux"
+      last_response.status.must_equal 200
+    end
+
+    it "should return matched results" do
+      get "/search/Deux"
+      j = JSON.parse(last_response.body)
+      j.must_be_kind_of(Array)
+      j.size.must_equal 2
+      t = j.first
+      expected = Test::pl.tracks.first
+      t['id'].must_equal expected.persistentID 
+      t['name'].must_equal expected.name 
+    end
+  end
+
   # describe 'get "/tracks/:track_id/media"' do
     # def pl
       # ITunes::Playlist::find_by_name(Test::PlaylistName)

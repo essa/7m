@@ -245,6 +245,14 @@ module SevenMinutes
       end
     end
 
+    get %r{^/search/(\w+)$} do
+      q = $1
+      tracks = SevenMinutes::ITunes::search(q)
+      search_result = Struct.new(:tracks).new(tracks)
+      tl = Utils::TrackList.new(search_result)
+      tl.to_json_array.to_json
+    end
+
     def find_track_in_playlist(params)
       list, list_id, track_id = params[:captures]
       playlist = playlist_root(list).find(list_id)
