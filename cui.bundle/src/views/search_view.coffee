@@ -17,8 +17,7 @@ class App.Views.SearchView extends Backbone.View
       </div>
       <div>
         <ul data-role='listview' id='search-result'>
-          <li>aaaa</li>
-        <ul>
+        </ul>
       </div>
     </div>
   '''

@@ -16,13 +16,13 @@ class App.Views.PlaylistsView extends Backbone.View
     <div data-role="header"></div>
     <div data-role="content">
       <div data-role="collapsible-set" data-content-theme="d" id="set">
-        <div data-role="collapsible" id="set1" data-collapsed="true">
+        <div data-role="collapsible" id="set1" data-collapsed="false">
           <h3>My Library</h2>
           <ul id='search-ul'  data-role="listview">
             <li><a href='#search'>search</a></li>
           <ul>
         </div>
-        <div data-role="collapsible" id="set1" data-collapsed="false">
+        <div data-role="collapsible" id="set1" data-collapsed="true">
           <h3>My Radio Programs</h2>
           <ul id='programs-ul'  data-role="listview"/>
         </div>
@@ -66,7 +66,6 @@ class App.Views.PlaylistsView extends Backbone.View
             id: pl.id 
             name: 'Playing queue'
         $ul3.append itemView.render().$el
-        console.log pl.get('name'), $ul3.html()
 
     @renderHeader()
     @renderFooter() 
