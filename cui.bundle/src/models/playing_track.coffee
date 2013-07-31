@@ -36,13 +36,14 @@ class App.Models.PlayingTrack extends Backbone.Model
     unless track
       track = playlist.nextUnplayed(null)
 
-    unless track
-      @list.refresh
-        clear: true
-        success: =>
-          track = playlist.nextUnplayed()
-          @trigger 'playRequest', @list, track, options
-      @player.startSilent() if @app.isPhonegap
+    unless track 
+      if @list and not @list.get('queue')
+        @list.refresh
+          clear: true
+          success: =>
+            track = playlist.nextUnplayed()
+            @trigger 'playRequest', @list, track, options
+        @player.startSilent() if @app.isPhonegap
       return 
         
     console.log 'PlayingTrack setTrack', track

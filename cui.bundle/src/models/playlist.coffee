@@ -54,6 +54,9 @@ class App.Models.Playlist extends Backbone.Model
           reset: true
           
   nextUnplayed: (start=null)->
+    if @get('queue')
+      @tracks.fetch(acync: false)
+
     i = @tracks.indexOf(start) + 1
 
     while @tracks.length > i and @tracks.at(i).get('played')

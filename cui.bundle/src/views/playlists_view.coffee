@@ -20,7 +20,6 @@ class App.Views.PlaylistsView extends Backbone.View
           <h3>My Library</h2>
           <ul id='search-ul'  data-role="listview">
             <li><a href='#search'>search</a></li>
-            <li><a href='#queue'>queue</a></li>
           <ul>
         </div>
         <div data-role="collapsible" id="set1" data-collapsed="false">
@@ -51,13 +50,23 @@ class App.Views.PlaylistsView extends Backbone.View
       $ul1.append itemView.render().$el
 
     $ul2 = @$el.find('ul#playlists-ul')
+    $ul3 = @$el.find('ul#search-ul')
     @playlists.each (pl)->
-      itemView = new Item
-        model: 
-          type: 'playlists'
-          id: pl.id 
-          name: pl.get('name')
-      $ul2.append itemView.render().$el
+      unless pl.get('queue')
+        itemView = new Item
+          model: 
+            type: 'playlists'
+            id: pl.id 
+            name: pl.get('name')
+        $ul2.append itemView.render().$el
+      else
+        itemView = new Item
+          model: 
+            type: 'playlists'
+            id: pl.id 
+            name: 'Playing queue'
+        $ul3.append itemView.render().$el
+        console.log pl.get('name'), $ul3.html()
 
     @renderHeader()
     @renderFooter() 

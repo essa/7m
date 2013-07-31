@@ -28,6 +28,8 @@ class App.Views.PlaylistView extends Backbone.View
     @type = options.type
     @hasFlash = options.hasFlash
     @model.on 'sync', @render, this
+    if @model.get('queue')
+      @model.tracks.fetch()
 
   render: ->
     console.log 'render'
@@ -54,10 +56,7 @@ class App.Views.PlaylistView extends Backbone.View
 
   renderHeader: ->
     $header = @$el.find('div[data-role="header"]')
-    if @type == 'search'
-      left_href = "search/#{@model.get('word')}"
-    else
-      left_href = ''
+    left_href = ''
     r = new App.Views.HeaderRenderer
       el: $header
       model:

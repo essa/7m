@@ -129,7 +129,7 @@ module SevenMinutes
     def self.search(q)
       library = @@itunes.sources.find { |s| s.kind == ITunesESrcLibrary }
       pl = library.libraryPlaylists.find { |l|  l.specialKind == ITunesESpKLibrary }
-      pl.searchFor(q, only: ITunesESrAAll).map do |t|
+      pl.searchFor(q, only: ITunesESrAAll)[0..30].map do |t|
         Track.new(nil, t.persistentID)
       end
     end
@@ -180,13 +180,21 @@ module SevenMinutes
       def get_new_tracks
         tracks_limit = ITunes::conf[:tracks_limit] || 30
         cnt = 0
-        tracks = []
-        @handle.tracks[0..tracks_limit].each do |t|
+        ret = []
+        @handle.get
+        tracks = @handle.tracks.dup
+        if tracks.size > tracks_limit
+          tracks = @handle.tracks[0..tracks_limit]
+        end
+        tracks.each do |t|
+          p cnt
+          p t.name
           cnt += 1
           tt = Track.new(self, t.persistentID)
-          tracks << tt if tt.handle
+          p tt.handle
+          ret << tt if tt.handle
         end
-        tracks
+        ret
       end
 
       def tracks
@@ -229,6 +237,18 @@ module SevenMinutes
         track.duplicateTo handle
         p track.name, handle.name
         p handle.tracks
+      end
+
+      def to_json_hash
+        super.merge(queue: true)
+      end
+
+      def remove_track(persistentID)
+        handle.tracks.each do |t|
+          if t.persistentID == persistentID
+            t.delete
+          end
+        end
       end
     end
 
@@ -332,6 +352,9 @@ module SevenMinutes
         if param['playedDate']
           date = DateTime.parse(param['playedDate'])
           @handle.playedDate = date.to_time
+          if self.parent.kind_of?(QueuePlaylist)
+            self.parent.remove_track(self.persistentID)
+          end
         end
       end
     end
