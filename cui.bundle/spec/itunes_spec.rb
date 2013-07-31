@@ -214,6 +214,14 @@ describe "ITunes" do
       @index[pid].persistentID.must_equal pid
     end
   end
+
+  describe 'playing queue' do
+    it 'should create playing queue' do
+      q_name = '7m_queue'
+      ITunes::Playlist.find_by_name(q_name).must_be_kind_of(ITunes::Playlist)
+      ITunes::Playlist.find_by_name(q_name).must_be_kind_of(ITunes::QueuePlaylist)
+    end
+  end
 end
 
 

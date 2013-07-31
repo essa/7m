@@ -63,11 +63,18 @@ class App.Views.TrackView extends Backbone.View
 
   renderHeader: ->
     $header = @$el.find('div[data-role="header"]')
+
+
+    if @type == 'search'
+      left_href = "search/#{encodeURI @playlist.get('word')}"
+    else
+      left_href = "#{@type}/#{@playlist.id}"
+
     r = new App.Views.HeaderRenderer
       el: $header
       model:
         left_icon: 'arrow-l'
-        left_href: "#{@type}/#{@playlist.id}"
+        left_href: left_href
         title: @model.get('name')
     r.render()
 
@@ -79,6 +86,7 @@ class App.Views.TrackView extends Backbone.View
         list_id: @playlist.id
         track_id: @model.id
         playing: @app.hasTrackPlaying()
+        play_text: if @type == 'search' then 'Add to Queue' else undefined 
 
     @$el.append footerRenderer.render().el
 
@@ -123,6 +131,9 @@ class App.Views.TrackViewForEmbendedPlayer extends App.Views.TrackView
 
   play: (e)->
     e.preventDefault()
+    if @type == 'search'
+      @model.addToQueue()
+      return
     return if @panel
     @app.trigger 'playRequest', @playlist, @model
     @app.router.navigate('#playing', trigger: true)
@@ -209,6 +220,9 @@ class App.Views.TrackViewForExternalPlayer extends App.Views.TrackView
 
   show_play_panel: (e)->
     e.preventDefault()
+    if @type == 'search'
+      @model.addToQueue()
+      return
     console.log 'trackView#show_play_panel'
     $('#popup-div').html '<div data-role="popup" id="track-play-panel" style="padding: 15px;" />'
     $panel = $('#track-play-panel')

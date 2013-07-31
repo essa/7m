@@ -19,6 +19,7 @@ module SevenMinutes
     @@itunes = nil
     @@logger = Logger.new(STDOUT)
     @@index = nil
+    @@queue_playlists = []
 
     def self.init_itunes(base_dir)
       return if @@itunes
@@ -35,6 +36,7 @@ module SevenMinutes
       base_dir = conf[:base_dir]
       self.init_itunes(base_dir)
       @@logger = conf[:logger]
+      create_queue(conf)
     end
 
     def self.app
@@ -51,6 +53,28 @@ module SevenMinutes
 
     def self.conf
       @@conf
+    end
+
+    def self.create_queue(conf)
+      library = @@itunes.sources.find { |s| s.kind == ITunesESrcLibrary }
+      userPlaylists = library.userPlaylists
+
+      qnames = conf[:queue_names] || %w(7m_queue)
+      qnames.each do |q_name|
+        q_pl = library.playlists.find { |l| l.name == q_name }
+        unless q_pl
+          q_pl = ITunesUserPlaylist.alloc.initWithProperties(name: q_name) 
+          userPlaylists <<  q_pl
+        end
+        @@queue_playlists << q_pl unless queue_playlist?(q_pl.persistentID)
+      end
+    end
+
+
+    def self.queue_playlist?(persistentID)
+      @@queue_playlists.find do |q|
+        q.persistentID == persistentID
+      end
     end
 
     class FileTrackIndex
@@ -105,22 +129,26 @@ module SevenMinutes
     def self.search(q)
       library = @@itunes.sources.find { |s| s.kind == ITunesESrcLibrary }
       pl = library.libraryPlaylists.find { |l|  l.specialKind == ITunesESpKLibrary }
-      pl.searchFor(q, only: ITunesESrAAll).map do |t|
+      pl.searchFor(q, only: ITunesESrAAll)[0..30].map do |t|
         Track.new(nil, t.persistentID)
       end
     end
-
 
     class Playlist
       include Utils::Refresher
       extend Forwardable
       def_delegators :@handle, :name, :size, :persistentID
+      attr_reader :handle
 
       def self.all
         ITunes::app.sources[0].playlists.select do |pl|
-          pl.specialKind == ITunesESpKNone and pl.size > 0
+          pl.specialKind == ITunesESpKNone
         end.map do |pl|
-          Playlist.new(pl)
+          if ITunes::queue_playlist?(pl.persistentID)
+            QueuePlaylist.new(pl)
+          else
+            Playlist.new(pl)
+          end
         end
       end
 
@@ -152,13 +180,21 @@ module SevenMinutes
       def get_new_tracks
         tracks_limit = ITunes::conf[:tracks_limit] || 30
         cnt = 0
-        tracks = []
-        @handle.tracks[0..tracks_limit].each do |t|
+        ret = []
+        @handle.get
+        tracks = @handle.tracks.dup
+        if tracks.size > tracks_limit
+          tracks = @handle.tracks[0..tracks_limit]
+        end
+        tracks.each do |t|
+          p cnt
+          p t.name
           cnt += 1
           tt = Track.new(self, t.persistentID)
-          tracks << tt if tt.handle
+          p tt.handle
+          ret << tt if tt.handle
         end
-        tracks
+        ret
       end
 
       def tracks
@@ -174,6 +210,45 @@ module SevenMinutes
 
       def id
         self.persistentID
+      end
+
+    end
+
+    class QueuePlaylist < Playlist
+      def self.all
+        Playlist.all.select do |pl|
+          pl.kind_of?(QueuePlaylist)
+        end
+      end
+
+      def self.find_by_name(name)
+        Playlist.all.find do |pl|
+          pl.name == name
+        end
+      end
+
+      def add(track_id)
+        track = ITunes::index[track_id]
+        p :add, track, handle
+        p handle.tracks
+        handle.tracks.each do |t|
+          return if t.persistentID == track_id
+        end
+        track.duplicateTo handle
+        p track.name, handle.name
+        p handle.tracks
+      end
+
+      def to_json_hash
+        super.merge(queue: true)
+      end
+
+      def remove_track(persistentID)
+        handle.tracks.each do |t|
+          if t.persistentID == persistentID
+            t.delete
+          end
+        end
       end
     end
 
@@ -277,6 +352,9 @@ module SevenMinutes
         if param['playedDate']
           date = DateTime.parse(param['playedDate'])
           @handle.playedDate = date.to_time
+          if self.parent.kind_of?(QueuePlaylist)
+            self.parent.remove_track(self.persistentID)
+          end
         end
       end
     end

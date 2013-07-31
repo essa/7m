@@ -28,6 +28,8 @@ class App.Views.PlaylistView extends Backbone.View
     @type = options.type
     @hasFlash = options.hasFlash
     @model.on 'sync', @render, this
+    if @model.get('queue')
+      @model.tracks.fetch()
 
   render: ->
     console.log 'render'
@@ -54,11 +56,12 @@ class App.Views.PlaylistView extends Backbone.View
 
   renderHeader: ->
     $header = @$el.find('div[data-role="header"]')
+    left_href = ''
     r = new App.Views.HeaderRenderer
       el: $header
       model:
         left_icon: 'arrow-l'
-        left_href: ''
+        left_href: left_href 
         title: @model.get('name')
         right_icon: 'refresh'
         right_href: ''

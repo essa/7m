@@ -74,9 +74,15 @@ window.App = App =
 
 
   initPlaylists: (callback=null)->
+    status = =>
+      $.ajax
+        url: @baseUrl() + "status"
+        success: (data)=>
+          @config.status = data
+
     @programs = new App.Models.Playlists([], app: this, type: 'programs')
     @playlists = new App.Models.Playlists([], app: this, type: 'playlists')
-    $.when(@programs.fetch(), @playlists.fetch()).then ->
+    $.when(status(), @programs.fetch(), @playlists.fetch()).then ->
       console.log 'then'
       callback() if callback
     , ->
@@ -154,12 +160,14 @@ window.App = App =
     routes:
       "": "playlists"
       "config": "config"
+      "search(/:word)": "search"
       "programs/:playlist_id": "program"
       "programs/:playlist_id/tracks/:track_id": "program_track"
       "playlists/:playlist_id": "playlist"
       "playlists/:playlist_id/tracks/:track_id": "playlist_track"
       "playing(/:type/*song)": "playing"
       "playlists": "playlists" # for test only
+      "search/:word/tracks/:track_id": "search_track"
 
     playlists: ->
       console.log 'Router#playlists', @currentView
@@ -184,6 +192,18 @@ window.App = App =
         app: App
         el: $("#page")
         model: App.config
+      App.changeView view
+
+    search: (word)->
+      console.log "Router#search", App.config
+      query = new App.Models.Query
+        word: word
+      ,
+        app: App
+      view = new App.Views.SearchView
+        app: App
+        el: $("#page")
+        model: query
       App.changeView view
 
     program: (id)->
@@ -250,6 +270,30 @@ window.App = App =
               App.changeView view
             else
               App.router.navigate('playlists', trigger: true)
+
+    search_track: (word, track_id)->
+      query = new App.Models.Query
+        word: word
+      ,
+        app: App
+      query.tracks.fetch
+        success: ->
+          track = query.tracks.get(track_id)
+          if track
+            view_class = if App.config.hasFlash() or App.isPhonegap
+              App.Views.TrackViewForEmbendedPlayer
+            else
+              App.Views.TrackViewForExternalPlayer
+
+            view = new view_class
+              app: App
+              el: $("#page")
+              model: track
+              type: 'search'
+              playlist: query
+            App.changeView view
+          else
+            App.router.navigate('playlists', trigger: true)
 
     playing: (type, song)->
       if song? and song != ''
@@ -324,7 +368,7 @@ class App.PlayerBase
       callback() if callback
   
   startSilent: ->
-    new App.Players.SilentAudioPlayer(@app).play()
+    # new App.Players.SilentAudioPlayer(@app).play()
 
 class App.Players.PhonegapMediaPlayer extends App.PlayerBase
   startMedia: (media_url, bookmark, callback)->
@@ -477,7 +521,7 @@ class App.Views.FooterRenderer extends Backbone.View
   template: _.template '''
     <div data-role="footer" class="ui-bar"  data-position="fixed">
 
-      <a id='button-play' data-theme='b' href='#'>Play!</a>
+      <a id='button-play' data-theme='b' href='#'><%= play_text %></a>
 
       <% if (typeof playing != 'undefined' && playing) { %>
         <a href="#playing" data-theme='b' style="float:right;margin-right:27px;">Now Playing...</a>
@@ -487,6 +531,7 @@ class App.Views.FooterRenderer extends Backbone.View
 
   render: ->
 
+    @model.play_text = @model.play_text || 'Play!'
     @$el.html @template(@model)
     this
 
