@@ -22,6 +22,12 @@ class App.Views.TrackView extends Backbone.View
         <div class='ui-block-b'>
           <div class='rateit' data-rateit-step='1.0' />
         </div>
+        <div style='font-size: small' class='ui-block-a'>name:</div>
+        <div class='ui-block-b'><a href='<%= name_search %>'><%= name %></a></div>
+        <div style='font-size: small' class='ui-block-a'>album:</div>
+        <div class='ui-block-b'><a href='<%= album_search %>'><%= album %></a></div>
+        <div style='font-size: small' class='ui-block-a'>artist:</div>
+        <div class='ui-block-b'><a href='<%= artist_search %>'><%= artist %></a></div>
         <% for(i = 0; i< props.length;i++) { %>
           <div style='font-size: small' class='ui-block-a'><%= props[i][0] %>:</div>
           <div class='ui-block-b'><%= props[i][1] %></div>
@@ -37,10 +43,16 @@ class App.Views.TrackView extends Backbone.View
     attrs.playlist_id = @playlist.id
     attrs.bookmark = @hhmmss(attrs.bookmark || 0)
     attrs.pause_at = @hhmmss(attrs.pause_at || attrs.duration || 0)
+    attrs.name = @model.get('name')
+    attrs.name_search = "#search/#{@model.get('name')}"
+    attrs.album = @model.get('album')
+    attrs.album_search = "#search/album: #{@model.get('album')}"
+    attrs.artist = @model.get('artist')
+    attrs.artist_search = "#search/artist: #{@model.get('artist')}"
     attrs.props = [
-      [ 'name', @model.get('name') ],
-      [ 'artist', @model.get('artist') ],
-      [ 'album', @model.get('album') ],
+      # [ 'name', @model.get('name') ],
+      # [ 'artist', @model.get('artist') ],
+      # [ 'album', @model.get('album') ],
       [ 'id', @model.id ],
       [ 'duration', @hhmmss @model.get('duration') ],
       [ 'bookmark', @hhmmss @model.get('bookmark') ],

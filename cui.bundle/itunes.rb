@@ -129,7 +129,16 @@ module SevenMinutes
     def self.search(q)
       library = @@itunes.sources.find { |s| s.kind == ITunesESrcLibrary }
       pl = library.libraryPlaylists.find { |l|  l.specialKind == ITunesESpKLibrary }
-      pl.searchFor(q, only: ITunesESrAAll)[0..30].map do |t|
+      only = ITunesESrAAll
+      case q
+      when /^album: *(.+)/
+        only = ITunesESrAAlbums 
+        q = $1
+      when /^artist: *(.+)/
+        only = ITunesESrAArtists
+        q = $1
+      end
+      pl.searchFor(q, only: only)[0..30].map do |t|
         Track.new(nil, t.persistentID)
       end
     end
