@@ -254,6 +254,27 @@ module SevenMinutes
       tl.to_json_array.to_json
     end
 
+    get '/status' do
+      content_type 'text/json'
+      queues = ITunes::QueuePlaylist.all
+      {
+        status: 'ok',
+        queues: queues.map {|pl| pl.to_json_hash}
+      }.to_json
+    end
+
+    post %r{^/queue/(.+)/tracks/(.+)$} do
+      list, track = params[:captures]
+      p list, track
+      playlist = ITunes::QueuePlaylist.find_by_name(list)
+      if playlist
+        playlist.add(track)
+        { ok: true}.to_json
+      else
+        404
+      end
+    end
+
     def find_track_in_playlist(params)
       list, list_id, track_id = params[:captures]
       playlist = playlist_root(list).find(list_id)

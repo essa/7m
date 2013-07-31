@@ -74,9 +74,15 @@ window.App = App =
 
 
   initPlaylists: (callback=null)->
+    status = =>
+      $.ajax
+        url: @baseUrl() + "status"
+        success: (data)=>
+          @config.status = data
+
     @programs = new App.Models.Playlists([], app: this, type: 'programs')
     @playlists = new App.Models.Playlists([], app: this, type: 'playlists')
-    $.when(@programs.fetch(), @playlists.fetch()).then ->
+    $.when(status(), @programs.fetch(), @playlists.fetch()).then ->
       console.log 'then'
       callback() if callback
     , ->
@@ -362,7 +368,7 @@ class App.PlayerBase
       callback() if callback
   
   startSilent: ->
-    new App.Players.SilentAudioPlayer(@app).play()
+    # new App.Players.SilentAudioPlayer(@app).play()
 
 class App.Players.PhonegapMediaPlayer extends App.PlayerBase
   startMedia: (media_url, bookmark, callback)->
