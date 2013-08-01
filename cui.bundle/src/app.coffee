@@ -368,7 +368,7 @@ class App.PlayerBase
       callback() if callback
   
   startSilent: ->
-    # new App.Players.SilentAudioPlayer(@app).play()
+    new App.Players.SilentAudioPlayer(@app).play()
 
 class App.Players.PhonegapMediaPlayer extends App.PlayerBase
   startMedia: (media_url, bookmark, callback)->
