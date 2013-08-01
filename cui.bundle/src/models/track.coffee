@@ -97,10 +97,17 @@ class App.Models.Track extends Backbone.Model
     , 30*1000
     @prepared = true
 
-  addToQueue: ->
+  addToQueue: ()->
     url = "#{@app.baseUrl()}queue/7m_queue/tracks/#{@id}"
     $.ajax
       url: url
       method: 'post'
+      success: =>
+        status = @app.playing.get('status')
+        if status != App.Status.PLAYING
+          queue = @app.getQueuePlaylist()
+          queue.tracks.fetch
+            success: =>
+              @app.trigger 'playRequest', queue
 
 

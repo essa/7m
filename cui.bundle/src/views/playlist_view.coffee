@@ -19,6 +19,11 @@ class App.Views.PlaylistView extends Backbone.View
       <div>
         <ul id='tracks-ul'  data-role="listview"></ul>
       </div>
+      <% if (queue) { %>
+        <div>
+          To add tracks to this list, <a href='#search'>Search</a> tracks.
+        </div>
+      <% } %>
     </div>
   '''
 
@@ -33,7 +38,9 @@ class App.Views.PlaylistView extends Backbone.View
 
   render: ->
     console.log 'render'
-    @$el.html @template()
+    html = @template
+      queue: @model.get('queue')
+    @$el.html html
     $content = @$el.find('div[data-role="content"]')
 
     $ul = $content.find('ul')

@@ -16,6 +16,9 @@ class App.Views.PlayerUIView extends Backbone.View
     <div data-role="header"></div>
     <div data-role="content">
       <div style='text-align: center'>
+        <div>
+           <p>Playing <%= list_name %> </p>
+        </div>
         <div style='font-size: small'>
           <span class='artist'><%= artist %></span>
         </div>
@@ -84,6 +87,7 @@ class App.Views.PlayerUIView extends Backbone.View
     attrs = @model.toJSON()
     attrs.bookmark = @hhmmss(attrs.bookmark || 0)
     attrs.pause_at = @hhmmss(attrs.pause_at || attrs.duration || 0)
+    attrs.list_name = @model.list?.get('name')
     attrs.track_link = null
     attrs.track_link =  "##{@model.list.type}/#{@model.list.id}/tracks/#{@model.track.id}" if @model.list and @model.track
     console.log 'PlayerUIView#render template', attrs

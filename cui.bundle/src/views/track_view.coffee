@@ -144,7 +144,13 @@ class App.Views.TrackViewForEmbendedPlayer extends App.Views.TrackView
   play: (e)->
     e.preventDefault()
     if @type == 'search'
+      app = @app
+      playlist = @playlist
       @model.addToQueue()
+      setTimeout ->
+        app.router.navigate "search/#{encodeURI playlist.get('word')}",
+          trigger: true
+      , 1000
       return
     return if @panel
     @app.trigger 'playRequest', @playlist, @model
@@ -234,6 +240,10 @@ class App.Views.TrackViewForExternalPlayer extends App.Views.TrackView
     e.preventDefault()
     if @type == 'search'
       @model.addToQueue()
+      setTimeout ->
+        app.router.navigate "search/#{encodeURI playlist.get('word')}",
+          trigger: true
+      , 1000
       return
     console.log 'trackView#show_play_panel'
     $('#popup-div').html '<div data-role="popup" id="track-play-panel" style="padding: 15px;" />'

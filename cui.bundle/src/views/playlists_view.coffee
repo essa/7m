@@ -17,18 +17,18 @@ class App.Views.PlaylistsView extends Backbone.View
     <div data-role="content">
       <div data-role="collapsible-set" data-content-theme="d" id="set">
         <div data-role="collapsible" id="set1" data-collapsed="false">
-          <h3>My Library</h2>
-          <ul id='search-ul'  data-role="listview">
-            <li><a href='#search'>search</a></li>
-          <ul>
-        </div>
-        <div data-role="collapsible" id="set1" data-collapsed="true">
           <h3>My Radio Programs</h2>
           <ul id='programs-ul'  data-role="listview"/>
         </div>
         <div data-role="collapsible" id="set1" data-collapsed="true">
           <h3>My Playlists</h2>
           <ul id='playlists-ul'  data-role="listview"/>
+        </div>
+        <div data-role="collapsible" id="set1" data-collapsed="true">
+          <h3>My Library</h2>
+          <ul id='search-ul'  data-role="listview">
+            <li><a href='#search'>search</a></li>
+          <ul>
         </div>
       </div>
     </div>

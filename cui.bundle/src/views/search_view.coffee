@@ -14,6 +14,9 @@ class App.Views.SearchView extends Backbone.View
       <div data-role='fieldcontain'>
         <label for="search-basic">Search Input:</label>
         <input type="search" name="search" id="search-word" value="<%= word %>" />
+        <% if (word.length == 0) { %>
+          <p id='type-message'>type song name, artist name or album to search tracks</p>
+        <% } %>
       </div>
       <div>
         <ul data-role='listview' id='search-result'>
@@ -24,6 +27,7 @@ class App.Views.SearchView extends Backbone.View
 
   initialize: (options)->
     super(options)
+    @app = options.app
     @model.on 'sync', @render_result, @
     @model.tracks.fetch()
 
@@ -41,7 +45,7 @@ class App.Views.SearchView extends Backbone.View
 
   render: ->
     html =  @template 
-      word: @model.get('word')
+      word: @model.get('word') || ''
       tracks: @model.tracks.toJSON()
     @$el.html html
 
@@ -51,11 +55,16 @@ class App.Views.SearchView extends Backbone.View
   search: (e)->
     q = @$('#search-word').val()
     if q.length >= 3 
-      console.log q
-      @model.set word: q
-      @model.tracks.fetch()
+      clearTimeout(@searchTimer) if @searchTimer
+      @searchTimer = setTimeout =>
+        console.log q
+        @model.set word: q
+        @model.tracks.fetch()
+        @app.router.navigate("#search/#{q}", trigger: false)
+      , 1000
 
   render_result: ->
+    $('#type-message').hide() if @model.tracks.length > 0
     $ul = @$('#search-result')
     $ul.html ''
     @model.tracks.each (t)=>

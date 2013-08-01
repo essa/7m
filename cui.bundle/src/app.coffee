@@ -134,6 +134,10 @@ window.App = App =
     status = @playing.get('status')
     status != App.Status.INIT
 
+  getQueuePlaylist: ->
+    id = @config.status.queues[0].id
+    @playlists.get(id)
+
   changeView: (newView, options={})->
     oldView = @currentView
     console.log 'changeView', oldView, newView
