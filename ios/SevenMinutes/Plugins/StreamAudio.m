@@ -247,6 +247,7 @@ static CDVStreamAudio* currentInstance = nil;
     if (mediaId != nil) {
         CDVStreamAudioFile* audioFile = [[self soundCache] objectForKey:mediaId];
         if (audioFile != nil) {
+            [audioFile invalidateTimer];
             if (audioFile.player) {
                 [audioFile.player pause];
             }
@@ -255,7 +256,6 @@ static CDVStreamAudio* currentInstance = nil;
                 self.avSession = nil;
             }
             [[self soundCache] removeObjectForKey:mediaId];
-            [audioFile invalidateTimer];
             NSLog(@"Media with id %@ released", mediaId);
         }
     }

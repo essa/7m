@@ -65,7 +65,7 @@ describe 'PlaylistView', ->
       
     it 'should refresh and play', ->
       $('#button-list-refresh-and-play').trigger('tap')
-      expect(@view.app.trigger).toHaveBeenCalled()
+      expect(@model.refresh).toHaveBeenCalled()
 
 """
   describe 'contents', ->
