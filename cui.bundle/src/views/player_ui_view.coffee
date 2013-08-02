@@ -16,6 +16,9 @@ class App.Views.PlayerUIView extends Backbone.View
     <div data-role="header"></div>
     <div data-role="content">
       <div style='text-align: center'>
+        <div>
+           <h2>Playing <%= list_name %> </h2>
+        </div>
         <div style='font-size: small'>
           <span class='artist'><%= artist %></span>
         </div>
@@ -43,7 +46,7 @@ class App.Views.PlayerUIView extends Backbone.View
         </div>
         <div class='ui-block-b'>
           <a data-role='button' style='width: 100%;'>
-          <% if (status == App.Status.PLAYING) { %>
+          <% if (status == App.Status.PLAYING || status == App.Status.LOADING) { %>
               <img id="button-pause" src='./images/Pause32.png' />
           <% } else { %>
             <img id="button-continue" src='./images/Play32.png' /> 
@@ -84,6 +87,7 @@ class App.Views.PlayerUIView extends Backbone.View
     attrs = @model.toJSON()
     attrs.bookmark = @hhmmss(attrs.bookmark || 0)
     attrs.pause_at = @hhmmss(attrs.pause_at || attrs.duration || 0)
+    attrs.list_name = @model.list?.get('name')
     attrs.track_link = null
     attrs.track_link =  "##{@model.list.type}/#{@model.list.id}/tracks/#{@model.track.id}" if @model.list and @model.track
     console.log 'PlayerUIView#render template', attrs

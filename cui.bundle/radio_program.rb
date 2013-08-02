@@ -12,7 +12,6 @@ module SevenMinutes
       include Utils::Playable
       extend Forwardable
       attr_accessor :parent, :persistentID
-      attr_accessor :playlist
       attr_accessor :pause_at, :virtual_bookmark, :virtual_played_at
       attr_reader :original_bookmark, :played, :track
       def_delegators :@track, :name, :bookmarkable, :duration, :playedDate, :playedCount, :artist, :album, :bitRate, :rating, :volumeAdjustment, :location
@@ -39,13 +38,6 @@ module SevenMinutes
         }
         if self.parent
           h.merge! path: "programs/#{parent.id}/tracks/#{persistentID}"
-        end
-        if @track.respond_to? :playlist
-          access_path = "playlists/#{@track.playlist.persistentID}/tracks/#{self.persistentID}" 
-          h.merge!(
-            access_path: access_path,
-            media_path: access_path + '/media' 
-          )  
         end
         @track.to_json_hash(options).merge(h)
       end

@@ -19,6 +19,11 @@ class App.Views.PlaylistView extends Backbone.View
       <div>
         <ul id='tracks-ul'  data-role="listview"></ul>
       </div>
+      <% if (queue) { %>
+        <div>
+          To add tracks to this list, <a href='#search'>Search</a> tracks.
+        </div>
+      <% } %>
     </div>
   '''
 
@@ -28,10 +33,14 @@ class App.Views.PlaylistView extends Backbone.View
     @type = options.type
     @hasFlash = options.hasFlash
     @model.on 'sync', @render, this
+    if @model.get('queue')
+      @model.tracks.fetch()
 
   render: ->
     console.log 'render'
-    @$el.html @template()
+    html = @template
+      queue: @model.get('queue')
+    @$el.html html
     $content = @$el.find('div[data-role="content"]')
 
     $ul = $content.find('ul')
@@ -54,11 +63,12 @@ class App.Views.PlaylistView extends Backbone.View
 
   renderHeader: ->
     $header = @$el.find('div[data-role="header"]')
+    left_href = ''
     r = new App.Views.HeaderRenderer
       el: $header
       model:
         left_icon: 'arrow-l'
-        left_href: ''
+        left_href: left_href 
         title: @model.get('name')
         right_icon: 'refresh'
         right_href: ''

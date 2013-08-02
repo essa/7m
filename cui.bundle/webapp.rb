@@ -245,6 +245,36 @@ module SevenMinutes
       end
     end
 
+    get %r{^/search/(.+)/tracks$} do
+      q = URI.unescape($1).force_encoding("UTF-8")
+      p q
+      tracks = SevenMinutes::ITunes::search(q)
+      search_result = Struct.new(:tracks).new(tracks)
+      tl = Utils::TrackList.new(search_result)
+      tl.to_json_array.to_json
+    end
+
+    get '/status' do
+      content_type 'text/json'
+      queues = ITunes::QueuePlaylist.all
+      {
+        status: 'ok',
+        queues: queues.map {|pl| pl.to_json_hash}
+      }.to_json
+    end
+
+    post %r{^/queue/(.+)/tracks/(.+)$} do
+      list, track = params[:captures]
+      p list, track
+      playlist = ITunes::QueuePlaylist.find_by_name(list)
+      if playlist
+        playlist.add(track)
+        { ok: true}.to_json
+      else
+        404
+      end
+    end
+
     def find_track_in_playlist(params)
       list, list_id, track_id = params[:captures]
       playlist = playlist_root(list).find(list_id)
