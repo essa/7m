@@ -28,7 +28,8 @@ class App.Models.PlayingTrack extends Backbone.Model
 
   onPlayRequest: (playlist, track, options={})->
     console.log 'onPlayRequest', @player
-    if @track and @get('status') == App.Status.PLAYING
+    status = @get('status') 
+    if @track and (status == App.Status.PLAYING or status == App.Status.PAUSED)
       @player.stop() 
       @track.recordPaused(@pos)
     @list = playlist

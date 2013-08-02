@@ -173,8 +173,8 @@ describe "Server Test with racktest with mock iTunes" do
       j = JSON.parse(last_response.body)
       j.must_be_kind_of(Hash)
       j['id'].must_equal  '1111'
-      j['access_path'].must_equal  'playlists/pl01/tracks/1111'
-      j['media_path'].must_equal  'playlists/pl01/tracks/1111/media'
+      # j['access_path'].must_equal  'playlists/pl01/tracks/1111'
+      # j['media_path'].must_equal  'playlists/pl01/tracks/1111/media'
     end
   end
 

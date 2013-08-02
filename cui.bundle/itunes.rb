@@ -196,11 +196,8 @@ module SevenMinutes
           tracks = @handle.tracks[0..tracks_limit]
         end
         tracks.each do |t|
-          p cnt
-          p t.name
           cnt += 1
           tt = Track.new(self, t.persistentID)
-          p tt.handle
           ret << tt if tt.handle
         end
         ret
@@ -238,14 +235,10 @@ module SevenMinutes
 
       def add(track_id)
         track = ITunes::index[track_id]
-        p :add, track, handle
-        p handle.tracks
         handle.tracks.each do |t|
           return if t.persistentID == track_id
         end
         track.duplicateTo handle
-        p track.name, handle.name
-        p handle.tracks
       end
 
       def to_json_hash
@@ -266,7 +259,8 @@ module SevenMinutes
       extend Forwardable
       attr_reader :parent, :handle
       attr_accessor :pause_at
-      def_delegators :@handle, :name, :persistentID, :bookmark, :bookmarkable, :duration, :playedDate, :playedCount, :artist, :album, :bitRate, :rating, :volumeAdjustment
+      attr_accessor :persistentID
+      def_delegators :@handle, :name, :bookmark, :bookmarkable, :duration, :playedDate, :playedCount, :artist, :album, :bitRate, :rating, :volumeAdjustment
       def_delegators :@handle, :'bookmark=', :'bookmarkable=', :'playedDate=', :'playedCount='
 
       def self.find(playlist_id, track_id)

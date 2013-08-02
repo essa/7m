@@ -1,13 +1,14 @@
 
 # 7m (SevenMinutes)
 
+[demo movie](http://youtu.be/FTEnE2Cly2w) | 
+[slide](http://www.uncate.org/7m/slide/7m.html#/) | 
+[日本語](https://github.com/essa/7m/blob/master/READMEJA.md)
+
 SevenMinutes is an open source Audio Media Server for Mac focusing on
 
 - ubiquitous listening 
 - remix a "Radio Program" from podcasts and your favorite musics
-
-[slide](http://www.uncate.org/7m/slide/7m.html#/)
-[日本語](https://github.com/essa/7m/blob/master/READMEJA.md)
 
 It can 
 

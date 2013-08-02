@@ -1,6 +1,8 @@
 
 # ![logo](https://raw.github.com/essa/7m/master/ios/SevenMinutes/Resources/icons/icon-72.png) 7m (SevenMinutes)
 
+[demo movie](http://youtu.be/zwjsx6f4ccM) | 
+[slide](http://www.uncate.org/7m/slide/7m.html#/) 
 
 SevenMinutes は、オープンソースのMac専用オーディオメディアサーバです。このソフトの目標は
 

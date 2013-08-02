@@ -17,7 +17,7 @@ class App.Views.PlayerUIView extends Backbone.View
     <div data-role="content">
       <div style='text-align: center'>
         <div>
-           <p>Playing <%= list_name %> </p>
+           <h2>Playing <%= list_name %> </h2>
         </div>
         <div style='font-size: small'>
           <span class='artist'><%= artist %></span>
@@ -46,7 +46,7 @@ class App.Views.PlayerUIView extends Backbone.View
         </div>
         <div class='ui-block-b'>
           <a data-role='button' style='width: 100%;'>
-          <% if (status == App.Status.PLAYING) { %>
+          <% if (status == App.Status.PLAYING || status == App.Status.LOADING) { %>
               <img id="button-pause" src='./images/Pause32.png' />
           <% } else { %>
             <img id="button-continue" src='./images/Play32.png' /> 
