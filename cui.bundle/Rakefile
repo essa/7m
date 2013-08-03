@@ -64,8 +64,13 @@ end
 
 desc 'run jasmine with phantomjs'
 task :jasmine do
+  pid = fork do 
+    exec('/usr/local/bin/macruby -rubygems cui_main.rb')
+  end
   sh 'grunt coffee'
+  sleep 3 # waiting for server ready
   sh 'phantomjs bin/run-jasmine.js http://localhost:16017/spec.html'
+  Process.kill :INT, pid
 end
 
 desc 'create dmz archive of GUI fullset version'
