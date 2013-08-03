@@ -1,4 +1,5 @@
 
+# Dummy Player for integration test
 class App.Players.DummyPlayer extends App.PlayerBase
   createMediaManager: (playing)->
     console.log 'DummyPlayer#createMediaManager'
@@ -6,7 +7,10 @@ class App.Players.DummyPlayer extends App.PlayerBase
     
   startMedia: (media_url, bookmark, callback)->
     console.log 'DummyPlayer#startMedia', media_url, bookmark
-    callback()
+    $.ajax 
+      url: media_url 
+      success: ->
+        callback()
 
   seek: (pos)->
     console.log 'DummyPlayer seekTo', pos

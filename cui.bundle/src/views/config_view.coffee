@@ -34,7 +34,7 @@ class App.Views.ConfigView extends Backbone.View
         <input type="text" name="server-port" id="server-port" value=""/>
       <% } %>
       <hr />
-        <label for="dev-only">Show devloper only options:</label>
+        <label for="dev-only">Show developer only options:</label>
         <select name="dev-only" id="dev-only" data-role="slider">
           <option value="off">Off</option>
           <option value="on">On</option>
@@ -127,7 +127,10 @@ class App.Views.ConfigView extends Backbone.View
       dev_only: dev_only
       use_dummy_player: use_dummy_player 
 
-    App.router.navigate('', trigger: true)
+    if use_dummy_player == 'on'
+      Env.reset()
+    else
+      App.router.navigate('', trigger: true)
 
   reset: ->
     @model.resetToDefault()
