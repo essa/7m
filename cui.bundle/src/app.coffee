@@ -91,6 +91,7 @@ window.App = App =
       callback() if callback
 
   initPlayer: (player)->
+    console.log "initPlayer #{player}"
     return false unless player
     @player.stop() if @player?
     playerClass = App.Players[player]
