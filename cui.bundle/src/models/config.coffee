@@ -9,7 +9,6 @@ class App.Models.Config extends Backbone.Model
         'PhonegapStreamPlayer'
       else
         null
-    console.log 'config player = ', @defaultPlayer
 
   defaults:
     server_addr: ''
@@ -17,10 +16,16 @@ class App.Models.Config extends Backbone.Model
     new_config: true
 
   player: ->
-    if @get('player')?
-      @get('player')
+    console.log 'config player', @get('use_dummy_player')
+    if @get('use_dummy_player') == 'on'
+      console.log 'Dummy'
+      'DummyPlayer'
     else
-      @defaultPlayer
+      console.log 'not Dummy'
+      if @get('player')?
+        @get('player')
+      else
+        @defaultPlayer
   
   resetToDefault: ->
     window.localStorage.setItem(KEY, undefined)

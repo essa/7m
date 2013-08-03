@@ -71,6 +71,29 @@ describe "SevenMinutes integration test" do
     sleep 1.0
     page.body.must_match /Deux Arabesques/
   end
+
+  it "should play track with DummyPlayer" do
+    visit '/#config'
+    sleep 1.0
+    page.body.must_match /SevenMinutes/
+    select('On', from: 'Show developer only options:')
+    within('#dev-only-area') do
+      #choose('PC')
+      page.execute_script "$('#interface-pc').attr('checked', true).trigger('create')"
+      select('On', from: 'use dummy player:')
+    end
+
+    click_link 'config-save'
+    page.body.must_match /7mtest/
+    click_link '7m_demo'
+    sleep 1.0
+    page.body.must_match /Deux Arabesques/
+    click_link 'Play!'
+    sleep 1.0
+    page.body.must_match /Deux Arabesques/
+    find(:css, 'div[data-role="header"] h1').text.must_equal 'Playing'
+    page.evaluate_script('App.playing.get("status")').must_equal 3 # App.Status.PLAYING
+  end
 end
  
  

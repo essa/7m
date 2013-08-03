@@ -34,7 +34,7 @@ class App.Views.ConfigView extends Backbone.View
         <input type="text" name="server-port" id="server-port" value=""/>
       <% } %>
       <hr />
-        <label for="dev-only">Show devloper only options:</label>
+        <label for="dev-only">Show developer only options:</label>
         <select name="dev-only" id="dev-only" data-role="slider">
           <option value="off">Off</option>
           <option value="on">On</option>
@@ -51,6 +51,11 @@ class App.Views.ConfigView extends Backbone.View
             <input type="radio" name="interface" id="interface-mobileold" value='mobileold'></input>
             <label for="interface-mobileold">Mobile(older version)</label>
           </fieldset>
+          <label for="use-dummy-player">use dummy player:</label>
+          <select name="use-dummy-player" id="use-dummy-player" data-role="slider">
+            <option value="off">Off</option>
+            <option value="on">On</option>
+          </select>
           <div class='ui-grid-b'>
             <div class='ui-block-a'>UserAgent: </div>
             <div class='ui-block-b'><%= navigator.userAgent %></div>
@@ -90,7 +95,14 @@ class App.Views.ConfigView extends Backbone.View
     
     bps = @model.get('bps')
     $("#bps-#{bps}").attr('checked', true).trigger('create')
+
+    dev_only = @model.get('dev_only')
+    $('select[name="dev-only"]').val(dev_only).slider().slider('refresh')
     @change_dev_only()
+
+    use_dummy_player = @model.get('use_dummy_player')
+    console.log use_dummy_player
+    $('select[name="use-dummy-player"]').val(use_dummy_player).slider().slider('refresh')
     this
 
   change_dev_only: ->
@@ -105,12 +117,20 @@ class App.Views.ConfigView extends Backbone.View
   save: ->
     bps = $('input[name="bps"]').filter(':checked').val();
     face = $('input[name="interface"]').filter(':checked').val();
+    dev_only = $('select[name="dev-only"]').val()
+    use_dummy_player = $('select[name="use-dummy-player"]').val()
     @model.save
       server_addr: @$el.find('#server-addr').val()
       server_port: @$el.find('#server-port').val()
       bps: bps
       face: face
-    App.router.navigate('', trigger: true)
+      dev_only: dev_only
+      use_dummy_player: use_dummy_player 
+
+    if use_dummy_player == 'on'
+      Env.reset()
+    else
+      App.router.navigate('', trigger: true)
 
   reset: ->
     @model.resetToDefault()
