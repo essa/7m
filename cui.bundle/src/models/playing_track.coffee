@@ -29,9 +29,9 @@ class App.Models.PlayingTrack extends Backbone.Model
   onPlayRequest: (playlist, track, options={})->
     console.log 'onPlayRequest', @player
     status = @get('status') 
-    if @track and (status == App.Status.PLAYING or status == App.Status.PAUSED)
+    @set 'status', App.Status.SELECTED
+    if @track and (status == App.Status.PLAYING or status == App.Status.PAUSED or status == App.Status.LOADING)
       @player.stop() 
-      @track.recordPaused(@pos)
     @list = playlist
 
     unless track
@@ -47,9 +47,9 @@ class App.Models.PlayingTrack extends Backbone.Model
         @player.startSilent() if @app.isPhonegap
       return 
         
+    @player.startSilent() if @app.isPhonegap
     console.log 'PlayingTrack setTrack', track
     @setTrack track
-    @set 'status', App.Status.SELECTED
     @playFull = options.full
     @track.fetch
       success: =>
@@ -60,7 +60,6 @@ class App.Models.PlayingTrack extends Backbone.Model
         @trigger 'playTrack', playlist, track, options
       error: =>
         @trigger 'error'
-    @player.startSilent() if @app.isPhonegap
 
   onNotifyStarted: ->
     @set 'status', App.Status.PLAYING
@@ -153,7 +152,7 @@ class App.Models.PlayingTrack extends Backbone.Model
 
   stop: ->
     if @track and @get('status') == App.Status.PLAYING
-      @track.recordPaused(@pos)
+      @track.recordPaused(@pos, completed: true)
     @set 'status', App.Status.INIT
     @stallDetector?.stopTimer()
     @player.pause()
