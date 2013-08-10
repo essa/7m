@@ -28,6 +28,10 @@ class App.Models.PlayingTrack extends Backbone.Model
 
   onPlayRequest: (playlist, track, options={})->
     console.log 'onPlayRequest', @player
+    if @pauseTimer
+      clearTimeout(@pauseTimer)
+      @pauseTimer = null
+      console.log 'clear pauseTimer'
     status = @get('status') 
     @set 'status', App.Status.SELECTED
     @list = playlist
@@ -72,9 +76,12 @@ class App.Models.PlayingTrack extends Backbone.Model
     @player.startSilent() if @app.isPhonegap
 
   onContinueRequest: ->
-    console.log 'jontinueRequest'
-    @player.continue()
     console.log 'continueRequest'
+    @player.continue()
+    if @pauseTimer
+      clearTimeout(@pauseTimer)
+      @pauseTimer = null
+      console.log 'clear pauseTimer'
 
   onSkipRequest: ->
     return if @get('status') == App.Status.INIT
@@ -92,6 +99,12 @@ class App.Models.PlayingTrack extends Backbone.Model
     return if @get('status') == App.Status.INIT
     @set 'status', App.Status.PAUSED
     @stallDetector?.stopTimer()
+    if @pauseTimer
+      clearTimeout(@pauseTimer)
+      @pauseTimer = null
+    @pauseTimer = setTimeout =>
+      @stop()
+    , 600 * 1000
 
   onNotifyEnd: ->
     return if @get('status') == App.Status.INIT
