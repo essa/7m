@@ -98,7 +98,7 @@ class App.Views.TrackView extends Backbone.View
         list_id: @playlist.id
         track_id: @model.id
         playing: @app.hasTrackPlaying()
-        play_text: if @type == 'search' then 'Add to Queue' else undefined 
+        play_text: if @type == 'search' then 'Request' else undefined 
 
     @$el.append footerRenderer.render().el
 

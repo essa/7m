@@ -4,21 +4,38 @@
 [slide](http://www.uncate.org/7m/slide/7m.html#/) | 
 [日本語](https://github.com/essa/7m/blob/master/READMEJA.md)
 
-SevenMinutes is an open source Audio Media Server for Mac focusing on
+7m (SevenMinutes) is an open source Audio Media Server for Mac. 
 
-- ubiquitous listening 
-- remix a "Radio Program" from podcasts and your favorite musics
+It enables you to play audio contents of iTunes on...
 
-It can 
+- web browsers (Chrome/Firefox/Safari on PC/Mac)
+- ios devices 
+- mp3 player apps (supporting m3u playlist) including ServeStream on Android
+- Dropbox ios app
 
-- distribute iTunes audio contents to web browsers (players as WebApp) / a dedicated iOS app / mp3 player apps(supporting m3u playlist)
-- play your playlists and remix a "Radio Program" for you from them
-- sync bookmark and played date real-time to iTunes after playing
-- play partially your long tracks 
-- export playlists / "Radio Program" as a combined mp3 file for Dropbox mobile apps to listen off line
-- reduce traffic by converting audio tracks to specified bit rate for slow 3G connection
+![overview of 7m](http://www.uncate.org/7m/slide/images/7m.png)
 
-A "Radio Program" in SevenMinutes
+Start here -> [GettingStarted](https://github.com/essa/7m/wiki/GettingStarted)
+
+# Three types of playlists
+
+Basically, 7m is a 'playlist player' which plays three types of playlists.
+
+- iTunes playlists
+- remixed playlists
+- request playlist
+
+## iTunes playlists / smart playlists
+
+- It can play any playlists of audio contents of iTunes
+- It syncs bookmark and played date real-time to iTunes after playing (good for smart playlists)
+- It can reduce traffic by converting audio tracks to specified bit rate for slow 3G connection
+
+## remixed playlists
+
+It can remix a new playlist on demand from podcasts and your favorite musics.
+
+A "remixed playlist" in 7m ...
 
 - uses iTunes playlists / smart playlists as source of audio tracks
 - picks up audio tracks from sources in specified duration or number of tracks
@@ -28,7 +45,12 @@ A "Radio Program" in SevenMinutes
 
 So you can listen to your "Radio Program"s consists of talk (podcasts) and music anytime, anywhere on virtually every device you have.
 
-Start here -> https://github.com/essa/7m/wiki/GettingStarted
+## request playlist
+
+- you can search all songs in iTunes from client
+- you can request a track in search result
+- "Playing Queue" is a special playlist of requested tracks
+- tracks are removed from queue after played
 
 ## Why "SevenMinutes" ?
 
@@ -190,11 +212,16 @@ The player in iOS uses a phonegap plug-in for streaming audio (AVPlayer).
 
 ### Music players tested with SevenMinutes
 
-iRadio(iOS)
-https://itunes.apple.com/it/app/iradio/id426290891?mt=8
+Unfortunately, many mp3 player / radio player apps don't support m3u playlist including urls even if it supports m3u format with only file path.
 
-ServerStream(Android)
-https://play.google.com/store/apps/details?id=net.sourceforge.servestream
+I have found found only these two apps play good with 7m.
+
+- [iRadio(iOS)](https://itunes.apple.com/it/app/iradio/id426290891?mt=8)
+- [ServerStream(Android)](https://play.google.com/store/apps/details?id=net.sourceforge.servestream)
+
+### VPN Server
+
+7m is a web server so you can connect to it across 3G using vpn servers like [SoftEther](http://www.softether.org/).
 
 ### UPnP PortMapper
 
@@ -267,9 +294,16 @@ Pretty Office Icon Set Part 8 | Custom Icon Design
 http://www.customicondesign.com/free-icons/pretty-office-icon-set/pretty-office-icon-set-part-8/
 http://www.iconarchive.com/show/pretty-office-8-icons-by-custom-icon-design.html
 
+### icons and splashes for ios
+
+ios/SevenMinutes/Resources/icons/*
+ios/SevenMinutes/Resources/splash/*
+
+Designed by Mr. Holder.
+
 ## Author and License
 
-Written by Taku NAKAJIMA.
+Written by Taku NAKAJIMA (takunakajima@gmail.com /[@7mradio](https://twitter.com/7mradio) )
 
 Released under Ruby's License.
 

@@ -104,7 +104,7 @@ class App.Models.Track extends Backbone.Model
       method: 'post'
       success: =>
         status = @app.playing.get('status')
-        if status != App.Status.PLAYING
+        if status == App.Status.INIT
           queue = @app.getQueuePlaylist()
           queue.tracks.fetch
             success: =>

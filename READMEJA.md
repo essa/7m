@@ -1,24 +1,42 @@
 
 # ![logo](https://raw.github.com/essa/7m/master/ios/SevenMinutes/Resources/icons/icon-72.png) 7m (SevenMinutes)
 
-[demo movie](http://youtu.be/zwjsx6f4ccM) | 
-[slide](http://www.uncate.org/7m/slide/7m.html#/) 
+[demo movie](http://www.youtube.com/watch?v=jY747-OmNSE) | 
+[slide](http://www.uncate.org/7m/slide/7m.html#/) | 
+[日本語](https://github.com/essa/7m/blob/master/READMEJA.md)
 
-SevenMinutes は、オープンソースのMac専用オーディオメディアサーバです。このソフトの目標は
+7m (SevenMinutes)は、オープンソースのMac専用オーディオメディアサーバです。iTunes内の音楽とPodcastをさまざまな機器で聞くことを可能にします。
 
-- ポッドキャストとiTunes内の好きな音楽から、あなた専用の「ラジオ番組」をリミックスして
-- いつでもどこでも聞けるようにすること
+- ブラウザ (PCとMacの Chrome/Firefox/Safari)
+- iPhone と iPad (iOSの専用アプリを使用)
+- Android (ServeStreamというmp3プレイヤーアプリを使用)
+- ネット上のm3uプレイリストをサポートしたmp3プレイヤー
+- ios用のDropboxアプリ
 
-です。具体的には
+![overview of 7m](http://www.uncate.org/7m/slide/images/7m.png)
 
-- iTunesで管理されているオーディオコンテンツを、ブラウザー内のプレイヤー、iOS用の専用アプリ、mp3プレイヤーアプリ(m3u形式のplaylistをサポートしているもの)に配信します
-- プレイリストをそのまま再生することと、そこから「ラジオ番組」をリミックスすることができます
-- 再生後にリアルタイムで、iTunesのブックマーク(再生位置)や再生日時を同期します
-- 長いコンテンツを部分的に(少しづつ)聞くことができます
-- プレイリストと「ラジオ番組」を一つの長いmp3ファイルにexportできます。これを利用して、Dropboxのiosアプリでオフラインで聞くことができます。
-- 細い回線でも聞けるように、リアルタイムでビットレートを下げる変換をして配信できます
+使いたい人はまずはこちらをどうぞ -> [GettingStarted](https://github.com/essa/7m/wiki/GettingStartedJA)
 
-SevenMinutesの「ラジオ番組」とは
+
+# 三種類のプレイリスト
+
+7m は、基本的には「プレイリスト再生アプリ」です。次の三種類のプレイリストを再生します。
+
+- iTunesのプレイリスト
+- 「リミックス」プレイリスト
+- 「リクエスト」プレイリスト
+
+## iTunesのプレイリスト
+
+- 7m は iTunes上で作成された プレイリスト / スマートプレイリスト を再生できます
+- 再生後に、iTunesで管理されている「再生日時」「再生回数」等の情報を更新します。これは スマートプレイリスト を活用する時に便利です
+- 遅い回線用に、低いビットレートに変換して送信することができます
+
+## 「リミックス」プレイリスト
+
+podcastと好きな音楽を「リミックス」したプレイリストを再生することができます。
+
+7m の「リミックス」プレイリストとは
 
 - iTunesのプレイリストとスマートプレイリストを「ソース」として使用し
 - 指定された曲数または再生時間に合うように、いくつかのトラックを抜き出し
@@ -28,7 +46,15 @@ SevenMinutesの「ラジオ番組」とは
 
 これによって、いつでもどこでもあなた専用の「ラジオ番組」を聞くことができます。
 
-試してみようという方は、[まずはこちらをご覽ください](https://github.com/essa/7m/wiki/GettingStartedJA)。
+## 「リクエスト」プレイリスト
+
+- iTunes上の全てのオーディオコンテンツを、クライアントアプリから検索することができます
+- 検索結果から指定した曲を「リクエスト」できます
+- 「Playing Queue」という特殊なプレイリストがあって、リクエストされた曲はここに追加されます
+- 再生すると、その曲は「Playing Queue」から削除されます
+
+- ポッドキャストとiTunes内の好きな音楽から、あなた専用の「ラジオ番組」をリミックスして
+- いつでもどこでも聞けるようにすること
 
 ## なぜ "SevenMinutes" か？
 
