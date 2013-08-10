@@ -88,9 +88,9 @@ describe "SevenMinutes integration test" do
     setup_dummy_player
 
     # search tracks
-    click_link 'My Library'
+    click_link 'Request Playlist'
     within("#search-ul") do
-      click_link 'search'
+      click_link 'Search and Request'
     end
     sleep 1.0
     find('#search-word').set('Deux')
@@ -101,21 +101,21 @@ describe "SevenMinutes integration test" do
     # add it to queue
     click_link 'Deux Arabesques: No 1. Andantino con moto'
     sleep 1.0
-    click_link 'Add to Queue'
+    click_link 'Request'
     sleep 3.0
     page.evaluate_script('App.playing.get("status")').must_equal 3 # App.Status.PLAYING
 
     # add another track to queue
     click_link 'Deux Arabesques: No 2. Allegretto scherzando'
     sleep 1.0
-    click_link 'Add to Queue'
+    click_link 'Request'
 
     # reload and check Queue
     visit '/'
     sleep 1.0
-    click_link 'My Library'
+    click_link 'Request Playlist'
     within("#search-ul") do
-      click_link 'queue'
+      click_link 'Playing Queue'
     end
     sleep 1.0
     page.body.must_match /Deux Arabesques: No 1. Andantino con moto/

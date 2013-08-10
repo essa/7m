@@ -17,17 +17,17 @@ class App.Views.PlaylistsView extends Backbone.View
     <div data-role="content">
       <div data-role="collapsible-set" data-content-theme="d" id="set">
         <div data-role="collapsible" id="set1" data-collapsed="false">
-          <h3>My Radio Programs</h2>
+          <h3>Remixed Playlists</h3>
           <ul id='programs-ul'  data-role="listview"/>
         </div>
         <div data-role="collapsible" id="set1" data-collapsed="true">
-          <h3>My Playlists</h2>
+          <h3>iTunes Playlists</h3>
           <ul id='playlists-ul'  data-role="listview"/>
         </div>
         <div data-role="collapsible" id="set1" data-collapsed="true">
-          <h3>My Library</h2>
+          <h3>Request Playlist</h3>
           <ul id='search-ul'  data-role="listview">
-            <li><a href='#search'>search</a></li>
+            <li><a href='#search'>Search and Request</a></li>
           <ul>
         </div>
       </div>
@@ -64,7 +64,7 @@ class App.Views.PlaylistsView extends Backbone.View
           model: 
             type: 'playlists'
             id: pl.id 
-            name: 'Playing queue'
+            name: 'Playing Queue'
         $ul3.append itemView.render().$el
 
     @renderHeader()
@@ -129,7 +129,7 @@ class App.Views.PlaylistsViewOld extends App.Views.PlaylistsView
     $content = @$el.find('div[data-role="content"]')
 
     $ul = $content.find('ul#playlists-ul')
-    $ul.append '<li data-role="list-divider">My Programs</li>'
+    $ul.append '<li data-role="list-divider">Request Playlists</li>'
     
     @programs.each (pl)->
       console.log pl.get('name')
@@ -140,7 +140,7 @@ class App.Views.PlaylistsViewOld extends App.Views.PlaylistsView
           name: pl.get('name')
       $ul.append itemView.render().$el
 
-    $ul.append '<li data-role="list-divider">My Playlists</li>'
+    $ul.append '<li data-role="list-divider">iTunes Playlists</li>'
     @playlists.each (pl)->
       console.log pl.get('name')
       itemView = new Item

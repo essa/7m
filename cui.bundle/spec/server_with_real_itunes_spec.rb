@@ -14,7 +14,7 @@ module SevenMinutes
   end
   conf = YAML::load <<END
 base_dir: .
-programs:
+remixed playlists:
   - name: podcasts
     refresh_interval: 60
     frames:
