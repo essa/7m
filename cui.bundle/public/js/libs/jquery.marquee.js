@@ -42,6 +42,10 @@
                 marqueeState = $marqueeRedux.data('marqueeState');
                 
                 if ($marqueeRedux.data('paused') !== true) {
+                    // bug fix by T.Nakajima
+                    if (typeof marqueeState == "undefined") 
+                      continue ;
+
                     // TODO read scrollamount, dir, behavior, loops and last from data
                     marqueeRedux[marqueeState.axis] += (marqueeState.scrollamount * marqueeState.dir);
 

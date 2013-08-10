@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>jmpress.js | simple example</title>
+
+	<meta name="description" content="jmpress.js is a jQuery plugin to build a website on the infinite canvas">
+	<meta name="author" content="Kyle Robinson Young @shama & Tobias Koppers @sokra" />
+	<meta name="viewport" content="width=device-width, maximum-scale=1.0, initial-scale=1.0, user-scalable=yes" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+	<link href="./css/simple.css" rel="stylesheet" type="text/css" />
+	<link href="./css/basic-animations.css" rel="stylesheet" type="text/css" />
+
+	<script type="text/javascript" src="./js/jquery-2.0.0.min.js"></script>
+	<script type="text/javascript" src="./js/jmpress.all.js"></script>
+</head>
+<body>
+
+<div id="simple">
+    <div id="overview" class="step" data-x="1000" data-y="0" data-scale="10">
+      <img data-jmpress="fade after 1s step" style='width: 100%;' src='images/7m.png' />
+    </div>
+    <div class="step" data-y="-400" data-scale="6">
+      <h1>7m (SevenMinutes) 
+        <span id="item1" data-jmpress="fade">: Ubiquitous Personal Radio</span>
+      </h1>
+    </div>
+    <div id="overview2" class="step" data-x="1000" data-y="0" data-scale="10">
+      <img data-jmpress="fade after 1s step" style='width: 100%;' src='images/7m.png' />
+    </div>
+    <div id="7mserver" class="step" data-x="800" data-y="-200" data-scale="2.6">
+      <img style='width: 10%; margin: 5%;' src='images/icon-72.png' />
+      <p style=''>7m is an audio media server</p>
+      <p id="item2" data-jmpress="drive-up">that runs as a Mac Desktop App</p>
+      <img style='width: 60%; margin: 5%; opacity: 1.0' src='images/7mserver.png' />
+    </div>
+    <div id="overview3" class="step" data-x="1000" data-y="0" data-scale="10">
+      <img data-jmpress="fade after 1s step" style='width: 100%;' src='images/7m.png' />
+    </div>
+    <div class="step" data-x="-1000" data-y="1200" data-scale="6">
+      <div style='margin-left: 20%;margin-top: 20%;'>
+        <h3>iTunes</h3>
+        <p id="item2" data-jmpress="drive-right">7m distributes audio contents managed by iTunes for ...</p>
+      </div>
+    </div>
+    <div id="overview4" class="step" data-x="1000" data-y="0" data-scale="10">
+      <img data-jmpress="fade after 1s step" style='width: 100%;' src='images/7m.png' />
+    </div>
+    <div class="step" data-x="4800" data-y="-1700" data-scale="1.6">
+      <h3>web browsers</h3>
+      <img style='width: 60%; margin: 5%;' src='images/safari.png' />
+      <p>supports Chrome/Firefox/Safari on Mac/PC</p>
+    </div>
+    <div class="step" data-x="5000" data-y="0" data-scale="2">
+      <h3>iPhone/iPad</h3>
+      <img style='width: 30%; margin: 5%;' src='images/iphone.png' />
+    </div>
+    <div class="step" data-x="5000" data-y="2000" data-scale="2">
+      <h3>Android smart phones / tablets </h3>
+      <img style='width: 30%; margin: 5%;' src='images/servestream.png' />
+    </div>
+    <div id="overview5" class="step" data-x="1000" data-y="0" data-scale="10">
+      <img data-jmpress="fade after 1s step" style='width: 100%;' src='images/overview.png' />
+    </div>
+    <div class="step card" data-x="1000" data-y="0" data-scale="0.01" data-rotate="180">
+      <h1>Demo 1</h1>
+      <p>play a iTunes playlist in safari</p>
+    </div>
+    <div class="step card" data-x="1000" data-y="-20" data-scale="0.02" data-rotate="360">
+      <h1>Demo 2</h1>
+      <p>play a smart playlist in a remote browser</p>
+      <p id='demo21' data-jmpress="fade">and sync back played date at end</p>
+      <p id='demo22' data-jmpress="fade">so that the list updates in real-time</p>
+    </div>
+    <div class="step card" data-x="1000" data-y="-40" data-scale="0.04" data-rotate="180">
+      <h1>Demo 3</h1>
+      <p id='demo31' data-jmpress="fade">search songs in server and play it</p>
+      <p id='demo32' data-jmpress="drive-down">on ios app</p>
+    </div>
+    <div id="overview6" class="step" data-x="1000" data-y="0" data-scale="10">
+      <img data-jmpress="fade after 1s step" style='width: 100%;' src='images/overview.png' />
+    </div>
+    <div id="7micon" class="step" data-x="800" data-y="-200" data-scale="0.06">
+      <img style='width: 20%; margin-top: 20%;' src='images/icon-72.png' />
+      <p data-jmpress="drive-left">7m: Ubiquitous Personal Radio</p>
+      <p data-jmpress="drive-right">by Taku NAKAJIMA</p>
+      <p data-jmpress="drive-left">music from http://classicalmusicmp3freedownload.com/</p>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+$(function() {
+	$('#simple').jmpress();
+});
+</script>
+
+</body>
+</html>

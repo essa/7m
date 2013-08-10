@@ -28,10 +28,12 @@ class App.Models.PlayingTrack extends Backbone.Model
 
   onPlayRequest: (playlist, track, options={})->
     console.log 'onPlayRequest', @player
+    if @pauseTimer
+      clearTimeout(@pauseTimer)
+      @pauseTimer = null
+      console.log 'clear pauseTimer'
     status = @get('status') 
-    if @track and (status == App.Status.PLAYING or status == App.Status.PAUSED)
-      @player.stop() 
-      @track.recordPaused(@pos)
+    @set 'status', App.Status.SELECTED
     @list = playlist
 
     unless track
@@ -47,9 +49,9 @@ class App.Models.PlayingTrack extends Backbone.Model
         @player.startSilent() if @app.isPhonegap
       return 
         
+    @player.startSilent() if @app.isPhonegap
     console.log 'PlayingTrack setTrack', track
     @setTrack track
-    @set 'status', App.Status.SELECTED
     @playFull = options.full
     @track.fetch
       success: =>
@@ -60,7 +62,6 @@ class App.Models.PlayingTrack extends Backbone.Model
         @trigger 'playTrack', playlist, track, options
       error: =>
         @trigger 'error'
-    @player.startSilent() if @app.isPhonegap
 
   onNotifyStarted: ->
     @set 'status', App.Status.PLAYING
@@ -75,9 +76,12 @@ class App.Models.PlayingTrack extends Backbone.Model
     @player.startSilent() if @app.isPhonegap
 
   onContinueRequest: ->
-    console.log 'jontinueRequest'
-    @player.continue()
     console.log 'continueRequest'
+    @player.continue()
+    if @pauseTimer
+      clearTimeout(@pauseTimer)
+      @pauseTimer = null
+      console.log 'clear pauseTimer'
 
   onSkipRequest: ->
     return if @get('status') == App.Status.INIT
@@ -95,6 +99,12 @@ class App.Models.PlayingTrack extends Backbone.Model
     return if @get('status') == App.Status.INIT
     @set 'status', App.Status.PAUSED
     @stallDetector?.stopTimer()
+    if @pauseTimer
+      clearTimeout(@pauseTimer)
+      @pauseTimer = null
+    @pauseTimer = setTimeout =>
+      @stop()
+    , 600 * 1000
 
   onNotifyEnd: ->
     return if @get('status') == App.Status.INIT
@@ -153,7 +163,7 @@ class App.Models.PlayingTrack extends Backbone.Model
 
   stop: ->
     if @track and @get('status') == App.Status.PLAYING
-      @track.recordPaused(@pos)
+      @track.recordPaused(@pos, completed: true)
     @set 'status', App.Status.INIT
     @stallDetector?.stopTimer()
     @player.pause()

@@ -260,7 +260,8 @@ module SevenMinutes
           end
         end
         cnt = 0
-        @@programs = conf[:programs].map do |c|
+        remix = conf[:'remixed playlists'] || conf[:programs]
+        @@programs = remix.map do |c|
           cnt += 1
           c[:id] = cnt
           c[:logger] = conf[:logger]

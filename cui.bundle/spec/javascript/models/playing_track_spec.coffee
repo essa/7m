@@ -153,16 +153,16 @@ describe 'PlayingTrack', ->
       @playing.trigger 'playRequest', @playlist, @track
       expect(playTrack).toHaveBeenCalled()
 
-    describe 'when playing', ->
-      beforeEach ->
-        @prevTrack = new App.Models.Track({}, app: @app)
-        @playing.track = @prevTrack
-        @playing.set 'status', App.Status.PLAYING
+    # describe 'when playing', ->
+      # beforeEach ->
+        # @prevTrack = new App.Models.Track({}, app: @app)
+        # @playing.track = @prevTrack
+        # @playing.set 'status', App.Status.PLAYING
 
-      it 'should stop player', ->
-        player = @playing.player
-        @playing.trigger 'playRequest', @playlist, @track
-        expect(player.stop).toHaveBeenCalled()
+      # it 'should stop player', ->
+        # player = @playing.player
+        # @playing.trigger 'playRequest', @playlist, @track
+        # expect(player.stop).toHaveBeenCalled()
         
   describe 'notifyEnd event', ->
     beforeEach ->

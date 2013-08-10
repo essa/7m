@@ -91,6 +91,7 @@ window.App = App =
       callback() if callback
 
   initPlayer: (player)->
+    console.log "initPlayer #{player}"
     return false unless player
     @player.stop() if @player?
     playerClass = App.Players[player]
@@ -478,12 +479,15 @@ class App.Players.SilentAudioPlayer
     # url = 'http://192.168.1.10:3000/sound/silent.mp3'
     # @silentmp3 = new plugins.StreamAudio url, @onSuccess, @onError
 
+    @playing = false
     console.log 'SilentAudio#constructor end'
 
   play: ->
     console.log 'silient play'
-    @silentmp3.play
-      numberOfLoops: 10
+    unless @playing
+      @silentmp3.play
+        numberOfLoops: 10
+      @playing = true
   
   pause: ->
     console.log 'silient pause'
@@ -491,9 +495,11 @@ class App.Players.SilentAudioPlayer
 
   onSuccess: ->
     console.log 'silient success'
+    @playing = false
 
   onError: ->
     console.log 'silent error'
+    @playing = false
 
 
 

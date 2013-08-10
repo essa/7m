@@ -1,7 +1,7 @@
 
 loglevel: DEBUG
 port: 16017
-programs:
+remixed playlists:
   - name: main
     refresh_interval: 3600
     frames:

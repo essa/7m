@@ -8,7 +8,7 @@ class App.Views.SearchView extends Backbone.View
   template: _.template '''
     <div data-role="header">
       <a href='#' data-role='button' data-icon='arrow-l' data-iconpos="notext"></a>
-      <h1 id='config-header'>Search</h1>
+      <h1 id='config-header'>Search and Request</h1>
     </div>
     <div data-role="content">
       <div data-role='fieldcontain'>
