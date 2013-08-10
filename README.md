@@ -1,7 +1,6 @@
-
 # 7m (SevenMinutes)
 
-[demo movie](http://youtu.be/FTEnE2Cly2w) | 
+[demo movie](http://www.youtube.com/watch?v=jY747-OmNSE) | 
 [slide](http://www.uncate.org/7m/slide/7m.html#/) | 
 [日本語](https://github.com/essa/7m/blob/master/READMEJA.md)
 
