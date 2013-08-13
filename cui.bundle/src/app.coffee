@@ -397,7 +397,9 @@ class App.Players.PhonegapMediaPlayer extends App.PlayerBase
     callback()
 
   showVolumeSlider: ->
-    console.log 'showVolumeSlider', window.plugins.volumeSlider
+    w = document.clientWidth
+    h = document.clientHeight
+    console.log 'showVolumeSlider', window.plugins.volumeSlider, w, h
     volumeSlider = window.plugins.volumeSlider
     volumeSlider.createVolumeSlider(10,350,300,30)
     volumeSlider.showVolumeSlider()
