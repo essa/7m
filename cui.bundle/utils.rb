@@ -3,6 +3,23 @@ require 'shellwords'
 require 'date'
 require 'json'
 
+class Array
+  def symbolize_keys_recursive
+    dup.symbolize_keys_recursive!
+  end
+
+  def symbolize_keys_recursive!
+    self.each do |val|
+      case val
+      when Hash
+        val.symbolize_keys_recursive!
+      when Array
+        val.symbolize_keys_recursive!
+      end
+    end
+  end
+end
+
 class Hash
   def symbolize_keys_recursive
     dup.symbolize_keys_recursive!
@@ -12,8 +29,13 @@ class Hash
       self[(key.to_sym rescue key) || key] = delete(key)
     end
     values.each do |val|
-      if val.kind_of?(Hash)
+      case val
+      when Hash
         val.symbolize_keys_recursive!
+      when Array
+        val.symbolize_keys_recursive!
+      else
+        val
       end
     end
     self
