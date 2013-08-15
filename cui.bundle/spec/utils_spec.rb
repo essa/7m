@@ -16,10 +16,17 @@ describe Hash do
       h[:aaa].must_equal 1
       h[:bbb].must_equal 2
     end
+
     it 'should symbolize_keys recursive' do
       h = { 'aaa' => 1, 'bbb' => { 'ccc' => 2} }
       h.symbolize_keys_recursive!
       h[:bbb][:ccc].must_equal 2
+    end
+
+    it 'should symbolize_keys hash in array' do
+      h = { 'aaa' => 1, 'bbb' => [{ 'ccc' => 2}] }
+      h.symbolize_keys_recursive!
+      h[:bbb][0][:ccc].must_equal 2
     end
   end
 end

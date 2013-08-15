@@ -30,6 +30,7 @@ $.ajax = (options)->
   originalAjax(options)
 
 window.App = App = 
+  VERSION: '0.8.2'
   Models: {}
   Views: {}
   Players: {}

@@ -53,6 +53,17 @@ describe "Server Test with racktest with real iTunes" do
     end
   end
 
+  describe 'get "/status"' do
+    it "should return status as json" do
+      get '/status'
+      last_response.status.must_equal 200
+      j = JSON.parse(last_response.body).symbolize_keys_recursive
+      j[:status].must_equal 'ok'
+      j[:queues].first[:name].must_equal '7m_queue'
+      j[:version].must_equal SevenMinutes::VERSION
+    end
+  end
+
   describe 'get "/programs"' do
     it "should be success" do
       get '/programs'
