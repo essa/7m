@@ -57,6 +57,14 @@ class App.Views.ConfigView extends Backbone.View
             <option value="on">On</option>
           </select>
           <div class='ui-grid-b'>
+            <div class='ui-block-a'>Version(server): </div>
+            <div class='ui-block-b'><%= serverVersion %></div>
+          </div>
+          <div class='ui-grid-b'>
+            <div class='ui-block-a'>Version(client): </div>
+            <div class='ui-block-b'><%= clientVersion %></div>
+          </div>
+          <div class='ui-grid-b'>
             <div class='ui-block-a'>UserAgent: </div>
             <div class='ui-block-b'><%= navigator.userAgent %></div>
           </div>
@@ -86,6 +94,8 @@ class App.Views.ConfigView extends Backbone.View
   render: ->
     @$el.html @template
       isPhonegap: App.isPhonegap
+      serverVersion: @model.status?.version
+      clientVersion: App.VERSION
     @render_header()
     @$el.find('#server-addr').val @model.get('server_addr')
     @$el.find('#server-port').val @model.get('server_port')
