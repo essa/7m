@@ -494,7 +494,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = NO;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Taku Nakajima (AQM2DBCFL9)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Taku Nakajima (AQM2DBCFL9)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -505,7 +506,8 @@
 				INFOPLIST_FILE = "SevenMinutes/SevenMinutes-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PRODUCT_NAME = SevenMinutes;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				PROVISIONING_PROFILE = "7AD9CC7F-A964-454B-AF4D-21C49BA7E2CE";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "7AD9CC7F-A964-454B-AF4D-21C49BA7E2CE";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -515,7 +517,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = NO;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Taku Nakajima (AQM2DBCFL9)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Taku Nakajima (AQM2DBCFL9)";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SevenMinutes/SevenMinutes-Prefix.pch";
@@ -524,7 +527,8 @@
 				INFOPLIST_FILE = "SevenMinutes/SevenMinutes-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PRODUCT_NAME = SevenMinutes;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				PROVISIONING_PROFILE = "7AD9CC7F-A964-454B-AF4D-21C49BA7E2CE";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "7AD9CC7F-A964-454B-AF4D-21C49BA7E2CE";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

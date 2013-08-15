@@ -3,6 +3,7 @@ require 'sinatra/base'
 require 'sinatra/xsendfile'
 require 'json'
 require 'yaml'
+require 'version'
 require 'itunes'
 require 'radio_program'
 
@@ -247,7 +248,6 @@ module SevenMinutes
 
     get %r{^/search/(.+)/tracks$} do
       q = URI.unescape($1).force_encoding("UTF-8")
-      p q
       tracks = SevenMinutes::ITunes::search(q)
       search_result = Struct.new(:tracks).new(tracks)
       tl = Utils::TrackList.new(search_result)
@@ -259,6 +259,7 @@ module SevenMinutes
       queues = ITunes::QueuePlaylist.all
       {
         status: 'ok',
+        version: SevenMinutes::VERSION,
         queues: queues.map {|pl| pl.to_json_hash}
       }.to_json
     end

@@ -212,9 +212,12 @@ class App.Views.PlayerUIView extends Backbone.View
     @hideVolumeSlider()
     if window.plugins?
       unless @vsVisible
-        # console.log 'show volumeSlider'
+        w = window.innerWidth
+        h = window.innerHeight
+        console.log 'showVolumeSlider', w, h
         vs = window.plugins.volumeSlider
-        vs?.createVolumeSlider(10,450,300,30)
+        # vs?.createVolumeSlider(10,450,300,30)
+        vs?.createVolumeSlider(10,h-40,w-30,30)
         vs?.showVolumeSlider()
         # console.log 'show volumeSlider end'
       @vsVisible = true
