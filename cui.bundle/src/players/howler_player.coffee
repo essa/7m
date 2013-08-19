@@ -23,6 +23,7 @@ class App.Players.HowlerPlayer extends App.PlayerBase
     @howl = new Howl
       urls: [media_url]
       sprite: sprite
+      buffer: false
       volume: vol
       onend: => @onEnded()
       onloaderror: => @onError()
