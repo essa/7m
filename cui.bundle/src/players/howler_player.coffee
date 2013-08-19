@@ -4,20 +4,34 @@ class App.Players.HowlerPlayer extends App.PlayerBase
   createMediaManager: (playing)->
     @mm = new App.Players.ClientManagedMM(playing, playing.player)
 
-  startMedia: (media_url, bookmark, callback)->
+  play: (mediaUrl, bookmark, duration)->
+    @startMedia mediaUrl, bookmark, duration, =>
+      console.log 'startMedia callback', mediaUrl, bookmark
+      @app.trigger 'notifyStarted'
+      if bookmark > 0
+        @fadeInOut "in"
+
+  startMedia: (media_url, bookmark, duration, callback)->
     vol = if bookmark? and bookmark > 0 then 0 else 1
+    bookmark -= @softPauseTime 
+    if bookmark < 0
+      bookmark = 0
+
+    @bookmark = bookmark
+    sprite =
+      playRange: [bookmark*1000, duration*1000]
     @howl = new Howl
       urls: [media_url]
+      sprite: sprite
       volume: vol
       onend: => @onEnded()
       onloaderror: => @onError()
-      # onpause: => @onPause()
+      onpause: => @onPause()
 
       onload: => 
         console.log "howler ready", bookmark
         callback()
-        @howl.play()
-        @howl.pos(bookmark)
+        @howl.play('playRange')
         @startTimeUpdate()
       onplay: -> 
         console.log "howler play start"
@@ -29,10 +43,10 @@ class App.Players.HowlerPlayer extends App.PlayerBase
     , 1000
 
   stopTimeUpdate: ->
-    cancelTimer(@timer) if @timer
+    clearTimeout(@timer) if @timer
 
   onTimeUpdate: (e)=>
-    @mm.onTimeUpdate @howl.pos()
+    @mm.onTimeUpdate @howl.pos()+@bookmark
 
   onEnded: (e)=>
     @stopTimeUpdate()

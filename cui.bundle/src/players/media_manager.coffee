@@ -55,8 +55,9 @@ class App.Players.ClientManagedMM extends App.Players.MediaManager
     @track = track
     opt = @mediaOption()
     opt.bps = options.bps
-    console.log 'MM#play', opt, track.mediaUrl(opt), track.get('bookmark')
-    @player.play track.mediaUrl(opt), track.get('bookmark')
+    duration = parseInt(track.get('duration'))
+    console.log 'MM#play', opt, track.mediaUrl(opt), track.get('bookmark'), duration
+    @player.play track.mediaUrl(opt), track.get('bookmark'), duration
 
   onTimeUpdate: (pos)->
     @playing.trigger 'timeupdate', pos
