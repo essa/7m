@@ -15,9 +15,11 @@ class App.Players.MediaManager
       @playing.set 'next_track_name', nextTrack.get('name')
       setTimeout =>
         if @playing.get('status') != App.Status.INIT
-          option = @mediaOption(nextTrack)
-          console.log 'prepareMedia', option
-          nextTrack.prepareMedia(option)
+          options = @mediaOption(nextTrack)
+          console.log 'prepareMedia', options
+          options.success = =>
+            @player.onPrepareMedia(options.url)
+          nextTrack.prepareMedia(options)
       , 10 * 1000
 
   commandCallback: (status, subType)->

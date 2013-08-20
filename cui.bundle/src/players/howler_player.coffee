@@ -5,6 +5,7 @@ class App.Players.HowlerPlayer extends App.PlayerBase
     @mm = new App.Players.ServerManagedMM(playing, playing.player)
 
   startMedia: (media_url, bookmark, callback)->
+    @releaseMedia()
     vol = if bookmark? and bookmark > 0 then 0 else 1
     @howl = new Howl
       urls: [media_url]
@@ -35,15 +36,24 @@ class App.Players.HowlerPlayer extends App.PlayerBase
   onTimeUpdate: (e)=>
     @mm.onTimeUpdate @howl.pos()
 
+  # prefetch sound to cache of howler.js
+  # webaudio must decode audio before playing
+  # so prefetch to pre decode while previous track is playing
+  onPrepareMedia: (media_url)->
+    new Howl
+      urls: [media_url]
+      autoplay: false
+      buffer: false
+
   onEnded: (e)=>
     @stopTimeUpdate()
     @mm.onEnded()
-    @howl.unload()
+    @releaseMedia()
 
   onError: =>
     @stopTimeUpdate()
     @mm.onError()
-    @howl.unload()
+    @releaseMedia()
 
   setVolume: (v)=>
     @howl.volume(v)
@@ -53,15 +63,33 @@ class App.Players.HowlerPlayer extends App.PlayerBase
     @howl.pause()
 
   stop: =>
+    @stopTimeUpdate()
     @doPause()
-    @howl.unload()
+    @releaseMedia()
 
   continue: =>
-    @fadeInOut "in"
+    @startTimeUpdate()
     @howl.play()
+    pos = @howl.pos()
+    pos -= @softPauseTime * 2
+    pos = 0 if pos < 0
+    @howl.pos(pos)
+    @fadeInOut "in"
 
   seek: (pos)=>
     @howl.pos(pos)
 
   startSilent: -> # do nothing
+
+  releaseMedia: ->
+    return unless @howl
+    console.log 'howl releaseMedia'
+    howl = @howl
+    @howl = null
+    setTimeout =>
+      console.log 'howl unload'
+      howl.unload()
+      console.log 'howl unload end'
+    , 2000
+
 
