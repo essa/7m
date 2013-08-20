@@ -80,7 +80,7 @@ class App.Players.ServerManagedMM extends App.Players.MediaManager
     @player.play track.mediaUrl(bps: options.bps, start: @start, pause: @pause), 0 
 
   onTimeUpdate: (pos)->
-    unless @pause? and @start + pos >= @pause - 1
+    unless @pause? and @start + pos >= @pause + 10
       @playing.trigger 'timeupdate', @start + pos
 
   onEnded: ()->

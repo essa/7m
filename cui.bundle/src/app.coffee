@@ -489,7 +489,7 @@ class App.Players.SilentAudioPlayer
     console.log 'silient play'
     unless @playing
       @silentmp3.play
-        numberOfLoops: 10
+        numberOfLoops: 40 # 20 minutes
       @playing = true
   
   pause: ->

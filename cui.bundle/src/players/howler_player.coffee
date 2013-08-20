@@ -2,27 +2,13 @@
 
 class App.Players.HowlerPlayer extends App.PlayerBase
   createMediaManager: (playing)->
-    @mm = new App.Players.ClientManagedMM(playing, playing.player)
+    @mm = new App.Players.ServerManagedMM(playing, playing.player)
 
-  play: (mediaUrl, bookmark, duration)->
-    @startMedia mediaUrl, bookmark, duration, =>
-      console.log 'startMedia callback', mediaUrl, bookmark
-      @app.trigger 'notifyStarted'
-      if bookmark > 0
-        @fadeInOut "in"
-
-  startMedia: (media_url, bookmark, duration, callback)->
+  startMedia: (media_url, bookmark, callback)->
     vol = if bookmark? and bookmark > 0 then 0 else 1
-    bookmark -= @softPauseTime 
-    if bookmark < 0
-      bookmark = 0
-
-    @bookmark = bookmark
-    sprite =
-      playRange: [bookmark*1000, duration*1000]
     @howl = new Howl
       urls: [media_url]
-      sprite: sprite
+      autoplay: true
       buffer: false
       volume: vol
       onend: => @onEnded()
@@ -30,14 +16,14 @@ class App.Players.HowlerPlayer extends App.PlayerBase
       onpause: => @onPause()
 
       onload: => 
-        console.log "howler ready", bookmark
-        callback()
-        @howl.play('playRange')
-        @startTimeUpdate()
-      onplay: -> 
+        console.log "howler onload"
+      onplay: => 
         console.log "howler play start"
+        callback()
+        @startTimeUpdate()
 
   startTimeUpdate: ->
+    console.log "howler startTimeUpdate"
     @stopTimeUpdate()
     @timer = setInterval =>
       @onTimeUpdate()
@@ -47,15 +33,17 @@ class App.Players.HowlerPlayer extends App.PlayerBase
     clearTimeout(@timer) if @timer
 
   onTimeUpdate: (e)=>
-    @mm.onTimeUpdate @howl.pos()+@bookmark
+    @mm.onTimeUpdate @howl.pos()
 
   onEnded: (e)=>
     @stopTimeUpdate()
     @mm.onEnded()
+    @howl.unload()
 
   onError: =>
     @stopTimeUpdate()
     @mm.onError()
+    @howl.unload()
 
   setVolume: (v)=>
     @howl.volume(v)
@@ -66,12 +54,14 @@ class App.Players.HowlerPlayer extends App.PlayerBase
 
   stop: =>
     @doPause()
+    @howl.unload()
 
   continue: =>
+    @fadeInOut "in"
     @howl.play()
 
   seek: (pos)=>
-    @howl.seek(pos)
+    @howl.pos(pos)
 
   startSilent: -> # do nothing
 
