@@ -366,6 +366,8 @@ class App.PlayerBase
     console.log 'onPause'
     @app.trigger 'notifyPaused'
 
+  onPrepareMedia: (url)->
+
   stop: (callback=null)->
     console.log 'stop'
     doStop = @doStop
@@ -374,7 +376,9 @@ class App.PlayerBase
       callback() if callback
   
   startSilent: ->
-    new App.Players.SilentAudioPlayer(@app).play()
+    @silentAudio.stop() if @silentAudio
+    @silentAudio = new App.Players.SilentAudioPlayer(@app)
+    @silentAudio.play()
 
 class App.Players.PhonegapMediaPlayer extends App.PlayerBase
   startMedia: (media_url, bookmark, callback)->
@@ -489,7 +493,7 @@ class App.Players.SilentAudioPlayer
     console.log 'silient play'
     unless @playing
       @silentmp3.play
-        numberOfLoops: 40 # 20 minutes
+        numberOfLoops: 48 # 12 minutes
       @playing = true
   
   pause: ->
@@ -503,6 +507,10 @@ class App.Players.SilentAudioPlayer
   onError: ->
     console.log 'silent error'
     @playing = false
+
+  stop: ->
+    @silentmp3.pause()
+    @silentmp3.release()
 
 
 

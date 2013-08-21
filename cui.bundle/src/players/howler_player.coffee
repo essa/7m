@@ -23,6 +23,10 @@ class App.Players.HowlerPlayer extends App.PlayerBase
         callback()
         @startTimeUpdate()
 
+    unless @howl
+      console.log 'howler initialize error'
+      @onError()
+
   startTimeUpdate: ->
     console.log "howler startTimeUpdate"
     @stopTimeUpdate()
@@ -56,11 +60,11 @@ class App.Players.HowlerPlayer extends App.PlayerBase
     @releaseMedia()
 
   setVolume: (v)=>
-    @howl.volume(v)
+    @howl?.volume(v)
 
   doPause: =>
     console.log 'pause callback'
-    @howl.pause()
+    @howl?.pause()
 
   stop: =>
     @stopTimeUpdate()
@@ -73,11 +77,12 @@ class App.Players.HowlerPlayer extends App.PlayerBase
     pos = @howl.pos()
     pos -= @softPauseTime * 2
     pos = 0 if pos < 0
-    @howl.pos(pos)
+    @seek(pos)
     @fadeInOut "in"
 
   seek: (pos)=>
     @howl.pos(pos)
+    @onTimeUpdate()
 
   startSilent: -> # do nothing
 
@@ -87,9 +92,8 @@ class App.Players.HowlerPlayer extends App.PlayerBase
     howl = @howl
     @howl = null
     setTimeout =>
-      console.log 'howl unload'
       howl.unload()
       console.log 'howl unload end'
-    , 2000
+    , 5000
 
 

@@ -103,8 +103,9 @@ class App.Models.PlayingTrack extends Backbone.Model
       clearTimeout(@pauseTimer)
       @pauseTimer = null
     @pauseTimer = setTimeout =>
+      console.log 'pause timeout'
       @stop()
-    , 600 * 1000
+    , 600 * 1000 # 10 minutes
 
   onNotifyEnd: ->
     return if @get('status') == App.Status.INIT
