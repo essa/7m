@@ -15,9 +15,11 @@ class App.Players.MediaManager
       @playing.set 'next_track_name', nextTrack.get('name')
       setTimeout =>
         if @playing.get('status') != App.Status.INIT
-          option = @mediaOption(nextTrack)
-          console.log 'prepareMedia', option
-          nextTrack.prepareMedia(option)
+          options = @mediaOption(nextTrack)
+          console.log 'prepareMedia', options
+          options.success = =>
+            @player.onPrepareMedia(options.url)
+          nextTrack.prepareMedia(options)
       , 10 * 1000
 
   commandCallback: (status, subType)->
@@ -55,8 +57,9 @@ class App.Players.ClientManagedMM extends App.Players.MediaManager
     @track = track
     opt = @mediaOption()
     opt.bps = options.bps
-    console.log 'MM#play', opt, track.mediaUrl(opt), track.get('bookmark')
-    @player.play track.mediaUrl(opt), track.get('bookmark')
+    duration = parseInt(track.get('duration'))
+    console.log 'MM#play', opt, track.mediaUrl(opt), track.get('bookmark'), duration
+    @player.play track.mediaUrl(opt), track.get('bookmark'), duration
 
   onTimeUpdate: (pos)->
     @playing.trigger 'timeupdate', pos
@@ -79,7 +82,7 @@ class App.Players.ServerManagedMM extends App.Players.MediaManager
     @player.play track.mediaUrl(bps: options.bps, start: @start, pause: @pause), 0 
 
   onTimeUpdate: (pos)->
-    unless @pause? and @start + pos >= @pause - 1
+    unless @pause? and @start + pos >= @pause + 10
       @playing.trigger 'timeupdate', @start + pos
 
   onEnded: ()->

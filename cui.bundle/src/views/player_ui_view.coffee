@@ -90,13 +90,13 @@ class App.Views.PlayerUIView extends Backbone.View
     attrs.list_name = @model.list?.get('name')
     attrs.track_link = null
     attrs.track_link =  "##{@model.list.type}/#{@model.list.id}/tracks/#{@model.track.id}" if @model.list and @model.track
-    console.log 'PlayerUIView#render template', attrs
+    # console.log 'PlayerUIView#render template', attrs
     @$el.html @template(attrs)
     # $content = @$el.find('div[data-role="content"]')
     # $content.trigger 'create'
     @render_header()
     if @model.get('status') == App.Status.PLAYING
-      console.log $(window).width()
+      # console.log $(window).width()
       $('.name').marquee
         width: Math.min(570, $(window).width())
 

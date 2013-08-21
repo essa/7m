@@ -4,11 +4,11 @@ class App.Models.Config extends Backbone.Model
     super()
     @defaultPlayer = if @hasFlash() 
       'JPlayerPlayer' 
-    else 
+    else
       if @app?.isPhonegap
         'PhonegapStreamPlayer'
       else
-        null
+        'HowlerPlayer' 
 
   defaults:
     server_addr: ''
