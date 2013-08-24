@@ -175,7 +175,8 @@ module SevenMinutes
       end
 
       def media_file_path(options={})
-        if options[:bps].to_i > 0 or options[:start].to_i > 0 or options[:pause].to_i > 0
+        has_sox = Config.current[:has_sox]
+        if has_sox and options[:bps].to_i > 0 or options[:start].to_i > 0 or options[:pause].to_i > 0
           media_temp = Thread::current[:seven_minutes_conf][:media_temp] || '/tmp/7m'
           bps = options[:bps] || 0
           id = self.persistentID
