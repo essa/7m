@@ -30,6 +30,7 @@ module SevenMinutes
       mode: Config::CUI,
       logger: logger
     )
+    conf.detect_sox
     ITunes::init_app(conf)
     RadioProgram::Program::init(conf, ITunes)
 

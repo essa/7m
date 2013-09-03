@@ -2,7 +2,7 @@
 
 class App.Players.JPlayerPlayer extends App.PlayerBase
 
-  createMediaManager: (playing)->
+  createMediaManager: (playing, has_sox)->
     @mm = new App.Players.ClientManagedMM(playing, playing.player)
 
   startMedia: (media_url, bookmark, callback)->

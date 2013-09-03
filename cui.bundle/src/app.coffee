@@ -62,7 +62,6 @@ window.App = App =
 
     @initPlayingTrack()
     @initPlayer(@config.player())
-    @initMediaManager()
 
     if @config.isNewConfig()
       console.log 'show config'
@@ -70,7 +69,8 @@ window.App = App =
       Backbone.history.start(pushState: false)
     else
       console.log 'show playlists'
-      @initPlaylists ->
+      @initPlaylists =>
+        @initMediaManager()
         Backbone.history.start(pushState: false)
 
 
@@ -107,7 +107,7 @@ window.App = App =
   initMediaManager: ->
     console.log 'initMediaManager'
     if @playing.player?
-      @mediaManager = @playing.player.createMediaManager(@playing)
+      @mediaManager = @playing.player.createMediaManager(@playing, @config.status?.has_sox)
 
   baseUrl: ->
     return "/" unless @isPhonegap

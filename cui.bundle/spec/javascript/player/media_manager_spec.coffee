@@ -44,7 +44,7 @@ describe 'MediaManager', ->
 
       it 'should play track', ->
         expect(@player.play).toHaveBeenCalled()
-        expect(@player.play.lastCall.args[0]).toEqual 'http://mock.server/playlists/123/track/456/media/0?prepareNext=no'
+        expect(@player.play.lastCall.args[0]).toEqual 'http://mock.server/playlists/123/track/456/media/0.mp3?prepareNext=no'
         expect(@player.play.lastCall.args[1]).toEqual 10
 
     describe 'ServerManagedMM', ->
@@ -54,7 +54,7 @@ describe 'MediaManager', ->
 
       it 'should play track', ->
         expect(@player.play).toHaveBeenCalled()
-        expect(@player.play.lastCall.args[0]).toEqual 'http://mock.server/playlists/123/track/456/media/0/10-30'
+        expect(@player.play.lastCall.args[0]).toEqual 'http://mock.server/playlists/123/track/456/media/0/10-30.mp3'
         expect(@player.play.lastCall.args[1]).toEqual 0
 
     describe 'ListMM', ->
@@ -87,7 +87,7 @@ describe 'MediaManager', ->
         @playing.trigger 'playTrack', @list, @track, bps: 128
 
       it 'should play track', ->
-        expect(@player.play.lastCall.args[0]).toEqual 'http://mock.server/playlists/123/track/456/media/128?prepareNext=no'
+        expect(@player.play.lastCall.args[0]).toEqual 'http://mock.server/playlists/123/track/456/media/128.mp3?prepareNext=no'
 
     describe 'ServerManagedMM', ->
       beforeEach ->
@@ -95,7 +95,7 @@ describe 'MediaManager', ->
         @playing.trigger 'playTrack', @list, @track, bps: 128
 
       it 'should play track', ->
-        expect(@player.play.lastCall.args[0]).toEqual 'http://mock.server/playlists/123/track/456/media/128/10-'
+        expect(@player.play.lastCall.args[0]).toEqual 'http://mock.server/playlists/123/track/456/media/128/10-.mp3'
 
     describe 'ListMM', ->
       beforeEach ->
@@ -125,7 +125,7 @@ describe 'MediaManager', ->
         @playing.trigger 'playTrack', @list, @track, bps: 128, full: true
 
       it 'should play track', ->
-        expect(@player.play.lastCall.args[0]).toEqual 'http://mock.server/playlists/123/track/456/media/128'
+        expect(@player.play.lastCall.args[0]).toEqual 'http://mock.server/playlists/123/track/456/media/128.mp3'
 
   describe 'onTimeUpdate', ->
 
