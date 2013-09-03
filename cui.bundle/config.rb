@@ -104,6 +104,19 @@ module SevenMinutes
       end
     end
 
+    def detect_sox
+      Config.with_config(self) do
+        shell = Config.current.shell
+        has_sox = self[:has_sox] = shell.exec('which sox')
+        logger = Config.current.logger
+        if has_sox
+          logger.info('detected sox installed')
+        else
+          logger.warn('can not detect sox, running without sox')
+        end
+      end
+    end
+
     private
 
     def set_log_level_from_config

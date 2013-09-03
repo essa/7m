@@ -27,6 +27,7 @@ class App.Models.Track extends Backbone.Model
       else
         if pause > 0
           url += "/0-#{pause}"
+    url += '.mp3'
     url += '?prepareNext=no' if options.prepareNext == 'no'
     url
 

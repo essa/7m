@@ -15,14 +15,14 @@ describe 'Track', ->
 
   describe 'mediaUrl', ->
     it 'should have mediaUrl()', ->
-      expect(@track.mediaUrl()).toEqual 'http://base/playlists/123/tracks/456/media/0'
+      expect(@track.mediaUrl()).toEqual 'http://base/playlists/123/tracks/456/media/0.mp3'
 
     it 'should have mediaUrl for bps', ->
-      expect(@track.mediaUrl(bps: 128)).toEqual 'http://base/playlists/123/tracks/456/media/128'
+      expect(@track.mediaUrl(bps: 128)).toEqual 'http://base/playlists/123/tracks/456/media/128.mp3'
 
     it 'should have mediaUrl for start and stop', ->
-      expect(@track.mediaUrl(bps: 128, start:100)).toEqual 'http://base/playlists/123/tracks/456/media/128/100-'
-      expect(@track.mediaUrl(bps: 128, start:100, pause: 200)).toEqual 'http://base/playlists/123/tracks/456/media/128/100-200'
+      expect(@track.mediaUrl(bps: 128, start:100)).toEqual 'http://base/playlists/123/tracks/456/media/128/100-.mp3'
+      expect(@track.mediaUrl(bps: 128, start:100, pause: 200)).toEqual 'http://base/playlists/123/tracks/456/media/128/100-200.mp3'
 
   describe 'recordPlayed', ->
     beforeEach ->
@@ -76,7 +76,7 @@ describe 'Track', ->
       args = @ajax.getCall(0).args[0]
       expect(args.type).toEqual 'HEAD'
       expect(args.patch).toEqual undefined
-      expect(args.url).toEqual 'http://base/playlists/123/tracks/456/media/128'
+      expect(args.url).toEqual 'http://base/playlists/123/tracks/456/media/128.mp3'
 
   describe 'mediaPrepared', ->
     beforeEach ->
@@ -86,7 +86,7 @@ describe 'Track', ->
       @server.restore()
 
     it 'should be true on success', ->
-      @server.respondWith 'http://base/playlists/123/tracks/456/media/128', [200, {}, 'OK']
+      @server.respondWith 'http://base/playlists/123/tracks/456/media/128.mp3', [200, {}, 'OK']
       ret = @track.mediaPrepared(bps: 128)
       expect(ret).toEqual true
 

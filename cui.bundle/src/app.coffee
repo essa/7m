@@ -30,7 +30,7 @@ $.ajax = (options)->
   originalAjax(options)
 
 window.App = App = 
-  VERSION: '0.8.2'
+  VERSION: '0.8.3'
   Models: {}
   Views: {}
   Players: {}
@@ -62,7 +62,6 @@ window.App = App =
 
     @initPlayingTrack()
     @initPlayer(@config.player())
-    @initMediaManager()
 
     if @config.isNewConfig()
       console.log 'show config'
@@ -70,7 +69,8 @@ window.App = App =
       Backbone.history.start(pushState: false)
     else
       console.log 'show playlists'
-      @initPlaylists ->
+      @initPlaylists =>
+        @initMediaManager()
         Backbone.history.start(pushState: false)
 
 
@@ -107,7 +107,7 @@ window.App = App =
   initMediaManager: ->
     console.log 'initMediaManager'
     if @playing.player?
-      @mediaManager = @playing.player.createMediaManager(@playing)
+      @mediaManager = @playing.player.createMediaManager(@playing, @config.status?.has_sox)
 
   baseUrl: ->
     return "/" unless @isPhonegap
@@ -366,6 +366,8 @@ class App.PlayerBase
     console.log 'onPause'
     @app.trigger 'notifyPaused'
 
+  onPrepareMedia: (url)->
+
   stop: (callback=null)->
     console.log 'stop'
     doStop = @doStop
@@ -374,7 +376,9 @@ class App.PlayerBase
       callback() if callback
   
   startSilent: ->
-    new App.Players.SilentAudioPlayer(@app).play()
+    @silentAudio.stop() if @silentAudio
+    @silentAudio = new App.Players.SilentAudioPlayer(@app)
+    @silentAudio.play()
 
 class App.Players.PhonegapMediaPlayer extends App.PlayerBase
   startMedia: (media_url, bookmark, callback)->
@@ -489,7 +493,7 @@ class App.Players.SilentAudioPlayer
     console.log 'silient play'
     unless @playing
       @silentmp3.play
-        numberOfLoops: 10
+        numberOfLoops: 48 # 12 minutes
       @playing = true
   
   pause: ->
@@ -503,6 +507,10 @@ class App.Players.SilentAudioPlayer
   onError: ->
     console.log 'silent error'
     @playing = false
+
+  stop: ->
+    @silentmp3.pause()
+    @silentmp3.release()
 
 
 

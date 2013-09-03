@@ -1,8 +1,11 @@
 
 class App.Players.PhonegapStreamPlayer extends App.PlayerBase
-  createMediaManager: (playing)->
-    console.log 'PhonegapStreamPlayer#createMediaManager'
-    @mm = new App.Players.ServerManagedMM(playing, playing.player)
+  createMediaManager: (playing, has_sox)->
+    if has_sox
+      @mm = new App.Players.ServerManagedMM(playing, playing.player)
+    else
+      console.log 'PhonegapStreamPlayer#createMediaManager without sox, creating ClientManagedMM'
+      @mm = new App.Players.ClientManagedMM(playing, playing.player)
     
   startMedia: (media_url, bookmark, callback)->
     console.log 'PhonegapPlayer#startMedia', media_url, bookmark

@@ -260,7 +260,8 @@ module SevenMinutes
       {
         status: 'ok',
         version: SevenMinutes::VERSION,
-        queues: queues.map {|pl| pl.to_json_hash}
+        queues: queues.map {|pl| pl.to_json_hash},
+        has_sox: ITunes::conf[:has_sox]
       }.to_json
     end
 

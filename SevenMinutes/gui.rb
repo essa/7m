@@ -74,6 +74,7 @@ module SevenMinutes
       app = SevenMinutes::CommonLogger.new(app, logger)
       server = ControlTowerExt::Server.new(app, options)
       Thread.start do
+        conf.detect_sox # this should not be in main thread
         server.start
       end
       server
