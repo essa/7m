@@ -1,3 +1,3 @@
 module SevenMinutes
-  VERSION = "0.8.2" unless defined?(::SevenMinute::VERSION)
+  VERSION = "0.8.3" unless defined?(::SevenMinute::VERSION)
 end
