@@ -15,6 +15,7 @@
 		B71290351728CE0800616705 /* rb_main.rb in Resources */ = {isa = PBXBuildFile; fileRef = B71290341728CE0800616705 /* rb_main.rb */; };
 		B71290371728CE0800616705 /* AppDelegate.rb in Resources */ = {isa = PBXBuildFile; fileRef = B71290361728CE0800616705 /* AppDelegate.rb */; };
 		B71290411728D19500616705 /* cui.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B71290401728D19500616705 /* cui.bundle */; };
+		B76FC2E017E304CA00E5ABF9 /* Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = B76FC2DF17E304CA00E5ABF9 /* Icon.icns */; };
 		B7B03D7A175C7AB100B4A1F2 /* gui.rb in Resources */ = {isa = PBXBuildFile; fileRef = B7B03D79175C7AB100B4A1F2 /* gui.rb */; };
 /* End PBXBuildFile section */
 
@@ -29,17 +30,18 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		B712901C1728CE0800616705 /* SevenMinutes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SevenMinutes.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B712901C1728CE0800616705 /* 7mServer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 7mServer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B712901F1728CE0800616705 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		B71290211728CE0800616705 /* MacRuby.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MacRuby.framework; path = Library/Frameworks/MacRuby.framework; sourceTree = DEVELOPER_DIR; };
-		B71290281728CE0800616705 /* SevenMinutes-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SevenMinutes-Info.plist"; sourceTree = "<group>"; };
+		B71290281728CE0800616705 /* 7mServer-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "7mServer-Info.plist"; sourceTree = "<group>"; };
 		B712902A1728CE0800616705 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B712902C1728CE0800616705 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		B712902E1728CE0800616705 /* SevenMinutes-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SevenMinutes-Prefix.pch"; sourceTree = "<group>"; };
+		B712902E1728CE0800616705 /* 7mServer-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "7mServer-Prefix.pch"; sourceTree = "<group>"; };
 		B71290311728CE0800616705 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		B71290341728CE0800616705 /* rb_main.rb */ = {isa = PBXFileReference; lastKnownFileType = text.script.ruby; path = rb_main.rb; sourceTree = "<group>"; };
 		B71290361728CE0800616705 /* AppDelegate.rb */ = {isa = PBXFileReference; lastKnownFileType = text.script.ruby; path = AppDelegate.rb; sourceTree = "<group>"; };
 		B71290401728D19500616705 /* cui.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = cui.bundle; sourceTree = "<group>"; };
+		B76FC2DF17E304CA00E5ABF9 /* Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Icon.icns; sourceTree = "<group>"; };
 		B7B03D79175C7AB100B4A1F2 /* gui.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = gui.rb; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -59,6 +61,7 @@
 		B71290131728CE0800616705 = {
 			isa = PBXGroup;
 			children = (
+				B76FC2DF17E304CA00E5ABF9 /* Icon.icns */,
 				B71290401728D19500616705 /* cui.bundle */,
 				B71290261728CE0800616705 /* GUI */,
 				B712901E1728CE0800616705 /* Frameworks */,
@@ -69,7 +72,7 @@
 		B712901D1728CE0800616705 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B712901C1728CE0800616705 /* SevenMinutes.app */,
+				B712901C1728CE0800616705 /* 7mServer.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -99,10 +102,10 @@
 		B71290271728CE0800616705 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				B71290281728CE0800616705 /* SevenMinutes-Info.plist */,
+				B71290281728CE0800616705 /* 7mServer-Info.plist */,
 				B71290291728CE0800616705 /* InfoPlist.strings */,
 				B712902C1728CE0800616705 /* main.m */,
-				B712902E1728CE0800616705 /* SevenMinutes-Prefix.pch */,
+				B712902E1728CE0800616705 /* 7mServer-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -144,9 +147,9 @@
 /* End PBXLegacyTarget section */
 
 /* Begin PBXNativeTarget section */
-		B712901B1728CE0800616705 /* SevenMinutes */ = {
+		B712901B1728CE0800616705 /* 7mServer */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B712903A1728CE0800616705 /* Build configuration list for PBXNativeTarget "SevenMinutes" */;
+			buildConfigurationList = B712903A1728CE0800616705 /* Build configuration list for PBXNativeTarget "7mServer" */;
 			buildPhases = (
 				B71290181728CE0800616705 /* Sources */,
 				B71290191728CE0800616705 /* Frameworks */,
@@ -156,9 +159,9 @@
 			);
 			dependencies = (
 			);
-			name = SevenMinutes;
+			name = 7mServer;
 			productName = SevenMinutes;
-			productReference = B712901C1728CE0800616705 /* SevenMinutes.app */;
+			productReference = B712901C1728CE0800616705 /* 7mServer.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -170,7 +173,7 @@
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Nakajima Taku";
 			};
-			buildConfigurationList = B71290171728CE0800616705 /* Build configuration list for PBXProject "SevenMinutes" */;
+			buildConfigurationList = B71290171728CE0800616705 /* Build configuration list for PBXProject "7mServer" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -182,7 +185,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B712901B1728CE0800616705 /* SevenMinutes */,
+				B712901B1728CE0800616705 /* 7mServer */,
 				B71290231728CE0800616705 /* Deployment */,
 			);
 		};
@@ -199,6 +202,7 @@
 				B71290371728CE0800616705 /* AppDelegate.rb in Resources */,
 				B71290411728D19500616705 /* cui.bundle in Resources */,
 				B7B03D7A175C7AB100B4A1F2 /* gui.rb in Resources */,
+				B76FC2E017E304CA00E5ABF9 /* Icon.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -218,7 +222,7 @@
 /* Begin PBXTargetDependency section */
 		B71290251728CE0800616705 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B712901B1728CE0800616705 /* SevenMinutes */;
+			target = B712901B1728CE0800616705 /* 7mServer */;
 			targetProxy = B71290241728CE0800616705 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -269,8 +273,9 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = 7mServer;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -295,7 +300,8 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				PRODUCT_NAME = 7mServer;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -311,9 +317,9 @@
 				"FRAMEWORK_SEARCH_PATHS[arch=*]" = /Library/Frameworks;
 				GCC_ENABLE_OBJC_GC = required;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "SevenMinutes/SevenMinutes-Prefix.pch";
-				INFOPLIST_FILE = "SevenMinutes/SevenMinutes-Info.plist";
-				PRODUCT_NAME = SevenMinutes;
+				GCC_PREFIX_HEADER = "SevenMinutes/7mServer-Prefix.pch";
+				INFOPLIST_FILE = "SevenMinutes/7mServer-Info.plist";
+				PRODUCT_NAME = 7mServer;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -328,9 +334,9 @@
 				);
 				GCC_ENABLE_OBJC_GC = required;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "SevenMinutes/SevenMinutes-Prefix.pch";
-				INFOPLIST_FILE = "SevenMinutes/SevenMinutes-Info.plist";
-				PRODUCT_NAME = SevenMinutes;
+				GCC_PREFIX_HEADER = "SevenMinutes/7mServer-Prefix.pch";
+				INFOPLIST_FILE = "SevenMinutes/7mServer-Info.plist";
+				PRODUCT_NAME = 7mServer;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -350,7 +356,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		B71290171728CE0800616705 /* Build configuration list for PBXProject "SevenMinutes" */ = {
+		B71290171728CE0800616705 /* Build configuration list for PBXProject "7mServer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B71290381728CE0800616705 /* Debug */,
@@ -359,7 +365,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B712903A1728CE0800616705 /* Build configuration list for PBXNativeTarget "SevenMinutes" */ = {
+		B712903A1728CE0800616705 /* Build configuration list for PBXNativeTarget "7mServer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B712903B1728CE0800616705 /* Debug */,
