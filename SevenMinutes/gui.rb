@@ -44,7 +44,7 @@ module SevenMinutes
 
     def self.start_as_gui(logger)
       logger.level = Logger::INFO
-      logger.info "SevenMinutes #{SevenMinutes::VERSION} start"
+      logger.info "7mServer #{SevenMinutes::VERSION} start"
 
       conf = Config::load(
         config_file: '7m.yml',

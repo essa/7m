@@ -23,7 +23,7 @@ module SevenMinutes
       logger.logdevice.write(msg)
     end
     logger.level = Logger::INFO
-    logger.info "SevenMinutes #{SevenMinutes::VERSION} start"
+    logger.info "7mServer #{SevenMinutes::VERSION} cui mode start"
 
     conf = Config::load(
       config_file: config_file,

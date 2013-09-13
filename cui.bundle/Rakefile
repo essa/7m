@@ -77,10 +77,10 @@ desc 'create dmz archive of GUI fullset version'
 task :dmg do
   load 'version.rb'
   ver = SevenMinutes::VERSION
-  src = "~/Library/Developer/Xcode/DerivedData/SevenMinutes-*/Build/Products/Debug"
+  src = "~/Library/Developer/Xcode/DerivedData/7mServer-*/Build/Products/Debug"
   sh "cp ../README.md ../READMEJA.md #{src}"
   sh "ln -s /Applications #{src}"
-  sh "rm -rf #{src}/SevenMinutes.app/Contents/Resources/cui.bundle/node_modules/"
-  sh "hdiutil create -ov -srcfolder #{src} -fs HFS+ -format UDBZ -volname 'SevenMinutes #{ver}' ../7m_#{ver}.dmg"
+  sh "rm -rf #{src}/7mServer.app/Contents/Resources/cui.bundle/node_modules/"
+  sh "hdiutil create -ov -srcfolder #{src} -fs HFS+ -format UDBZ -volname 'SevenMinutes #{ver}' ../7mServer_#{ver}.dmg"
 end
 
