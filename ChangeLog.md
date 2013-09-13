@@ -1,3 +1,8 @@
+### 0.8.4
+
+- rename Mac App to 7mserver
+- rename iOS App to 7mradio
+
 ### 0.8.3
 
 - new howler.js based player for Chrome for Android (experimental feature)
