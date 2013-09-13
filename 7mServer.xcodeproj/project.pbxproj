@@ -271,6 +271,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = 7mServer;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -296,6 +297,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				PRODUCT_NAME = 7mServer;
 				SDKROOT = macosx;
 			};
 			name = Release;
