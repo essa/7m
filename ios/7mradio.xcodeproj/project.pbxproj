@@ -508,7 +508,7 @@
 				PRODUCT_NAME = 7mradio;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -517,8 +517,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = NO;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Taku Nakajima (MT6G8258S2)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Taku Nakajima (MT6G8258S2)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SevenMinutes/7mradio-Prefix.pch";
@@ -527,9 +527,9 @@
 				INFOPLIST_FILE = "SevenMinutes/7mradio-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PRODUCT_NAME = 7mradio;
-				PROVISIONING_PROFILE = "7718A47E-1676-46C7-961A-FCC47995E127";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "7718A47E-1676-46C7-961A-FCC47995E127";
-				TARGETED_DEVICE_FAMILY = "1,2";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

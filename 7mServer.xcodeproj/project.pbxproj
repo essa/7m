@@ -15,6 +15,7 @@
 		B71290351728CE0800616705 /* rb_main.rb in Resources */ = {isa = PBXBuildFile; fileRef = B71290341728CE0800616705 /* rb_main.rb */; };
 		B71290371728CE0800616705 /* AppDelegate.rb in Resources */ = {isa = PBXBuildFile; fileRef = B71290361728CE0800616705 /* AppDelegate.rb */; };
 		B71290411728D19500616705 /* cui.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B71290401728D19500616705 /* cui.bundle */; };
+		B76FC2E017E304CA00E5ABF9 /* Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = B76FC2DF17E304CA00E5ABF9 /* Icon.icns */; };
 		B7B03D7A175C7AB100B4A1F2 /* gui.rb in Resources */ = {isa = PBXBuildFile; fileRef = B7B03D79175C7AB100B4A1F2 /* gui.rb */; };
 /* End PBXBuildFile section */
 
@@ -40,6 +41,7 @@
 		B71290341728CE0800616705 /* rb_main.rb */ = {isa = PBXFileReference; lastKnownFileType = text.script.ruby; path = rb_main.rb; sourceTree = "<group>"; };
 		B71290361728CE0800616705 /* AppDelegate.rb */ = {isa = PBXFileReference; lastKnownFileType = text.script.ruby; path = AppDelegate.rb; sourceTree = "<group>"; };
 		B71290401728D19500616705 /* cui.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = cui.bundle; sourceTree = "<group>"; };
+		B76FC2DF17E304CA00E5ABF9 /* Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Icon.icns; sourceTree = "<group>"; };
 		B7B03D79175C7AB100B4A1F2 /* gui.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = gui.rb; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -59,6 +61,7 @@
 		B71290131728CE0800616705 = {
 			isa = PBXGroup;
 			children = (
+				B76FC2DF17E304CA00E5ABF9 /* Icon.icns */,
 				B71290401728D19500616705 /* cui.bundle */,
 				B71290261728CE0800616705 /* GUI */,
 				B712901E1728CE0800616705 /* Frameworks */,
@@ -199,6 +202,7 @@
 				B71290371728CE0800616705 /* AppDelegate.rb in Resources */,
 				B71290411728D19500616705 /* cui.bundle in Resources */,
 				B7B03D7A175C7AB100B4A1F2 /* gui.rb in Resources */,
+				B76FC2E017E304CA00E5ABF9 /* Icon.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
