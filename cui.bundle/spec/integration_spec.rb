@@ -9,6 +9,7 @@ require 'capybara/dsl'
 
 require "minitest/spec"
 require "hashie"
+require 'net/http'
 
 MiniTest::Unit.autorun
 
@@ -33,6 +34,48 @@ module SevenMinutes
   end
 end
 include SevenMinutes
+
+describe "SevenMinutes webserver test" do
+  before do
+    Test::stop_server
+    sleep 1
+    Test::start_server
+    sleep 8
+    @h = Net::HTTP.new('localhost', 16017)
+  end
+
+  it "should return status" do
+    # r = @h.get2('/musics/05%20Something%20Elated.mp3', 'Range' => 'bytes=0-1')
+    r = @h.get2('/status')
+    r.code.must_equal '200'
+  end
+
+  it 'should accept range request' do
+    r = @h.get2('/playlists')
+    r.code.must_equal '200'
+
+    pl = JSON.parse(r.body).find {|l| l['name'] == '7mtest'}
+    r = @h.get2('/' + pl['path'] + '/tracks')
+    r.code.must_equal '200'
+    t = JSON.parse(r.body).first
+    r = @h.get2('/' + t['path'] + '/media', 'Range' => 'bytes=0-1')
+    p r
+    r.code.must_equal '206'
+    r['content-range'].must_match %r[bytes 0-1/(\d+)]
+    p r.body
+    r['content-range'] =~ %r[bytes 0-1/(\d+)]
+    l = $1.to_i
+    p l
+    r.body.size.must_equal 2
+    r.body.must_equal 'ID'
+
+    r = @h.get2('/' + t['path'] + '/media', 'Range' => "bytes=0-#{l-1}")
+    p r
+    r.code.must_equal '206'
+    r['content-range'].must_equal %[bytes 0-#{l-1}/#{l}]
+    r.body.size.must_equal l 
+  end
+end
 
 describe "SevenMinutes integration test" do
   include Capybara::DSL
