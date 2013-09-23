@@ -286,7 +286,7 @@ module ControlTowerExt
 
     def send_body
       if @range_start and @range_end
-        @connection.sendfile(@file, @range_start, @range_end)
+        @connection.sendfile(@file, @range_start, @range_end + 1)
       else
         @connection.sendfile(@file, 0, content_length)
       end

@@ -8,6 +8,7 @@ class App.Players.PhonegapStreamPlayer extends App.PlayerBase
       @mm = new App.Players.ClientManagedMM(playing, playing.player)
     
   startMedia: (media_url, bookmark, callback)->
+    media_url = 'http://www.uncate.org/musics/05%20Something%20Elated.mp3'
     console.log 'PhonegapPlayer#startMedia', media_url, bookmark
     @releaseMedia()
     # media = @media = new plugins.StreamAudio media_url, @onSuccess, @onError

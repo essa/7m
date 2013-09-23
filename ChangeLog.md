@@ -1,3 +1,7 @@
+### 0.8.5
+
+- fix a bug of 7mserver: illeagal content for http range request
+
 ### 0.8.4
 
 - rename Mac App to 7mserver
