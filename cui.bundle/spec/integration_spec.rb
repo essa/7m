@@ -25,8 +25,16 @@ module SevenMinutes
       @pid = fork do 
         exec('/usr/local/bin/macruby -rubygems cui_main.rb')
       end
-      p @pid
       at_exit { Process.kill :INT, @pid}
+      h = Net::HTTP.new('localhost', 16017)
+      while true
+        begin
+          r = h.get2('/status')
+          return if r.code == '200'
+        rescue Errno::ECONNREFUSED
+        end
+        sleep 1
+      end
     end
     def self.stop_server
       Process.kill :INT, @pid if @pid
@@ -40,7 +48,6 @@ describe "SevenMinutes webserver test" do
     Test::stop_server
     sleep 1
     Test::start_server
-    sleep 8
     @h = Net::HTTP.new('localhost', 16017)
   end
 
@@ -59,18 +66,14 @@ describe "SevenMinutes webserver test" do
     r.code.must_equal '200'
     t = JSON.parse(r.body).first
     r = @h.get2('/' + t['path'] + '/media', 'Range' => 'bytes=0-1')
-    p r
     r.code.must_equal '206'
     r['content-range'].must_match %r[bytes 0-1/(\d+)]
-    p r.body
     r['content-range'] =~ %r[bytes 0-1/(\d+)]
     l = $1.to_i
-    p l
     r.body.size.must_equal 2
     r.body.must_equal 'ID'
 
     r = @h.get2('/' + t['path'] + '/media', 'Range' => "bytes=0-#{l-1}")
-    p r
     r.code.must_equal '206'
     r['content-range'].must_equal %[bytes 0-#{l-1}/#{l}]
     r.body.size.must_equal l 
@@ -86,7 +89,6 @@ describe "SevenMinutes integration test" do
     Test::stop_server
     sleep 1
     Test::start_server
-    sleep 5
   end
 
   it "should display config view" do
